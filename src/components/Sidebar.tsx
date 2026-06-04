@@ -101,43 +101,50 @@ export default function Sidebar() {
             const isHovered = hoveredId === chat.id;
             return (
               <li key={chat.id}>
-                <button
-                  id={`chat-item-${chat.id}`}
-                  onClick={() => selectChat(chat.id)}
+                {/* Wrapper div — valid HTML, no nested buttons */}
+                <div
+                  className="relative flex items-center"
                   onMouseEnter={() => setHoveredId(chat.id)}
                   onMouseLeave={() => setHoveredId(null)}
-                  className={[
-                    "group relative flex items-center gap-2 w-full rounded-[6px] text-sm transition-colors",
-                    sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
-                    isActive
-                      ? "bg-teal-50 text-teal-700 font-medium"
-                      : "text-slate-600 hover:bg-slate-100",
-                  ].join(" ")}
                 >
-                  <MessageSquare
-                    size={14}
+                  {/* Main select area */}
+                  <button
+                    id={`chat-item-${chat.id}`}
+                    onClick={() => selectChat(chat.id)}
                     className={[
-                      "flex-shrink-0",
-                      isActive ? "text-teal-500" : "text-slate-400",
+                      "flex items-center gap-2 w-full rounded-[6px] text-sm transition-colors",
+                      sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
+                      isActive
+                        ? "bg-teal-50 text-teal-700 font-medium"
+                        : "text-slate-600 hover:bg-slate-100",
                     ].join(" ")}
-                  />
-                  {sidebarOpen && (
-                    <span className="truncate flex-1 text-left">{chat.title}</span>
-                  )}
+                  >
+                    <MessageSquare
+                      size={14}
+                      className={[
+                        "flex-shrink-0",
+                        isActive ? "text-teal-500" : "text-slate-400",
+                      ].join(" ")}
+                    />
+                    {sidebarOpen && (
+                      <span className="truncate flex-1 text-left pr-5">
+                        {chat.title}
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Delete button — sibling, not child */}
                   {sidebarOpen && isHovered && !isActive && (
                     <button
                       id={`delete-chat-${chat.id}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteChat(chat.id);
-                      }}
-                      className="absolute right-2 flex items-center justify-center w-5 h-5 rounded hover:bg-red-50 hover:text-red-500 text-slate-400 transition-colors"
+                      onClick={() => deleteChat(chat.id)}
+                      className="absolute right-2 flex items-center justify-center w-5 h-5 rounded hover:bg-red-50 hover:text-red-500 text-slate-400 transition-colors z-10"
                       aria-label={`Delete ${chat.title}`}
                     >
                       <Trash2 size={12} />
                     </button>
                   )}
-                </button>
+                </div>
               </li>
             );
           })}
