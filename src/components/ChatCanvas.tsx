@@ -20,7 +20,7 @@ export default function ChatCanvas() {
   const hasMessages = (activeChat?.messages?.length ?? 0) > 0;
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 bg-slate-50">
+    <div className="flex flex-col flex-1 min-h-0 bg-[#f8f9ff]">
       {/* Message area */}
       <div
         ref={scrollRef}
