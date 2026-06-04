@@ -123,6 +123,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  // Keep a ref mirror of chats so we can read the latest state synchronously
+  const chatsRef = useRef(chats);
+  chatsRef.current = chats;
 
   const activeChat = chats.find((c) => c.id === activeId) ?? null;
 
@@ -222,21 +225,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       setIsStreaming(true);
 
-      // Build the full message history to send (exclude the empty placeholder)
-      const historySnapshot = (() => {
-        // We need to read current chat messages; use a local ref approach
-        let msgs: Array<{ role: string; content: string }> = [];
-        setChats((prev) => {
-          const chat = prev.find((c) => c.id === targetId);
-          if (chat) {
-            msgs = chat.messages
-              .filter((m) => m.id !== assistantId && m.content)
-              .map((m) => ({ role: m.role, content: m.content }));
-          }
-          return prev; // no mutation
-        });
-        return msgs;
-      })();
+      // Build the full message history synchronously from the ref.
+      // We include userMsg explicitly since the prior setChats may not
+      // have flushed yet (React batches state updates).
+      const chatSnapshot = chatsRef.current.find((c) => c.id === targetId);
+      const priorMsgs = (chatSnapshot?.messages ?? [])
+        .filter((m) => m.id !== assistantId && m.content)
+        .map((m) => ({ role: m.role, content: m.content }));
+      // Guarantee the user message we just added is included
+      const hasUserMsg = priorMsgs.some((m) => m.content === userMsg.content && m.role === "user");
+      const historySnapshot = hasUserMsg
+        ? priorMsgs
+        : [...priorMsgs, { role: userMsg.role, content: userMsg.content }];
 
       try {
         await streamNecookieAI(
