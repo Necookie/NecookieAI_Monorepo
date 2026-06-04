@@ -27,14 +27,14 @@ export default function Header() {
   }
 
   return (
-    <header className="flex items-center justify-between px-5 py-3 border-b border-slate-200 bg-white flex-shrink-0 h-[52px]">
-      {/* Title */}
-      <h1 className="text-[15px] font-semibold text-slate-800 tracking-tight">
+    <header className="flex items-center justify-between gap-3 px-5 py-3 border-b border-slate-200 bg-white flex-shrink-0 h-[52px]">
+      {/* Title — min-w-0 lets flex truncate correctly */}
+      <h1 className="min-w-0 flex-1 text-[15px] font-semibold text-slate-800 tracking-tight truncate">
         {activeChat?.title ?? "Necookie AI"}
       </h1>
 
-      {/* Right controls */}
-      <div className="flex items-center gap-2">
+      {/* Right controls — flex-shrink-0 keeps buttons always visible */}
+      <div className="flex items-center gap-2 flex-shrink-0">
         {/* Model selector */}
         <div className="relative" ref={dropRef}>
           <button
