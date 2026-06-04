@@ -16,6 +16,8 @@ interface AppCtx {
   deleteChat: (id: string) => void;
   sendMessage: (content: string) => Promise<void>;
   isStreaming: boolean;
+  error: string | null;
+  clearError: () => void;
 }
 
 const Ctx = createContext<AppCtx | null>(null);
@@ -26,23 +28,64 @@ export function useApp() {
   return ctx;
 }
 
-/* ─── Mock streaming helper ─── */
-async function mockStream(
-  prompt: string,
-  onChunk: (chunk: string) => void,
+/* ─── Ollama NDJSON streaming helper ───────────────────────────────────────
+ * The Necookie AI endpoint returns newline-delimited JSON (Ollama format).
+ * Each line: { message: { role, content }, done: boolean }
+ * We accumulate the `content` delta from each chunk and yield it.
+ * ──────────────────────────────────────────────────────────────────────── */
+async function streamNecookieAI(
+  messages: Array<{ role: string; content: string }>,
+  onChunk: (delta: string) => void,
   signal: AbortSignal
 ): Promise<void> {
-  const responses = [
-    `Sure! Here's my response to **"${prompt.slice(0, 40)}..."**\n\nI can help you with that. Let me break it down:\n\n- **Point 1** — This is a key consideration\n- **Point 2** — Another important factor\n- **Point 3** — Finally, keep this in mind\n\nHere's a quick example:\n\n\`\`\`typescript\nfunction example(input: string): string {\n  return input.trim().toLowerCase();\n}\n\`\`\`\n\nLet me know if you'd like me to expand on any of these points!`,
-    `Great question! Here's what I think about **"${prompt.slice(0, 30)}..."**:\n\n> The key insight here is that every problem has multiple valid approaches.\n\nLet me walk you through my thinking step by step.\n\n1. First, we need to understand the context\n2. Then we can explore the options\n3. Finally, we pick the best fit\n\nWould you like more details on any specific aspect?`,
-  ];
-  const text = responses[Math.floor(Math.random() * responses.length)];
-  const words = text.split(" ");
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages, stream: true }),
+    signal,
+  });
 
-  for (const word of words) {
-    if (signal.aborted) return;
-    await new Promise((r) => setTimeout(r, 18 + Math.random() * 40));
-    onChunk(word + " ");
+  if (!res.ok) {
+    let errMsg = `API error ${res.status}`;
+    try {
+      const errJson = await res.json();
+      if (errJson.error) errMsg = errJson.error;
+    } catch {}
+    throw new Error(errMsg);
+  }
+
+  const reader = res.body?.getReader();
+  if (!reader) throw new Error("No response body from server.");
+
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    if (signal.aborted) break;
+
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+
+    // Ollama sends one JSON object per line
+    const lines = buffer.split("\n");
+    // Keep the last partial line in the buffer
+    buffer = lines.pop() ?? "";
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      try {
+        const chunk = JSON.parse(trimmed);
+        const delta: string = chunk?.message?.content ?? "";
+        if (delta) onChunk(delta);
+        if (chunk?.done) return; // final chunk
+      } catch {
+        // malformed line — skip
+      }
+    }
   }
 }
 
@@ -78,9 +121,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [model, setModel] = useState<Model>(AVAILABLE_MODELS[0]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   const activeChat = chats.find((c) => c.id === activeId) ?? null;
+
+  const clearError = useCallback(() => setError(null), []);
 
   const newChat = useCallback(() => {
     const id = uid();
@@ -99,9 +145,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const deleteChat = useCallback(
     (id: string) => {
       setChats((prev) => prev.filter((c) => c.id !== id));
-      if (activeId === id) {
-        setActiveId(null);
-      }
+      if (activeId === id) setActiveId(null);
     },
     [activeId]
   );
@@ -110,7 +154,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     async (content: string) => {
       if (!content.trim() || isStreaming) return;
 
-      // Abort previous stream
+      setError(null);
+
+      // Abort any prior stream
       abortRef.current?.abort();
       const abort = new AbortController();
       abortRef.current = abort;
@@ -122,61 +168,80 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         timestamp: new Date().toISOString(),
       };
 
+      // Resolve (or create) the target chat
       let targetId = activeId;
 
       setChats((prev) => {
-        const updated = prev.map((c) => {
-          if (c.id === targetId) {
-            const isFirstMsg = c.messages.length === 0;
+        // If we have an active chat, append to it
+        if (targetId) {
+          return prev.map((c) => {
+            if (c.id !== targetId) return c;
+            const isFirst = c.messages.length === 0;
             return {
               ...c,
-              title: isFirstMsg ? deriveTitle(content) : c.title,
+              title: isFirst ? deriveTitle(content) : c.title,
               messages: [...c.messages, userMsg],
             };
-          }
-          return c;
-        });
-        // If no active chat, create one
-        if (!targetId) {
-          const newId = uid();
-          targetId = newId;
-          const newC: Chat = {
-            id: newId,
-            title: deriveTitle(content),
-            messages: [userMsg],
-            createdAt: new Date().toISOString(),
-          };
-          return [newC, ...updated];
+          });
         }
-        return updated;
+        // No active chat — create a new one inline
+        const newId = uid();
+        targetId = newId;
+        const newC: Chat = {
+          id: newId,
+          title: deriveTitle(content),
+          messages: [userMsg],
+          createdAt: new Date().toISOString(),
+        };
+        return [newC, ...prev];
       });
 
       if (!activeId && targetId) setActiveId(targetId);
 
-      // Placeholder assistant message
+      // Add empty assistant placeholder
       const assistantId = uid();
-      const assistantMsg: Message = {
-        id: assistantId,
-        role: "assistant",
-        content: "",
-        timestamp: new Date().toISOString(),
-        streaming: true,
-      };
-
       setChats((prev) =>
         prev.map((c) =>
           c.id === targetId
-            ? { ...c, messages: [...c.messages, assistantMsg] }
+            ? {
+                ...c,
+                messages: [
+                  ...c.messages,
+                  {
+                    id: assistantId,
+                    role: "assistant" as const,
+                    content: "",
+                    timestamp: new Date().toISOString(),
+                    streaming: true,
+                  },
+                ],
+              }
             : c
         )
       );
 
       setIsStreaming(true);
 
+      // Build the full message history to send (exclude the empty placeholder)
+      const historySnapshot = (() => {
+        // We need to read current chat messages; use a local ref approach
+        let msgs: Array<{ role: string; content: string }> = [];
+        setChats((prev) => {
+          const chat = prev.find((c) => c.id === targetId);
+          if (chat) {
+            msgs = chat.messages
+              .filter((m) => m.id !== assistantId && m.content)
+              .map((m) => ({ role: m.role, content: m.content }));
+          }
+          return prev; // no mutation
+        });
+        return msgs;
+      })();
+
       try {
-        await mockStream(
-          content,
-          (chunk) => {
+        await streamNecookieAI(
+          historySnapshot,
+          (delta) => {
             setChats((prev) =>
               prev.map((c) =>
                 c.id === targetId
@@ -184,7 +249,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
                       ...c,
                       messages: c.messages.map((m) =>
                         m.id === assistantId
-                          ? { ...m, content: m.content + chunk }
+                          ? { ...m, content: m.content + delta }
                           : m
                       ),
                     }
@@ -194,8 +259,27 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           },
           abort.signal
         );
+      } catch (err) {
+        if ((err as Error).name === "AbortError") {
+          // User stopped — that's fine
+        } else {
+          const message =
+            err instanceof Error ? err.message : "Unknown error from AI.";
+          setError(message);
+          // Remove the empty placeholder on hard error
+          setChats((prev) =>
+            prev.map((c) =>
+              c.id === targetId
+                ? {
+                    ...c,
+                    messages: c.messages.filter((m) => m.id !== assistantId),
+                  }
+                : c
+            )
+          );
+        }
       } finally {
-        // Mark stream done
+        // Mark stream complete
         setChats((prev) =>
           prev.map((c) =>
             c.id === targetId
@@ -229,6 +313,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         deleteChat,
         sendMessage,
         isStreaming,
+        error,
+        clearError,
       }}
     >
       {children}
