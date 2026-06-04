@@ -91,33 +91,8 @@ async function streamNecookieAI(
 
 /* ─── Provider ─── */
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [chats, setChats] = useState<Chat[]>([
-    {
-      id: "demo-1",
-      title: "Current Chat",
-      messages: [],
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: "demo-2",
-      title: "Design System Specs",
-      messages: [],
-      createdAt: new Date(Date.now() - 3600000).toISOString(),
-    },
-    {
-      id: "demo-3",
-      title: "API Integration Plan",
-      messages: [],
-      createdAt: new Date(Date.now() - 7200000).toISOString(),
-    },
-    {
-      id: "demo-4",
-      title: "User Research Notes",
-      messages: [],
-      createdAt: new Date(Date.now() - 10800000).toISOString(),
-    },
-  ]);
-  const [activeId, setActiveId] = useState<string | null>("demo-1");
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [model, setModel] = useState<Model>(AVAILABLE_MODELS[0]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isStreaming, setIsStreaming] = useState(false);
