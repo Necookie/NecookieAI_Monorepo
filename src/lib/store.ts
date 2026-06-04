@@ -30,10 +30,6 @@ export interface Model {
 
 export const AVAILABLE_MODELS: Model[] = [
   { id: "neco-ai-1.0", label: "Neco AI 1.0" },
-  { id: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
-  { id: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
-  { id: "gpt-4o", label: "GPT-4o" },
-  { id: "claude-3-7-sonnet", label: "Claude 3.7 Sonnet" },
 ];
 
 export const SUGGESTION_PROMPTS = [
