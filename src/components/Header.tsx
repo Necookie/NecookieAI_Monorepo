@@ -42,7 +42,7 @@ export default function Header() {
             onClick={() => setModelOpen(!modelOpen)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-sm text-slate-600 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 transition-colors"
           >
-            <span className="font-medium">{model.label.split(" ").slice(-2).join(" ")}</span>
+            <span className="font-medium">Model</span>
             <ChevronDown
               size={13}
               className={`text-slate-400 transition-transform duration-150 ${modelOpen ? "rotate-180" : ""}`}
