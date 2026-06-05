@@ -36,6 +36,7 @@ export const chats = sqliteTable("chats", {
   userId: text("user_id").notNull(),
   title: text("title").notNull(),
   createdAt: text("created_at").notNull(),
+  folder: text("folder"),
 });
 
 export const chatsRelations = relations(chats, ({ many }) => ({
