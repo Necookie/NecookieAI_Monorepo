@@ -35,13 +35,20 @@ export default function ChatCanvas() {
   const t = getTranslations(language);
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [autoScroll, setAutoScroll] = React.useState(true);
 
-  // Auto-scroll to bottom on new messages
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLDivElement;
+    const isAtBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 50;
+    setAutoScroll(isAtBottom);
+  };
+
+  // Auto-scroll to bottom on new messages if autoScroll is enabled
   useEffect(() => {
-    if (bottomRef.current) {
+    if (autoScroll && bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [activeChat?.messages]);
+  }, [activeChat?.messages, autoScroll]);
 
   const hasMessages = (activeChat?.messages?.length ?? 0) > 0;
 
@@ -50,6 +57,7 @@ export default function ChatCanvas() {
       {/* Message area */}
       <div
         ref={scrollRef}
+        onScroll={handleScroll}
         className="flex-1 overflow-y-auto"
         id="chat-scroll-area"
       >
