@@ -38,6 +38,7 @@ export interface Chat {
   title: string;
   messages: Message[];
   createdAt: string;
+  folder?: string | null;
 }
 
 export interface Model {

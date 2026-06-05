@@ -24,6 +24,10 @@ import {
   HelpCircle,
   MessageSquare,
   Trash2,
+  FolderPlus,
+  Folder,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
@@ -40,6 +44,7 @@ export default function Sidebar() {
   const setShowSettings = useAppStore(s => s.setShowSettings);
   const setShowHelp = useAppStore(s => s.setShowHelp);
   const language = useAppStore(s => s.language);
+  const updateChatFolder = useAppStore(s => s.updateChatFolder);
   
   const t = getTranslations(language).sidebar;
   const { user } = useUser();
@@ -49,6 +54,22 @@ export default function Sidebar() {
   const filtered = chats.filter((c) =>
     c.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const [collapsedFolders, setCollapsedFolders] = React.useState<Record<string, boolean>>({});
+
+  const groupedChats = React.useMemo(() => {
+    const groups: Record<string, typeof chats> = { Recent: [] };
+    filtered.forEach(chat => {
+      const folderName = chat.folder || "Recent";
+      if (!groups[folderName]) groups[folderName] = [];
+      groups[folderName].push(chat);
+    });
+    return groups;
+  }, [filtered]);
+
+  const toggleFolder = (folder: string) => {
+    setCollapsedFolders(prev => ({ ...prev, [folder]: !prev[folder] }));
+  };
 
   return (
     <aside
@@ -120,61 +141,95 @@ export default function Sidebar() {
 
       {/* ─── Chat List ─── */}
       <nav className="flex-1 overflow-y-auto py-1 px-2 mt-1">
-        {sidebarOpen && (
-          <p className="text-[10px] font-semibold tracking-wider text-slate-400 dark:text-slate-500 uppercase px-3 py-1.5 mb-0.5">
-            {t.recent}
-          </p>
-        )}
-        <ul className="space-y-0.5">
-          {filtered.map((chat) => {
-            const isActive = chat.id === activeId;
-            const isHovered = hoveredId === chat.id;
-            return (
-              <li key={chat.id}>
-                {/* Wrapper div — valid HTML, no nested buttons */}
-                <div
-                  className="relative flex items-center"
-                  onMouseEnter={() => setHoveredId(chat.id)}
-                  onMouseLeave={() => setHoveredId(null)}
-                >
-                  {/* Main select area */}
-                  <button
-                    id={`chat-item-${chat.id}`}
-                    onClick={() => selectChat(chat.id)}
-                    className={[
-                      "flex items-center gap-2 w-full rounded-[6px] text-sm transition-colors",
-                      sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
-                      isActive
-                        ? "bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 font-medium"
-                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
-                    ].join(" ")}
-                  >
-                    <MessageSquare
-                      size={14}
-                      className={[
-                        "flex-shrink-0",
-                        isActive ? "text-teal-500 dark:text-teal-400" : "text-slate-400 dark:text-slate-500",
-                      ].join(" ")}
-                    />
-                    {sidebarOpen && (
-                      <span className="truncate flex-1 text-left pr-5">
-                        {chat.title}
-                      </span>
-                    )}
-                  </button>
+        <ul className="space-y-2">
+          {Object.entries(groupedChats).map(([folderName, folderChats]) => {
+            if (folderChats.length === 0) return null;
+            const isCollapsed = collapsedFolders[folderName];
 
-                  {/* Delete button — sibling, not child */}
-                  {sidebarOpen && isHovered && !isActive && (
-                    <button
-                      id={`delete-chat-${chat.id}`}
-                      onClick={() => deleteChat(chat.id)}
-                      className="absolute right-2 flex items-center justify-center w-5 h-5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400 text-slate-400 dark:text-slate-500 transition-colors z-10"
-                      aria-label={`Delete ${chat.title}`}
-                    >
-                      <Trash2 size={12} />
-                    </button>
-                  )}
-                </div>
+            return (
+              <li key={folderName} className="space-y-0.5">
+                {sidebarOpen && (
+                  <button
+                    onClick={() => toggleFolder(folderName)}
+                    className="flex items-center gap-1.5 w-full text-[10px] font-semibold tracking-wider text-slate-400 dark:text-slate-500 uppercase px-3 py-1 mb-0.5 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                  >
+                    {isCollapsed ? <ChevronRight size={12} /> : <ChevronDown size={12} />}
+                    {folderName !== "Recent" && <Folder size={10} className="mr-0.5" />}
+                    {folderName === "Recent" ? t.recent : folderName}
+                  </button>
+                )}
+                
+                {!isCollapsed && (
+                  <ul className="space-y-0.5">
+                    {folderChats.map((chat) => {
+                      const isActive = chat.id === activeId;
+                      const isHovered = hoveredId === chat.id;
+                      return (
+                        <li key={chat.id}>
+                          <div
+                            className="relative flex items-center"
+                            onMouseEnter={() => setHoveredId(chat.id)}
+                            onMouseLeave={() => setHoveredId(null)}
+                          >
+                            <button
+                              id={`chat-item-${chat.id}`}
+                              onClick={() => selectChat(chat.id)}
+                              className={[
+                                "flex items-center gap-2 w-full rounded-[6px] text-sm transition-colors",
+                                sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
+                                isActive
+                                  ? "bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 font-medium"
+                                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
+                              ].join(" ")}
+                            >
+                              <MessageSquare
+                                size={14}
+                                className={[
+                                  "flex-shrink-0",
+                                  isActive ? "text-teal-500 dark:text-teal-400" : "text-slate-400 dark:text-slate-500",
+                                ].join(" ")}
+                              />
+                              {sidebarOpen && (
+                                <span className="truncate flex-1 text-left pr-5">
+                                  {chat.title}
+                                </span>
+                              )}
+                            </button>
+
+                            {sidebarOpen && isHovered && !isActive && (
+                              <div className="absolute right-2 flex items-center gap-0.5 z-10 bg-white dark:bg-slate-950 rounded pr-1 shadow-[0_0_8px_4px_rgba(255,255,255,1)] dark:shadow-[0_0_8px_4px_rgba(2,6,23,1)]">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    const newFolder = prompt("Enter folder name (leave blank to remove):", chat.folder || "");
+                                    if (newFolder !== null) {
+                                      updateChatFolder(chat.id, newFolder.trim() || null);
+                                    }
+                                  }}
+                                  className="flex items-center justify-center w-5 h-5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-teal-500 text-slate-400 dark:text-slate-500 transition-colors"
+                                  title="Move to folder"
+                                >
+                                  <FolderPlus size={12} />
+                                </button>
+                                <button
+                                  id={`delete-chat-${chat.id}`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    deleteChat(chat.id);
+                                  }}
+                                  className="flex items-center justify-center w-5 h-5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400 text-slate-400 dark:text-slate-500 transition-colors"
+                                  title={`Delete ${chat.title}`}
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
               </li>
             );
           })}

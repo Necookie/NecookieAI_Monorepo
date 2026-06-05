@@ -111,6 +111,7 @@ interface AppStore {
   newChat: () => void;
   selectChat: (id: string) => void;
   deleteChat: (id: string) => void;
+  updateChatFolder: (chatId: string, folder: string | null) => Promise<void>;
   sendMessage: (content: string) => Promise<void>;
   regenerateMessage: (messageId: string) => Promise<void>;
   editAndResend: (messageId: string, newContent: string) => Promise<void>;
@@ -216,6 +217,23 @@ export const useAppStore = create<AppStore>((set, get) => ({
     } catch (err) {
       console.error("Failed to delete chat in DB:", err);
       set({ error: "Failed to delete chat." });
+    }
+  },
+
+  updateChatFolder: async (chatId, folder) => {
+    // Optimistic UI update
+    set((state) => ({
+      chats: state.chats.map((c) => (c.id === chatId ? { ...c, folder } : c)),
+    }));
+
+    try {
+      await fetch("/api/chats/update", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: chatId, folder }),
+      });
+    } catch (err) {
+      console.error("Failed to update folder", err);
     }
   },
 
