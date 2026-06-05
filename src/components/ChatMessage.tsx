@@ -248,7 +248,7 @@ const ChatMessage = memo(function ChatMessage({ message }: Props) {
       <div className="w-full flex">
         <div className="w-[2px] bg-teal-500 rounded-full mr-4 flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <div className="prose-chat">
+          <div className="prose-chat text-slate-700 dark:text-slate-200">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
