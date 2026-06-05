@@ -54,7 +54,7 @@ function CodeBlock({
   const [copied, setCopied] = useState(false);
 
   const rawCode = String(children).replace(/\n$/, "");
-  const label = LANG_DISPLAY[language.toLowerCase()] ?? language || "Code";
+  const label = (LANG_DISPLAY[language.toLowerCase()] ?? language) || "Code";
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(rawCode).then(() => {
