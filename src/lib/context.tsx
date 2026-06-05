@@ -112,6 +112,7 @@ interface AppStore {
   selectChat: (id: string) => void;
   deleteChat: (id: string) => void;
   sendMessage: (content: string) => Promise<void>;
+  regenerateMessage: (messageId: string) => Promise<void>;
   clearError: () => void;
   
   _fetchInitialData: () => Promise<void>;
@@ -464,6 +465,141 @@ export const useAppStore = create<AppStore>((set, get) => ({
         isStreaming: false,
         chats: state.chats.map((c) =>
           c.id === targetId ? {
+            ...c,
+            messages: (c.messages || []).map((m) =>
+              m.id === assistantId ? { ...m, streaming: false } : m
+            ),
+          } : c
+        )
+      }));
+    }
+  },
+
+  regenerateMessage: async (messageId: string) => {
+    const { isStreaming, activeId, chats } = get();
+    if (isStreaming || !activeId) return;
+
+    const chat = chats.find(c => c.id === activeId);
+    if (!chat || !chat.messages) return;
+
+    const targetIdx = chat.messages.findIndex(m => m.id === messageId);
+    if (targetIdx === -1) return;
+
+    const targetMsg = chat.messages[targetIdx];
+    if (targetMsg.role !== "assistant") return; // Only regenerate AI responses
+
+    set({ error: null });
+
+    const prevAbort = get().abortController;
+    prevAbort?.abort();
+    const abort = new AbortController();
+    set({ abortController: abort });
+
+    // Truncate messages in DB
+    try {
+      await fetch("/api/messages/truncate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chatId: activeId,
+          timestamp: targetMsg.timestamp
+        })
+      });
+    } catch (err) {
+      set({ error: "Failed to truncate chat history." });
+      return;
+    }
+
+    const historySnapshot = chat.messages
+      .slice(0, targetIdx)
+      .map(m => ({ role: m.role, content: m.content }));
+
+    const assistantId = uid();
+    const assistantMsgTimestamp = new Date().toISOString();
+
+    set(state => ({
+      chats: state.chats.map(c => c.id === activeId ? {
+        ...c,
+        messages: [
+          ...c.messages!.slice(0, targetIdx),
+          {
+            id: assistantId,
+            role: "assistant" as const,
+            content: "",
+            timestamp: assistantMsgTimestamp,
+            streaming: true
+          }
+        ]
+      } : c),
+      isStreaming: true
+    }));
+
+    let accumulatedText = "";
+
+    try {
+      await streamNecookieAI(
+        historySnapshot,
+        (delta) => {
+          accumulatedText += delta;
+          set(state => ({
+            chats: state.chats.map((c) =>
+              c.id === activeId ? {
+                ...c,
+                messages: (c.messages || []).map((m) =>
+                  m.id === assistantId ? { ...m, content: accumulatedText } : m
+                ),
+              } : c
+            )
+          }));
+        },
+        abort.signal
+      );
+
+      if (accumulatedText.trim()) {
+        await fetch("/api/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: assistantId,
+            chatId: activeId,
+            role: "assistant",
+            content: accumulatedText,
+            timestamp: assistantMsgTimestamp,
+          }),
+        });
+      }
+    } catch (err) {
+      if ((err as Error).name === "AbortError") {
+        if (accumulatedText.trim()) {
+          fetch("/api/messages", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: assistantId,
+              chatId: activeId,
+              role: "assistant",
+              content: accumulatedText,
+              timestamp: assistantMsgTimestamp,
+            }),
+          }).catch(console.error);
+        }
+      } else {
+        const message = err instanceof Error ? err.message : "Unknown error from AI.";
+        set(state => ({
+          error: message,
+          chats: state.chats.map((c) =>
+            c.id === activeId ? {
+              ...c,
+              messages: (c.messages || []).filter((m) => m.id !== assistantId),
+            } : c
+          )
+        }));
+      }
+    } finally {
+      set(state => ({
+        isStreaming: false,
+        chats: state.chats.map((c) =>
+          c.id === activeId ? {
             ...c,
             messages: (c.messages || []).map((m) =>
               m.id === assistantId ? { ...m, streaming: false } : m

@@ -17,10 +17,12 @@
 import React, { memo, useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { RefreshCw } from "lucide-react";
 import type { Message } from "../lib/store";
 
 interface Props {
   message: Message;
+  onRegenerate?: (id: string) => void;
 }
 
 // ─── Typing indicator ────────────────────────────────────────────────────────
@@ -208,7 +210,7 @@ function ActionButton({
 
 // ─── ChatMessage ─────────────────────────────────────────────────────────────
 
-const ChatMessage = memo(function ChatMessage({ message }: Props) {
+const ChatMessage = memo(function ChatMessage({ message, onRegenerate }: Props) {
   const isUser = message.role === "user";
 
   if (isUser) {
@@ -228,7 +230,7 @@ const ChatMessage = memo(function ChatMessage({ message }: Props) {
   }
 
   return (
-    <div className="flex flex-col items-start mb-8">
+    <div className="flex flex-col items-start mb-8 group">
       {/* Label */}
       <div className="flex items-center gap-2 mb-3">
         <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center shadow-sm">
@@ -276,6 +278,19 @@ const ChatMessage = memo(function ChatMessage({ message }: Props) {
               <span className="inline-block w-0.5 h-4 bg-teal-500 ml-0.5 animate-pulse align-middle" />
             )}
           </div>
+
+          {/* Action Bar */}
+          {!message.streaming && onRegenerate && (
+            <div className="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                onClick={() => onRegenerate(message.id)}
+                className="flex items-center justify-center w-7 h-7 rounded-[6px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f] transition-colors"
+                title="Regenerate response"
+              >
+                <RefreshCw size={14} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
