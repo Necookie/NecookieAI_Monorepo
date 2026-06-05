@@ -25,6 +25,19 @@ if (!url || !authToken) {
   throw new Error("Missing Turso database credentials (TURSO_DATABASE_URL / TURSO_AUTH_TOKEN) in environment variables.");
 }
 
-const client = createClient({ url, authToken });
+const isLocalFile = url.startsWith("file:");
+
+// Use embedded replica if the URL is a remote Turso DB.
+// This requires persistent local disk storage (e.g. VPS or Docker, not Vercel/Netlify Serverless).
+const clientConfig = isLocalFile
+  ? { url, authToken }
+  : {
+      url: "file:local-replica.db",
+      syncUrl: url,
+      authToken,
+      syncInterval: 60, // Auto sync every 60 seconds
+    };
+
+const client = createClient(clientConfig);
 export const db = drizzle(client, { schema });
 export type Db = typeof db;
