@@ -20,13 +20,13 @@ import { SignInButton, SignUpButton } from "@clerk/clerk-react";
 export default function SignInPage() {
   return (
     <div
-      className="flex items-center justify-center min-h-screen px-4 select-none"
-      style={{ background: "#f8f9ff" }}
+      className="fixed inset-0 z-50 bg-slate-950/20 backdrop-blur-[5px] flex items-center justify-center px-4 select-none"
+      style={{ animation: "authFadeIn 0.22s ease-out" }}
     >
       <div
         className="w-full max-w-sm px-8 py-10 rounded-[8px] bg-white border border-slate-200"
         style={{
-          boxShadow: "none",
+          boxShadow: "0 8px 30px rgba(15, 23, 42, 0.04)",
         }}
       >
         {/* Top Session Tag */}
@@ -107,6 +107,12 @@ export default function SignInPage() {
           </span>
         </div>
       </div>
+      <style>{`
+        @keyframes authFadeIn {
+          from { opacity: 0; transform: scale(0.97) translateY(4px); }
+          to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }

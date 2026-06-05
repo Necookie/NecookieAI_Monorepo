@@ -40,7 +40,7 @@ function AppShell() {
   );
 }
 
-import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { ClerkProvider, SignedOut } from "@clerk/clerk-react";
 import SignInPage from "./SignInPage";
 
 const publishableKey = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
@@ -53,9 +53,7 @@ export default function App() {
   return (
     <ClerkProvider publishableKey={publishableKey}>
       <AppProvider>
-        <SignedIn>
-          <AppShell />
-        </SignedIn>
+        <AppShell />
         <SignedOut>
           <SignInPage />
         </SignedOut>
