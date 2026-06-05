@@ -43,6 +43,16 @@ export default function ChatCanvas() {
     setAutoScroll(isAtBottom);
   };
 
+  // Force scroll to bottom when a new message is added
+  const prevMessagesLength = useRef(activeChat?.messages?.length ?? 0);
+  useEffect(() => {
+    const currentLen = activeChat?.messages?.length ?? 0;
+    if (currentLen > prevMessagesLength.current) {
+      setAutoScroll(true);
+    }
+    prevMessagesLength.current = currentLen;
+  }, [activeChat?.messages?.length]);
+
   // Auto-scroll to bottom on new messages if autoScroll is enabled
   useEffect(() => {
     if (autoScroll && bottomRef.current) {
