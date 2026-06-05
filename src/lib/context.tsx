@@ -331,11 +331,12 @@ export const useAppStore = create<AppStore>((set, get) => ({
       };
 
       try {
-        await fetch("/api/chats", {
+        const chatRes = await fetch("/api/chats", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: newId, title: targetChatTitle, createdAt: newC.createdAt }),
         });
+        if (!chatRes.ok) throw new Error("Failed to create chat in DB");
         set(state => ({ chats: [newC, ...state.chats], activeId: newId }));
       } catch (err) {
         set({ error: "Failed to start chat session." });
@@ -373,7 +374,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     }
 
     try {
-      await fetch("/api/messages", {
+      const msgRes = await fetch("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -384,6 +385,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
           timestamp: userMsg.timestamp,
         }),
       });
+      if (!msgRes.ok) throw new Error("Failed to save message to DB");
     } catch (err) {
       set({ error: "Failed to save message." });
       return;
