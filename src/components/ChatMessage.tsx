@@ -17,7 +17,7 @@
 import React, { memo, useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { RefreshCw, Pencil } from "lucide-react";
+import { RefreshCw, Pencil, Copy, Check } from "lucide-react";
 import type { Message } from "../lib/store";
 
 interface Props {
@@ -215,6 +215,13 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
   const isUser = message.role === "user";
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(message.content);
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(message.content).catch(() => {});
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  }, [message.content]);
 
   const handleEditSubmit = useCallback(() => {
     if (editValue.trim() && editValue !== message.content) {
@@ -348,15 +355,25 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
           </div>
 
           {/* Action Bar */}
-          {!message.streaming && onRegenerate && (
+          {!message.streaming && (
             <div className="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <button
-                onClick={() => onRegenerate(message.id)}
+                onClick={handleCopy}
                 className="flex items-center justify-center w-7 h-7 rounded-[6px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f] transition-colors"
-                title="Regenerate response"
+                title="Copy message"
               >
-                <RefreshCw size={14} />
+                {isCopied ? <Check size={14} className="text-teal-500" /> : <Copy size={14} />}
               </button>
+
+              {onRegenerate && (
+                <button
+                  onClick={() => onRegenerate(message.id)}
+                  className="flex items-center justify-center w-7 h-7 rounded-[6px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f] transition-colors"
+                  title="Regenerate response"
+                >
+                  <RefreshCw size={14} />
+                </button>
+              )}
             </div>
           )}
         </div>
