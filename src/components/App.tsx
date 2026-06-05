@@ -40,6 +40,9 @@ function AppShell() {
   );
 }
 
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import SignInPage from "./SignInPage";
+
 /**
  * Root application shell mounted as a single React island.
  * All state is managed by AppProvider context — no prop drilling.
@@ -47,7 +50,12 @@ function AppShell() {
 export default function App() {
   return (
     <AppProvider>
-      <AppShell />
+      <SignedIn>
+        <AppShell />
+      </SignedIn>
+      <SignedOut>
+        <SignInPage />
+      </SignedOut>
     </AppProvider>
   );
 }

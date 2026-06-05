@@ -19,19 +19,21 @@ import { relations } from "drizzle-orm";
 
 /**
  * Settings Table
- * Stores key-value user preferences like language and model selections.
+ * Stores settings preferences (language, model) per authenticated user.
  */
 export const settings = sqliteTable("settings", {
-  key: text("key").primaryKey(),
-  value: text("value").notNull(),
+  userId: text("user_id").primaryKey(),
+  language: text("language").notNull(),
+  model: text("model").notNull(),
 });
 
 /**
  * Chats Table
- * Stores chat session details.
+ * Stores chat session details, partitioned by user ID.
  */
 export const chats = sqliteTable("chats", {
   id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
   title: text("title").notNull(),
   createdAt: text("created_at").notNull(),
 });

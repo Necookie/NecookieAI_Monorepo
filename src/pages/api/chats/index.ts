@@ -17,11 +17,20 @@
 import type { APIRoute } from "astro";
 import { db } from "../../../lib/db/client";
 import { chats } from "../../../lib/db/schema";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async (context) => {
   try {
+    const { userId } = context.locals.auth();
+    if (!userId) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const allChats = await db.query.chats.findMany({
+      where: eq(chats.userId, userId),
       orderBy: [desc(chats.createdAt)],
       with: {
         messages: true,
@@ -41,9 +50,17 @@ export const GET: APIRoute = async () => {
   }
 };
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async (context) => {
   try {
-    const body = await request.json();
+    const { userId } = context.locals.auth();
+    if (!userId) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const body = await context.request.json();
     const { id, title, createdAt } = body;
 
     if (!id || !title) {
@@ -57,6 +74,7 @@ export const POST: APIRoute = async ({ request }) => {
       .insert(chats)
       .values({
         id,
+        userId,
         title,
         createdAt: createdAt || new Date().toISOString(),
       })

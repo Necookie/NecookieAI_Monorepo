@@ -27,10 +27,12 @@ import {
 } from "lucide-react";
 import { useApp } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
+import { UserButton, useUser } from "@clerk/clerk-react";
 
 export default function Sidebar() {
   const { chats, activeId, sidebarOpen, setSidebarOpen, newChat, selectChat, deleteChat, setShowSettings, setShowHelp, language } = useApp();
   const t = getTranslations(language).sidebar;
+  const { user } = useUser();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
 
@@ -188,6 +190,27 @@ export default function Sidebar() {
             {sidebarOpen && <span>{label}</span>}
           </button>
         ))}
+
+        {user && (
+          <div
+            className={[
+              "flex items-center gap-2.5 border-t border-slate-100 mt-2 pt-2.5 px-1.5",
+              sidebarOpen ? "justify-start" : "justify-center",
+            ].join(" ")}
+          >
+            <UserButton afterSignOutUrl="/" />
+            {sidebarOpen && (
+              <div className="flex flex-col min-w-0">
+                <span className="text-[11px] font-semibold text-slate-700 truncate leading-tight">
+                  {user.fullName || user.username || user.primaryEmailAddress?.emailAddress}
+                </span>
+                <span className="text-[9px] text-slate-400 truncate leading-none mt-0.5">
+                  {user.primaryEmailAddress?.emailAddress}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </aside>
   );

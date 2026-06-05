@@ -16,11 +16,20 @@
 
 import type { APIRoute } from "astro";
 import { db } from "../../../lib/db/client";
-import { messages } from "../../../lib/db/schema";
+import { messages, chats } from "../../../lib/db/schema";
+import { and, eq } from "drizzle-orm";
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async (context) => {
   try {
-    const body = await request.json();
+    const { userId } = context.locals.auth();
+    if (!userId) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const body = await context.request.json();
     const { id, chatId, role, content, timestamp } = body;
 
     if (!id || !chatId || !role || !content) {
@@ -28,6 +37,21 @@ export const POST: APIRoute = async ({ request }) => {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
+    }
+
+    // Verify the target chat belongs to the authenticated user
+    const chatExists = await db.query.chats.findFirst({
+      where: and(eq(chats.id, chatId), eq(chats.userId, userId)),
+    });
+
+    if (!chatExists) {
+      return new Response(
+        JSON.stringify({ error: "Access denied: chat session not found or unauthorized." }),
+        {
+          status: 403,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     await db.insert(messages).values({
