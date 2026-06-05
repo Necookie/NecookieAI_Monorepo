@@ -24,7 +24,7 @@ export default function SignInPage() {
       style={{ animation: "authFadeIn 0.22s ease-out" }}
     >
       <div
-        className="w-full max-w-sm px-8 py-10 rounded-[8px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800"
+        className="w-full max-w-sm px-8 py-10 rounded-[8px] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800"
         style={{
           boxShadow: "0 8px 30px rgba(15, 23, 42, 0.04)",
         }}

@@ -51,7 +51,7 @@ export default function WelcomeScreen() {
               id={`suggestion-${i}`}
               onClick={() => sendMessage(s.prompt + " ")}
               className={[
-                "group text-left p-4 rounded-[8px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800",
+                "group text-left p-4 rounded-[8px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900",
                 "hover:border-teal-300 dark:hover:border-teal-700 hover:bg-teal-50/40 dark:hover:bg-teal-900/30 hover:shadow-sm",
                 "transition-all duration-150",
                 // Make the last card in 4-card grid span if odd

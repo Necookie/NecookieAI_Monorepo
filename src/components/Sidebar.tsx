@@ -53,7 +53,7 @@ export default function Sidebar() {
   return (
     <aside
       className={[
-        "flex flex-col h-full bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 ease-in-out flex-shrink-0",
+        "flex flex-col h-full bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 ease-in-out flex-shrink-0",
         sidebarOpen ? "w-[240px]" : "w-[52px]",
       ].join(" ")}
     >

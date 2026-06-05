@@ -29,7 +29,7 @@ function AppShell() {
   const showSettings = useAppStore(s => s.showSettings);
   const showHelp = useAppStore(s => s.showHelp);
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-900 font-sans">
+    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 font-sans">
       <Sidebar />
       <div className="flex flex-col flex-1 min-w-0">
         <Header />

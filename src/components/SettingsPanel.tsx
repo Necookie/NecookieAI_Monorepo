@@ -45,8 +45,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden">
-      <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center gap-2">
+    <section className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden">
+      <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 flex items-center gap-2">
         <span className="text-slate-400 flex-shrink-0">{icon}</span>
         <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">{title}</h3>
       </div>
@@ -185,7 +185,7 @@ export default function SettingsPanel() {
       {/* Panel */}
       <div
         id="settings-panel"
-        className="relative w-full max-w-2xl max-h-[90vh] bg-white dark:bg-slate-900 rounded-xl shadow-2xl shadow-slate-300/40 dark:shadow-slate-900/40 border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden"
+        className="relative w-full max-w-2xl max-h-[90vh] bg-white dark:bg-slate-950 rounded-xl shadow-2xl shadow-slate-300/40 dark:shadow-slate-950/40 border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden"
         style={{ animation: "settingsFadeIn 0.18s ease-out" }}
       >
         {/* ── Header ── */}
@@ -350,7 +350,7 @@ export default function SettingsPanel() {
         </div>
 
         {/* ── Footer ── */}
-        <div className="flex justify-end px-6 py-4 border-t border-slate-200 dark:border-slate-800 gap-2 flex-shrink-0 bg-white dark:bg-slate-900">
+        <div className="flex justify-end px-6 py-4 border-t border-slate-200 dark:border-slate-800 gap-2 flex-shrink-0 bg-white dark:bg-slate-950">
           <button
             id="settings-cancel-btn"
             onClick={handleCancel}
