@@ -14,5 +14,10 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      watch: {
+        ignored: ['**/*.db', '**/*.db-*', '**/*.sqlite', '**/*.sqlite-*']
+      }
+    }
   },
 });
