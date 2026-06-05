@@ -21,6 +21,7 @@
  */
 
 export type Role = "user" | "assistant";
+export type ThemeMode = "light" | "dark" | "system";
 
 export interface Message {
   id: string;

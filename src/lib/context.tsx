@@ -16,7 +16,7 @@
 
 import React, { useEffect } from "react";
 import { create } from "zustand";
-import type { Chat, Message, Model } from "./store";
+import type { Chat, Message, Model, ThemeMode } from "./store";
 import { uid, deriveTitle, AVAILABLE_MODELS } from "./store";
 import type { Locale } from "./i18n";
 
@@ -74,11 +74,24 @@ async function streamNecookieAI(
   }
 }
 
+function applyThemeClass(theme: ThemeMode) {
+  if (typeof document === "undefined") return;
+  const isDark =
+    theme === "dark" ||
+    (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  if (isDark) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+}
+
 /* ─── Zustand Store ─── */
 interface AppStore {
   chats: Chat[];
   activeId: string | null;
   model: Model;
+  theme: ThemeMode;
   sidebarOpen: boolean;
   showSettings: boolean;
   showHelp: boolean;
@@ -89,6 +102,7 @@ interface AppStore {
 
   activeChat: () => Chat | null;
   
+  setTheme: (t: ThemeMode) => void;
   setSidebarOpen: (v: boolean) => void;
   setShowSettings: (v: boolean) => void;
   setShowHelp: (v: boolean) => void;
@@ -104,10 +118,21 @@ interface AppStore {
   _fetchMessages: (chatId: string) => Promise<void>;
 }
 
+const getInitialTheme = (): ThemeMode => {
+  if (typeof window !== "undefined") {
+    const saved = localStorage.getItem("necookie-theme") as ThemeMode;
+    if (saved === "light" || saved === "dark" || saved === "system") {
+      return saved;
+    }
+  }
+  return "light";
+};
+
 export const useAppStore = create<AppStore>((set, get) => ({
   chats: [],
   activeId: null,
   model: AVAILABLE_MODELS[0],
+  theme: getInitialTheme(),
   sidebarOpen: true,
   showSettings: false,
   showHelp: false,
@@ -121,6 +146,13 @@ export const useAppStore = create<AppStore>((set, get) => ({
     return chats.find((c) => c.id === activeId) ?? null;
   },
 
+  setTheme: (t) => {
+    set({ theme: t });
+    if (typeof window !== "undefined") {
+      localStorage.setItem("necookie-theme", t);
+      applyThemeClass(t);
+    }
+  },
   setSidebarOpen: (v) => set({ sidebarOpen: v }),
   setShowSettings: (v) => set({ showSettings: v }),
   setShowHelp: (v) => set({ showHelp: v }),
@@ -449,10 +481,23 @@ export const useAppStore = create<AppStore>((set, get) => ({
 // though refactoring components to use `useAppStore` directly is ideal for performance.
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const fetchInitialData = useAppStore(s => s._fetchInitialData);
+  const theme = useAppStore(s => s.theme);
 
   useEffect(() => {
     fetchInitialData();
   }, [fetchInitialData]);
+
+  useEffect(() => {
+    applyThemeClass(theme);
+    
+    // Add listener for system theme changes if in system mode
+    if (theme === "system") {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const handler = () => applyThemeClass("system");
+      mediaQuery.addEventListener("change", handler);
+      return () => mediaQuery.removeEventListener("change", handler);
+    }
+  }, [theme]);
 
   return <>{children}</>;
 }

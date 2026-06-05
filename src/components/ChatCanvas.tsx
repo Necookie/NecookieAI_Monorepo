@@ -44,7 +44,7 @@ export default function ChatCanvas() {
   const hasMessages = (activeChat?.messages?.length ?? 0) > 0;
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 bg-[#f8f9ff]">
+    <div className="flex flex-col flex-1 min-h-0 bg-[#f8f9ff] dark:bg-slate-900">
       {/* Message area */}
       <div
         ref={scrollRef}
@@ -66,13 +66,13 @@ export default function ChatCanvas() {
       {/* Error banner */}
       {error && (
         <div className="flex-shrink-0 mx-auto w-full max-w-[760px] px-6 py-2">
-          <div className="flex items-start gap-2 px-3 py-2.5 bg-red-50 border border-red-200 rounded-[6px] text-sm text-red-700">
+          <div className="flex items-start gap-2 px-3 py-2.5 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-[6px] text-sm text-red-700 dark:text-red-400">
             <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
             <span className="flex-1 leading-snug">{error}</span>
             <button
               id="dismiss-error-btn"
               onClick={clearError}
-              className="flex-shrink-0 text-red-400 hover:text-red-600 transition-colors"
+              className="flex-shrink-0 text-red-400 dark:text-red-500 hover:text-red-600 dark:hover:text-red-300 transition-colors"
               aria-label="Dismiss error"
             >
               <X size={13} />
@@ -82,10 +82,10 @@ export default function ChatCanvas() {
       )}
 
       {/* Input area */}
-      <div className="flex-shrink-0 border-t border-slate-200 bg-white">
+      <div className="flex-shrink-0 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
         <div className="max-w-[760px] mx-auto px-6 py-3">
           <ChatInput onSend={sendMessage} isStreaming={isStreaming} placeholder={t.chat.placeholder} />
-          <p className="text-center text-[11px] text-slate-400 mt-2">
+          <p className="text-center text-[11px] text-slate-400 dark:text-slate-500 mt-2">
             Necookie AI can make mistakes. Verify important info.
           </p>
         </div>

@@ -37,7 +37,7 @@ export default function WelcomeScreen() {
   return (
     <div className="flex flex-col items-center justify-center h-full min-h-[480px] px-6 select-none">
       {/* Greeting */}
-      <h2 className="text-[22px] font-semibold text-slate-700 mb-6 tracking-tight">
+      <h2 className="text-[22px] font-semibold text-slate-700 dark:text-slate-300 mb-6 tracking-tight">
         {t.greeting}
       </h2>
 
@@ -51,8 +51,8 @@ export default function WelcomeScreen() {
               id={`suggestion-${i}`}
               onClick={() => sendMessage(s.prompt + " ")}
               className={[
-                "group text-left p-4 rounded-[8px] border border-slate-200 bg-white",
-                "hover:border-teal-300 hover:bg-teal-50/40 hover:shadow-sm",
+                "group text-left p-4 rounded-[8px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800",
+                "hover:border-teal-300 dark:hover:border-teal-700 hover:bg-teal-50/40 dark:hover:bg-teal-900/30 hover:shadow-sm",
                 "transition-all duration-150",
                 // Make the last card in 4-card grid span if odd
                 i === SUGGESTION_PROMPTS.length - 1 && SUGGESTION_PROMPTS.length % 2 !== 0
@@ -61,12 +61,12 @@ export default function WelcomeScreen() {
               ].join(" ")}
             >
               <div className="flex items-center gap-2.5 mb-2">
-                <div className="flex items-center justify-center w-6 h-6 rounded-[4px] bg-teal-100 group-hover:bg-teal-200 transition-colors">
-                  <Icon size={13} className="text-teal-600" />
+                <div className="flex items-center justify-center w-6 h-6 rounded-[4px] bg-teal-100 dark:bg-teal-900/50 group-hover:bg-teal-200 dark:group-hover:bg-teal-800/50 transition-colors">
+                  <Icon size={13} className="text-teal-600 dark:text-teal-400" />
                 </div>
-                <span className="text-sm font-semibold text-slate-700">{s.title}</span>
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{s.title}</span>
               </div>
-              <p className="text-xs text-slate-500 leading-snug">{s.description}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">{s.description}</p>
             </button>
           );
         })}

@@ -218,7 +218,7 @@ const ChatMessage = memo(function ChatMessage({ message }: Props) {
           User
         </span>
         <div
-          className="max-w-[85%] px-5 py-3 rounded-[6px] bg-[#eff4ff] text-[#0b1c30] text-[15px] leading-relaxed border border-[#e5eeff]"
+          className="max-w-[85%] px-5 py-3 rounded-[6px] bg-[#eff4ff] dark:bg-blue-900/30 text-[#0b1c30] dark:text-blue-100 text-[15px] leading-relaxed border border-[#e5eeff] dark:border-blue-800/50"
           style={{ wordBreak: "break-word" }}
         >
           {message.content}
@@ -239,7 +239,7 @@ const ChatMessage = memo(function ChatMessage({ message }: Props) {
             />
           </svg>
         </div>
-        <span className="text-[11px] font-medium tracking-widest text-teal-600 uppercase font-mono">
+        <span className="text-[11px] font-medium tracking-widest text-teal-600 dark:text-teal-400 uppercase font-mono">
           AI
         </span>
       </div>

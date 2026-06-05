@@ -53,7 +53,7 @@ export default function Sidebar() {
   return (
     <aside
       className={[
-        "flex flex-col h-full bg-white border-r border-slate-200 transition-all duration-300 ease-in-out flex-shrink-0",
+        "flex flex-col h-full bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 ease-in-out flex-shrink-0",
         sidebarOpen ? "w-[240px]" : "w-[52px]",
       ].join(" ")}
     >
@@ -61,10 +61,10 @@ export default function Sidebar() {
       <div className="flex items-center justify-between px-3 pt-3 pb-2">
         {sidebarOpen && (
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold tracking-wider text-slate-400 uppercase leading-none">
+            <p className="text-[11px] font-semibold tracking-wider text-slate-400 dark:text-slate-500 uppercase leading-none">
               {t.history}
             </p>
-            <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug mt-0.5">
               {t.lastSevenDays}
             </p>
           </div>
@@ -73,7 +73,7 @@ export default function Sidebar() {
           id="sidebar-toggle"
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className={[
-            "flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors",
+            "flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
             sidebarOpen ? "ml-auto" : "mx-auto",
           ].join(" ")}
           aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
@@ -92,11 +92,11 @@ export default function Sidebar() {
           id="new-chat-btn"
           onClick={newChat}
           className={[
-            "flex items-center gap-2 w-full rounded-[6px] text-slate-600 hover:bg-slate-100 transition-colors text-sm font-medium",
+            "flex items-center gap-2 w-full rounded-[6px] text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm font-medium",
             sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
           ].join(" ")}
         >
-          <Plus size={15} className="flex-shrink-0 text-slate-500" />
+          <Plus size={15} className="flex-shrink-0 text-slate-500 dark:text-slate-400" />
           {sidebarOpen && <span>{t.newChat}</span>}
         </button>
       </div>
@@ -104,7 +104,7 @@ export default function Sidebar() {
       {/* ─── Search ─── */}
       {sidebarOpen && (
         <div className="px-2 py-1">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-[6px] bg-slate-50 border border-slate-200">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-[6px] bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
             <Search size={13} className="text-slate-400 flex-shrink-0" />
             <input
               id="chat-search"
@@ -112,7 +112,7 @@ export default function Sidebar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t.searchChat}
-              className="flex-1 bg-transparent text-sm text-slate-600 placeholder-slate-400 outline-none min-w-0"
+              className="flex-1 bg-transparent text-sm text-slate-600 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 outline-none min-w-0"
             />
           </div>
         </div>
@@ -121,7 +121,7 @@ export default function Sidebar() {
       {/* ─── Chat List ─── */}
       <nav className="flex-1 overflow-y-auto py-1 px-2 mt-1">
         {sidebarOpen && (
-          <p className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase px-3 py-1.5 mb-0.5">
+          <p className="text-[10px] font-semibold tracking-wider text-slate-400 dark:text-slate-500 uppercase px-3 py-1.5 mb-0.5">
             {t.recent}
           </p>
         )}
@@ -145,15 +145,15 @@ export default function Sidebar() {
                       "flex items-center gap-2 w-full rounded-[6px] text-sm transition-colors",
                       sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
                       isActive
-                        ? "bg-teal-50 text-teal-700 font-medium"
-                        : "text-slate-600 hover:bg-slate-100",
+                        ? "bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 font-medium"
+                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
                     ].join(" ")}
                   >
                     <MessageSquare
                       size={14}
                       className={[
                         "flex-shrink-0",
-                        isActive ? "text-teal-500" : "text-slate-400",
+                        isActive ? "text-teal-500 dark:text-teal-400" : "text-slate-400 dark:text-slate-500",
                       ].join(" ")}
                     />
                     {sidebarOpen && (
@@ -168,7 +168,7 @@ export default function Sidebar() {
                     <button
                       id={`delete-chat-${chat.id}`}
                       onClick={() => deleteChat(chat.id)}
-                      className="absolute right-2 flex items-center justify-center w-5 h-5 rounded hover:bg-red-50 hover:text-red-500 text-slate-400 transition-colors z-10"
+                      className="absolute right-2 flex items-center justify-center w-5 h-5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400 text-slate-400 dark:text-slate-500 transition-colors z-10"
                       aria-label={`Delete ${chat.title}`}
                     >
                       <Trash2 size={12} />
@@ -182,7 +182,7 @@ export default function Sidebar() {
       </nav>
 
       {/* ─── Footer ─── */}
-      <div className="border-t border-slate-100 px-2 py-2 space-y-0.5">
+      <div className="border-t border-slate-100 dark:border-slate-800 px-2 py-2 space-y-0.5">
         {[
           { icon: <Settings size={14} />, label: t.settings, id: "settings-btn", onClick: () => setShowSettings(true) },
           { icon: <HelpCircle size={14} />, label: t.help, id: "help-btn", onClick: () => setShowHelp(true) },
@@ -192,7 +192,7 @@ export default function Sidebar() {
             id={id}
             onClick={onClick}
             className={[
-              "flex items-center gap-2 w-full rounded-[6px] text-slate-500 hover:bg-slate-100 hover:text-slate-700 text-sm transition-colors",
+              "flex items-center gap-2 w-full rounded-[6px] text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-300 text-sm transition-colors",
               sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
             ].join(" ")}
           >
@@ -204,20 +204,20 @@ export default function Sidebar() {
         {user && (
           <div
             className={[
-              "border border-slate-200 bg-slate-50 mt-3 rounded-[8px] transition-all duration-300 ease-in-out overflow-hidden",
+              "border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 mt-3 rounded-[8px] transition-all duration-300 ease-in-out overflow-hidden",
               sidebarOpen ? "p-3" : "p-1.5 flex justify-center"
             ].join(" ")}
           >
             {sidebarOpen ? (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400 dark:text-slate-500">
                     Session Status
                   </span>
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-500" title="Connected" />
                 </div>
                 <div className="flex items-center gap-2.5 min-w-0 mt-1">
-                  <div className="flex-shrink-0 border border-slate-200 rounded-full p-0.5 bg-white">
+                  <div className="flex-shrink-0 border border-slate-200 dark:border-slate-700 rounded-full p-0.5 bg-white dark:bg-slate-800">
                     <UserButton afterSignOutUrl="/" appearance={{
                       elements: {
                         userButtonAvatarBox: "w-6 h-6",
@@ -225,17 +225,17 @@ export default function Sidebar() {
                     }} />
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[11px] font-semibold text-slate-800 truncate leading-tight">
+                    <span className="text-[11px] font-semibold text-slate-800 dark:text-slate-200 truncate leading-tight">
                       {user.fullName || user.username || "User"}
                     </span>
-                    <span className="text-[9px] text-slate-500 truncate leading-none mt-1">
+                    <span className="text-[9px] text-slate-500 dark:text-slate-400 truncate leading-none mt-1">
                       {user.primaryEmailAddress?.emailAddress}
                     </span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-center p-0.5 bg-white rounded-full border border-slate-200">
+              <div className="flex items-center justify-center p-0.5 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700">
                 <UserButton afterSignOutUrl="/" appearance={{
                   elements: {
                     userButtonAvatarBox: "w-6 h-6",

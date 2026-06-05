@@ -20,11 +20,11 @@ import { SignInButton, SignUpButton } from "@clerk/clerk-react";
 export default function SignInPage() {
   return (
     <div
-      className="fixed inset-0 z-50 bg-slate-950/20 backdrop-blur-[5px] flex items-center justify-center px-4 select-none"
+      className="fixed inset-0 z-50 bg-slate-950/20 dark:bg-slate-950/60 backdrop-blur-[5px] flex items-center justify-center px-4 select-none"
       style={{ animation: "authFadeIn 0.22s ease-out" }}
     >
       <div
-        className="w-full max-w-sm px-8 py-10 rounded-[8px] bg-white border border-slate-200"
+        className="w-full max-w-sm px-8 py-10 rounded-[8px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800"
         style={{
           boxShadow: "0 8px 30px rgba(15, 23, 42, 0.04)",
         }}
@@ -32,12 +32,12 @@ export default function SignInPage() {
         {/* Brand Header */}
         <div className="text-center mb-8">
           <h1
-            className="text-[28px] font-semibold tracking-tight text-slate-900 leading-none"
+            className="text-[28px] font-semibold tracking-tight text-slate-900 dark:text-slate-100 leading-none"
             style={{ fontFamily: '"Outfit", sans-serif' }}
           >
             Necookie AI
           </h1>
-          <p className="mt-3 text-xs text-slate-500 font-normal leading-relaxed max-w-[280px] mx-auto">
+          <p className="mt-3 text-xs text-slate-500 dark:text-slate-400 font-normal leading-relaxed max-w-[280px] mx-auto">
             Clinical-grade intelligence interface for writing, development, and engineering operations.
           </p>
         </div>
@@ -46,18 +46,7 @@ export default function SignInPage() {
         <div className="flex flex-col gap-3.5">
           <SignInButton mode="modal">
             <button
-              className="flex items-center justify-center w-full h-11 text-xs font-semibold rounded-[6px] tracking-wider uppercase transition-all duration-200 cursor-pointer"
-              style={{
-                background: "#0b1c30",
-                color: "#ffffff",
-                border: "none",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#0d9488";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#0b1c30";
-              }}
+              className="flex items-center justify-center w-full h-11 text-xs font-semibold rounded-[6px] tracking-wider uppercase transition-all duration-200 cursor-pointer bg-[#0b1c30] text-white hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
             >
               Sign In
             </button>
@@ -65,20 +54,7 @@ export default function SignInPage() {
 
           <SignUpButton mode="modal">
             <button
-              className="flex items-center justify-center w-full h-11 text-xs font-semibold rounded-[6px] tracking-wider uppercase transition-all duration-200 cursor-pointer"
-              style={{
-                background: "transparent",
-                color: "#475569",
-                border: "1px solid #cbd5e1",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#0d9488";
-                e.currentTarget.style.color = "#0d9488";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#cbd5e1";
-                e.currentTarget.style.color = "#475569";
-              }}
+              className="flex items-center justify-center w-full h-11 text-xs font-semibold rounded-[6px] tracking-wider uppercase transition-all duration-200 cursor-pointer bg-transparent border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-teal-600 hover:text-teal-600 dark:hover:border-teal-500 dark:hover:text-teal-500"
             >
               Create Account
             </button>
@@ -87,7 +63,7 @@ export default function SignInPage() {
 
         {/* Footer info */}
         <div className="mt-9 text-center">
-          <span className="text-[10px] tracking-wider font-semibold text-slate-400 uppercase">
+          <span className="text-[10px] tracking-wider font-semibold text-slate-400 dark:text-slate-500 uppercase">
             Secured by Clerk
           </span>
         </div>
