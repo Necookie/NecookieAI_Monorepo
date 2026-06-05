@@ -16,7 +16,7 @@
 
 import React, { useState } from "react";
 import { X, Sliders, Palette, Lock, ChevronDown, CheckCircle2, Eye, EyeOff, LogOut } from "lucide-react";
-import { useApp } from "../lib/context";
+import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
 import type { Locale } from "../lib/i18n";
 import { useClerk } from "@clerk/clerk-react";

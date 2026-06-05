@@ -26,7 +26,7 @@ import {
   BugPlay,
   MessageSquareText,
 } from "lucide-react";
-import { useApp } from "../lib/context";
+import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
 
 // ─── Shared sub-components ──────────────────────────────────────────────────
