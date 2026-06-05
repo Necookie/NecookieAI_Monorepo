@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useRef } from "react";
 import type { Chat, Message, Model } from "./store";
 import { uid, deriveTitle, AVAILABLE_MODELS } from "./store";
+import type { Locale } from "./i18n";
 
 /* ─── Context shape ─── */
 interface AppCtx {
@@ -10,6 +11,12 @@ interface AppCtx {
   model: Model;
   sidebarOpen: boolean;
   setSidebarOpen: (v: boolean) => void;
+  showSettings: boolean;
+  setShowSettings: (v: boolean) => void;
+  showHelp: boolean;
+  setShowHelp: (v: boolean) => void;
+  language: Locale;
+  setLanguage: (l: Locale) => void;
   setModel: (m: Model) => void;
   newChat: () => void;
   selectChat: (id: string) => void;
@@ -95,6 +102,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [model, setModel] = useState<Model>(AVAILABLE_MODELS[0]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [language, setLanguage] = useState<Locale>("en");
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -282,6 +292,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         model,
         sidebarOpen,
         setSidebarOpen,
+        showSettings,
+        setShowSettings,
+        showHelp,
+        setShowHelp,
+        language,
+        setLanguage,
         setModel,
         newChat,
         selectChat,

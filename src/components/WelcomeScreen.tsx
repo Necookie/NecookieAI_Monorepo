@@ -2,6 +2,7 @@ import React from "react";
 import { Pencil, Code2, FileText, Lightbulb } from "lucide-react";
 import { SUGGESTION_PROMPTS } from "../lib/store";
 import { useApp } from "../lib/context";
+import { getTranslations } from "../lib/i18n";
 
 const iconMap = {
   Pencil,
@@ -13,13 +14,14 @@ const iconMap = {
 type IconKey = keyof typeof iconMap;
 
 export default function WelcomeScreen() {
-  const { sendMessage } = useApp();
+  const { sendMessage, language } = useApp();
+  const t = getTranslations(language).welcome;
 
   return (
     <div className="flex flex-col items-center justify-center h-full min-h-[480px] px-6 select-none">
       {/* Greeting */}
       <h2 className="text-[22px] font-semibold text-slate-700 mb-6 tracking-tight">
-        How can I help you today?
+        {t.greeting}
       </h2>
 
       {/* Suggestion cards */}

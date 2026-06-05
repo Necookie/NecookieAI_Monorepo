@@ -4,9 +4,10 @@ import { Send, Mic, Square } from "lucide-react";
 interface Props {
   onSend: (message: string) => void;
   isStreaming: boolean;
+  placeholder?: string;
 }
 
-export default function ChatInput({ onSend, isStreaming }: Props) {
+export default function ChatInput({ onSend, isStreaming, placeholder = "Message Necookie AI..." }: Props) {
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -61,7 +62,7 @@ export default function ChatInput({ onSend, isStreaming }: Props) {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Message Necookie AI..."
+        placeholder={placeholder}
         rows={1}
         className="flex-1 resize-none outline-none text-sm text-slate-700 placeholder-slate-400 leading-relaxed bg-transparent py-0.5 max-h-[200px]"
         disabled={isStreaming}
