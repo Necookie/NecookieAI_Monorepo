@@ -223,6 +223,40 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
   const [editValue, setEditValue] = useState(message.content);
   const [isCopied, setIsCopied] = useState(false);
 
+  // Smooth streaming state
+  const [smoothedContent, setSmoothedContent] = useState(message.content);
+  const smoothedLengthRef = React.useRef(message.content.length);
+
+  React.useEffect(() => {
+    if (isUser || !message.streaming) {
+      setSmoothedContent(message.content);
+      smoothedLengthRef.current = message.content.length;
+      return;
+    }
+
+    if (message.content.length < smoothedLengthRef.current) {
+      setSmoothedContent(message.content);
+      smoothedLengthRef.current = message.content.length;
+      return;
+    }
+
+    const interval = setInterval(() => {
+      const targetLen = message.content.length;
+      const currentLen = smoothedLengthRef.current;
+      
+      if (currentLen < targetLen) {
+        const remaining = targetLen - currentLen;
+        const advance = remaining > 15 ? Math.ceil(remaining / 3) : 1;
+        smoothedLengthRef.current = currentLen + advance;
+        setSmoothedContent(message.content.slice(0, smoothedLengthRef.current));
+      } else {
+        clearInterval(interval);
+      }
+    }, 30); // ~33fps update rate for smooth typewriter effect
+
+    return () => clearInterval(interval);
+  }, [message.content, message.streaming, isUser]);
+
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(message.content).catch(() => {});
     setIsCopied(true);
@@ -352,10 +386,10 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
                 },
               }}
             >
-              {message.content || ""}
+              {smoothedContent || ""}
             </ReactMarkdown>
-            {message.streaming && !message.content && <TypingIndicator />}
-            {message.streaming && message.content && (
+            {message.streaming && !smoothedContent && <TypingIndicator />}
+            {message.streaming && smoothedContent && (
               <span className="inline-block w-0.5 h-4 bg-teal-500 ml-0.5 animate-pulse align-middle" />
             )}
           </div>
