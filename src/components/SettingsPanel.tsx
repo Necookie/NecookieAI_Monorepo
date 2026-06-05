@@ -15,10 +15,11 @@
  */
 
 import React, { useState } from "react";
-import { X, Sliders, Palette, Lock, ChevronDown, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import { X, Sliders, Palette, Lock, ChevronDown, CheckCircle2, Eye, EyeOff, LogOut } from "lucide-react";
 import { useApp } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
 import type { Locale } from "../lib/i18n";
+import { useClerk } from "@clerk/clerk-react";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -146,6 +147,7 @@ function SelectField({
 export default function SettingsPanel() {
   const { setShowSettings, language, setLanguage } = useApp();
   const t = getTranslations(language).settings;
+  const { signOut } = useClerk();
 
   // General — local state, applied on Save
   const [defaultModel, setDefaultModel] = useState("pro");
@@ -324,6 +326,25 @@ export default function SettingsPanel() {
                 </div>
               )}
             </div>
+          </Section>
+
+          {/* ── Account ── */}
+          <Section icon={<LogOut size={15} />} title="Account">
+            <SettingRow
+              label="Session Management"
+              description="Disconnect from this workspace. You will need to authenticate again to access your chats and settings."
+            >
+              <button
+                id="settings-logout-btn"
+                onClick={() => {
+                  signOut();
+                  setShowSettings(false);
+                }}
+                className="px-4 py-2 border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-[6px] text-xs font-semibold font-mono tracking-wider uppercase transition-colors cursor-pointer"
+              >
+                Log Out
+              </button>
+            </SettingRow>
           </Section>
         </div>
 

@@ -40,14 +40,24 @@ function AppShell() {
   );
 }
 
+import { ClerkProvider, SignedOut } from "@clerk/clerk-react";
+import SignInPage from "./SignInPage";
+
+const publishableKey = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
+
 /**
  * Root application shell mounted as a single React island.
  * All state is managed by AppProvider context — no prop drilling.
  */
 export default function App() {
   return (
-    <AppProvider>
-      <AppShell />
-    </AppProvider>
+    <ClerkProvider publishableKey={publishableKey}>
+      <AppProvider>
+        <AppShell />
+        <SignedOut>
+          <SignInPage />
+        </SignedOut>
+      </AppProvider>
+    </ClerkProvider>
   );
 }

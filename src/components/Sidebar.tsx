@@ -27,10 +27,12 @@ import {
 } from "lucide-react";
 import { useApp } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
+import { UserButton, useUser } from "@clerk/clerk-react";
 
 export default function Sidebar() {
   const { chats, activeId, sidebarOpen, setSidebarOpen, newChat, selectChat, deleteChat, setShowSettings, setShowHelp, language } = useApp();
   const t = getTranslations(language).sidebar;
+  const { user } = useUser();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
 
@@ -188,6 +190,51 @@ export default function Sidebar() {
             {sidebarOpen && <span>{label}</span>}
           </button>
         ))}
+
+        {user && (
+          <div
+            className={[
+              "border border-slate-200 bg-slate-50 mt-3 rounded-[8px] transition-all duration-300 ease-in-out overflow-hidden",
+              sidebarOpen ? "p-3" : "p-1.5 flex justify-center"
+            ].join(" ")}
+          >
+            {sidebarOpen ? (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">
+                    Session Status
+                  </span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-500" title="Connected" />
+                </div>
+                <div className="flex items-center gap-2.5 min-w-0 mt-1">
+                  <div className="flex-shrink-0 border border-slate-200 rounded-full p-0.5 bg-white">
+                    <UserButton afterSignOutUrl="/" appearance={{
+                      elements: {
+                        userButtonAvatarBox: "w-6 h-6",
+                      }
+                    }} />
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[11px] font-semibold text-slate-800 truncate leading-tight">
+                      {user.fullName || user.username || "User"}
+                    </span>
+                    <span className="text-[9px] text-slate-500 truncate leading-none mt-1">
+                      {user.primaryEmailAddress?.emailAddress}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center p-0.5 bg-white rounded-full border border-slate-200">
+                <UserButton afterSignOutUrl="/" appearance={{
+                  elements: {
+                    userButtonAvatarBox: "w-6 h-6",
+                  }
+                }} />
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </aside>
   );
