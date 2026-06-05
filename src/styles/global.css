@@ -83,15 +83,11 @@
   }
 
   .prose-chat pre {
-    background: var(--color-slate-900);
-    color: #e2e8f0;
-    padding: 1rem 1.25rem;
-    border-radius: var(--radius-md);
-    overflow-x: auto;
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
-    line-height: 1.6;
-    margin: 0.75rem 0;
+    /* Styles handled by custom CodeBlock component */
+    background: none;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
   }
 
   .prose-chat code:not(pre code) {
