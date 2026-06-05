@@ -202,7 +202,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
             get().selectChat(data[0].id);
           }
         }
-      } else {
+      } else if (chatsRes.status !== 401) {
         set({ error: "Failed to load chat history." });
       }
 
@@ -213,6 +213,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
           const found = AVAILABLE_MODELS.find((m) => m.id === data.model);
           if (found) set({ model: found });
         }
+      } else if (settingsRes.status !== 401) {
+         // silently ignore 401 for settings as well
       }
     } catch (err) {
       console.error("Error fetching initial data:", err);
