@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Message } from "../lib/store";
@@ -6,6 +6,8 @@ import type { Message } from "../lib/store";
 interface Props {
   message: Message;
 }
+
+// ─── Typing indicator ────────────────────────────────────────────────────────
 
 const TypingIndicator = () => (
   <span className="inline-flex items-center gap-1 ml-1">
@@ -18,6 +20,177 @@ const TypingIndicator = () => (
     ))}
   </span>
 );
+
+// ─── Pretty language display names ──────────────────────────────────────────
+
+const LANG_DISPLAY: Record<string, string> = {
+  typescript: "TypeScript", javascript: "JavaScript",
+  tsx: "TSX", jsx: "JSX", python: "Python", rust: "Rust",
+  go: "Go", java: "Java", css: "CSS", html: "HTML",
+  json: "JSON", bash: "Bash", shell: "Shell", sql: "SQL",
+  yaml: "YAML", markdown: "Markdown", text: "Plain Text", c: "C", cpp: "C++",
+};
+
+const LANG_EXT: Record<string, string> = {
+  typescript: "ts", javascript: "js", tsx: "tsx", jsx: "jsx",
+  python: "py", rust: "rs", go: "go", java: "java", css: "css",
+  html: "html", json: "json", bash: "sh", shell: "sh", sql: "sql",
+  yaml: "yaml", markdown: "md", c: "c", cpp: "cpp",
+};
+
+// ─── Code block ──────────────────────────────────────────────────────────────
+
+function CodeBlock({
+  language,
+  children,
+  className,
+  ...props
+}: {
+  language: string;
+  children: React.ReactNode;
+  className?: string;
+  [key: string]: any;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  const rawCode = String(children).replace(/\n$/, "");
+  const label = LANG_DISPLAY[language.toLowerCase()] ?? language || "Code";
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(rawCode).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }, [rawCode]);
+
+  const handleDownload = useCallback(() => {
+    const ext = LANG_EXT[language.toLowerCase()] ?? "txt";
+    const blob = new Blob([rawCode], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `code.${ext}`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [rawCode, language]);
+
+  return (
+    <div
+      className="relative my-5 rounded-[10px] overflow-hidden shadow-xl"
+      style={{ background: "#18181b" }}
+    >
+      {/* ── Top bar ── */}
+      <div
+        className="flex items-center justify-between px-5 py-3"
+        style={{
+          background: "#18181b",
+          borderBottom: "1px solid rgba(255,255,255,0.07)",
+        }}
+      >
+        {/* Language label */}
+        <span
+          className="text-sm font-bold select-none tracking-tight"
+          style={{ color: "#e4e4e7" }}
+        >
+          {label}
+        </span>
+
+        {/* Action icons */}
+        <div className="flex items-center gap-1.5">
+          {/* Download */}
+          <ActionButton onClick={handleDownload} title="Download file">
+            <svg
+              width="18" height="18" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor"
+              strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <polyline points="8 12 12 16 16 12" />
+              <line x1="12" y1="8" x2="12" y2="16" />
+            </svg>
+          </ActionButton>
+
+          {/* Copy */}
+          <ActionButton
+            onClick={handleCopy}
+            title={copied ? "Copied!" : "Copy code"}
+            active={copied}
+          >
+            {copied ? (
+              <svg
+                width="16" height="16" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor"
+                strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            ) : (
+              <svg
+                width="16" height="16" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor"
+                strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"
+              >
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              </svg>
+            )}
+          </ActionButton>
+        </div>
+      </div>
+
+      {/* ── Code body ── */}
+      <div className="overflow-x-auto px-6 py-5">
+        <code
+          className={className}
+          style={{
+            fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+            fontSize: "13.5px",
+            lineHeight: "1.8",
+            color: "#d4d4d8",
+            display: "block",
+            whiteSpace: "pre",
+          }}
+          {...props}
+        >
+          {children}
+        </code>
+      </div>
+    </div>
+  );
+}
+
+// ─── Icon button helper ───────────────────────────────────────────────────────
+
+function ActionButton({
+  onClick,
+  title,
+  active,
+  children,
+}: {
+  onClick: () => void;
+  title: string;
+  active?: boolean;
+  children: React.ReactNode;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-150"
+      style={{
+        color: active ? "#2dd4bf" : hovered ? "#ffffff" : "#71717a",
+        background: hovered ? "rgba(255,255,255,0.06)" : "transparent",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ─── ChatMessage ─────────────────────────────────────────────────────────────
 
 const ChatMessage = memo(function ChatMessage({ message }: Props) {
   const isUser = message.role === "user";
@@ -55,9 +228,8 @@ const ChatMessage = memo(function ChatMessage({ message }: Props) {
         </span>
       </div>
 
-      {/* Bubble / Text Content */}
+      {/* Bubble */}
       <div className="w-full flex">
-        {/* Accent line */}
         <div className="w-[2px] bg-teal-500 rounded-full mr-4 flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="prose-chat">
@@ -66,63 +238,17 @@ const ChatMessage = memo(function ChatMessage({ message }: Props) {
               components={{
                 code({ node, inline, className, children, ...props }: any) {
                   const match = /language-(\w+)/.exec(className || "");
-                  const isInline = !match && !className?.includes("language-");
-                  const language = match ? match[1] : "";
+                  const isInline = inline || (!match && !className?.includes("language-"));
+                  const lang = match ? match[1] : "";
 
                   if (isInline) {
-                    return (
-                      <code className={className} {...props}>
-                        {children}
-                      </code>
-                    );
+                    return <code className={className} {...props}>{children}</code>;
                   }
 
                   return (
-                    <div className="relative my-5 rounded-[6px] overflow-hidden bg-[#0F172A] border border-slate-700/50 shadow-sm">
-                      <div className="flex items-center justify-between px-4 py-2 bg-slate-800/80 border-b border-slate-700/50">
-                        <span className="text-[11px] font-mono text-slate-400 font-medium">
-                          {language || "text"}
-                        </span>
-                        <button
-                          onClick={() =>
-                            navigator.clipboard.writeText(
-                              String(children).replace(/\n$/, "")
-                            )
-                          }
-                          className="text-slate-400 hover:text-white transition-colors flex items-center gap-1.5"
-                          title="Copy code"
-                        >
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <rect
-                              x="9"
-                              y="9"
-                              width="13"
-                              height="13"
-                              rx="2"
-                              ry="2"
-                            />
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                          </svg>
-                          <span className="text-[10px] font-mono uppercase tracking-wider">
-                            Copy
-                          </span>
-                        </button>
-                      </div>
-                      <div className="p-4 overflow-x-auto text-[13px] text-slate-200 font-mono leading-relaxed">
-                        <code className={className} {...props}>
-                          {children}
-                        </code>
-                      </div>
-                    </div>
+                    <CodeBlock language={lang} className={className} {...props}>
+                      {children}
+                    </CodeBlock>
                   );
                 },
               }}
