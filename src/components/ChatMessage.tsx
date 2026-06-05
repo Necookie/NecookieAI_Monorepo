@@ -218,7 +218,7 @@ const ChatMessage = memo(function ChatMessage({ message }: Props) {
           User
         </span>
         <div
-          className="max-w-[85%] px-5 py-3 rounded-[6px] bg-[#eff4ff] dark:bg-blue-900/30 text-[#0b1c30] dark:text-blue-100 text-[15px] leading-relaxed border border-[#e5eeff] dark:border-blue-800/50"
+          className="max-w-[85%] px-5 py-3 rounded-[6px] bg-[#eff4ff] dark:bg-[#2f2f2f] text-[#0b1c30] dark:text-slate-100 text-[15px] leading-relaxed border border-[#e5eeff] dark:border-transparent"
           style={{ wordBreak: "break-word" }}
         >
           {message.content}

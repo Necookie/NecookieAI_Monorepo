@@ -82,7 +82,7 @@ export default function ChatCanvas() {
       )}
 
       {/* Input area */}
-      <div className="flex-shrink-0 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
+      <div className="flex-shrink-0 border-t border-slate-200 dark:border-transparent bg-white dark:bg-slate-950">
         <div className="max-w-[760px] mx-auto px-6 py-3">
           <ChatInput onSend={sendMessage} isStreaming={isStreaming} placeholder={t.chat.placeholder} />
           <p className="text-center text-[11px] text-slate-400 dark:text-slate-500 mt-2">
