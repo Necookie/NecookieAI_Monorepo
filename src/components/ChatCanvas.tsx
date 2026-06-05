@@ -26,6 +26,7 @@ export default function ChatCanvas() {
   const activeChat = useAppStore(s => s.activeChat());
   const sendMessage = useAppStore(s => s.sendMessage);
   const regenerateMessage = useAppStore(s => s.regenerateMessage);
+  const editAndResend = useAppStore(s => s.editAndResend);
   const isStreaming = useAppStore(s => s.isStreaming);
   const error = useAppStore(s => s.error);
   const clearError = useAppStore(s => s.clearError);
@@ -55,7 +56,12 @@ export default function ChatCanvas() {
         {hasMessages ? (
           <div className="max-w-[760px] mx-auto px-6 py-6">
             {activeChat!.messages.map((msg) => (
-              <ChatMessage key={msg.id} message={msg} onRegenerate={regenerateMessage} />
+              <ChatMessage 
+                key={msg.id} 
+                message={msg} 
+                onRegenerate={regenerateMessage} 
+                onEditAndResend={editAndResend}
+              />
             ))}
             <div ref={bottomRef} />
           </div>

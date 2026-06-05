@@ -113,6 +113,7 @@ interface AppStore {
   deleteChat: (id: string) => void;
   sendMessage: (content: string) => Promise<void>;
   regenerateMessage: (messageId: string) => Promise<void>;
+  editAndResend: (messageId: string, newContent: string) => Promise<void>;
   clearError: () => void;
   
   _fetchInitialData: () => Promise<void>;
@@ -608,6 +609,53 @@ export const useAppStore = create<AppStore>((set, get) => ({
         )
       }));
     }
+  },
+
+  editAndResend: async (messageId: string, newContent: string) => {
+    const { isStreaming, activeId, chats } = get();
+    if (isStreaming || !activeId) return;
+
+    const chat = chats.find(c => c.id === activeId);
+    if (!chat || !chat.messages) return;
+
+    const targetIdx = chat.messages.findIndex(m => m.id === messageId);
+    if (targetIdx === -1) return;
+
+    const targetMsg = chat.messages[targetIdx];
+    if (targetMsg.role !== "user") return; // Only edit user messages
+
+    set({ error: null });
+
+    const prevAbort = get().abortController;
+    prevAbort?.abort();
+    const abort = new AbortController();
+    set({ abortController: abort });
+
+    // Truncate messages in DB (deleting the old user message and all subsequent messages)
+    try {
+      await fetch("/api/messages/truncate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chatId: activeId,
+          timestamp: targetMsg.timestamp
+        })
+      });
+    } catch (err) {
+      set({ error: "Failed to truncate chat history." });
+      return;
+    }
+
+    // Truncate local state to just before the edited message
+    set(state => ({
+      chats: state.chats.map(c => c.id === activeId ? {
+        ...c,
+        messages: c.messages!.slice(0, targetIdx)
+      } : c)
+    }));
+
+    // Re-send the message as a fresh prompt
+    await get().sendMessage(newContent);
   },
 }));
 

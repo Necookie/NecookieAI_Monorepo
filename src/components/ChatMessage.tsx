@@ -17,12 +17,13 @@
 import React, { memo, useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Pencil } from "lucide-react";
 import type { Message } from "../lib/store";
 
 interface Props {
   message: Message;
   onRegenerate?: (id: string) => void;
+  onEditAndResend?: (id: string, newContent: string) => void;
 }
 
 // ─── Typing indicator ────────────────────────────────────────────────────────
@@ -210,20 +211,87 @@ function ActionButton({
 
 // ─── ChatMessage ─────────────────────────────────────────────────────────────
 
-const ChatMessage = memo(function ChatMessage({ message, onRegenerate }: Props) {
+const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAndResend }: Props) {
   const isUser = message.role === "user";
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(message.content);
+
+  const handleEditSubmit = useCallback(() => {
+    if (editValue.trim() && editValue !== message.content) {
+      onEditAndResend?.(message.id, editValue);
+    }
+    setIsEditing(false);
+  }, [editValue, message.id, message.content, onEditAndResend]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleEditSubmit();
+    } else if (e.key === "Escape") {
+      setIsEditing(false);
+      setEditValue(message.content);
+    }
+  }, [handleEditSubmit, message.content]);
 
   if (isUser) {
+    if (isEditing) {
+      return (
+        <div className="flex flex-col items-end mb-8 w-full max-w-3xl ml-auto">
+          <div className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-[12px] p-3 shadow-sm">
+            <textarea
+              className="w-full bg-transparent text-[#0b1c30] dark:text-slate-100 text-[15px] outline-none resize-none min-h-[100px] mb-2"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              autoFocus
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditValue(message.content);
+                }}
+                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-[8px] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleEditSubmit}
+                disabled={!editValue.trim()}
+                className="px-4 py-2 text-sm font-medium text-white bg-teal-500 hover:bg-teal-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-[8px] transition-colors"
+              >
+                Save & Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
-      <div className="flex flex-col items-end mb-8">
-        <span className="text-[11px] font-medium tracking-widest text-slate-400 uppercase font-mono mb-2">
+      <div className="flex flex-col items-end mb-8 group w-full">
+        <span className="text-[11px] font-medium tracking-widest text-slate-400 uppercase font-mono mb-2 mr-2">
           User
         </span>
-        <div
-          className="max-w-[85%] px-5 py-3 rounded-[6px] bg-[#eff4ff] dark:bg-[#2f2f2f] text-[#0b1c30] dark:text-slate-100 text-[15px] leading-relaxed border border-[#e5eeff] dark:border-transparent"
-          style={{ wordBreak: "break-word" }}
-        >
-          {message.content}
+        <div className="flex items-end gap-3 max-w-[85%]">
+          {onEditAndResend && (
+            <button
+              onClick={() => {
+                setEditValue(message.content);
+                setIsEditing(true);
+              }}
+              className="flex items-center justify-center w-8 h-8 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors opacity-0 group-hover:opacity-100 mb-2"
+              title="Edit and resend"
+            >
+              <Pencil size={15} />
+            </button>
+          )}
+          <div
+            className="px-5 py-3 rounded-[12px] bg-[#eff4ff] dark:bg-[#2f2f2f] text-[#0b1c30] dark:text-slate-100 text-[15px] leading-relaxed border border-[#e5eeff] dark:border-transparent"
+            style={{ wordBreak: "break-word" }}
+          >
+            {message.content}
+          </div>
         </div>
       </div>
     );
