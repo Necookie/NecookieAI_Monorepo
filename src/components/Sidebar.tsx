@@ -201,11 +201,8 @@ export default function Sidebar() {
             {sidebarOpen ? (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <span
-                    className="text-[9px] font-medium uppercase tracking-[0.12em] text-slate-400"
-                    style={{ fontFamily: '"JetBrains Mono", monospace' }}
-                  >
-                    [ user_session ]
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">
+                    Session Status
                   </span>
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-500" title="Connected" />
                 </div>
@@ -221,10 +218,7 @@ export default function Sidebar() {
                     <span className="text-[11px] font-semibold text-slate-800 truncate leading-tight">
                       {user.fullName || user.username || "User"}
                     </span>
-                    <span
-                      className="text-[9px] text-slate-500 truncate leading-none mt-0.5"
-                      style={{ fontFamily: '"JetBrains Mono", monospace' }}
-                    >
+                    <span className="text-[9px] text-slate-500 truncate leading-none mt-1">
                       {user.primaryEmailAddress?.emailAddress}
                     </span>
                   </div>
