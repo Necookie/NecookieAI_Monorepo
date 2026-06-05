@@ -12,6 +12,8 @@ interface AppCtx {
   setSidebarOpen: (v: boolean) => void;
   showSettings: boolean;
   setShowSettings: (v: boolean) => void;
+  showHelp: boolean;
+  setShowHelp: (v: boolean) => void;
   setModel: (m: Model) => void;
   newChat: () => void;
   selectChat: (id: string) => void;
@@ -98,6 +100,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [model, setModel] = useState<Model>(AVAILABLE_MODELS[0]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -287,6 +290,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setSidebarOpen,
         showSettings,
         setShowSettings,
+        showHelp,
+        setShowHelp,
         setModel,
         newChat,
         selectChat,

@@ -12,7 +12,7 @@ import {
 import { useApp } from "../lib/context";
 
 export default function Sidebar() {
-  const { chats, activeId, sidebarOpen, setSidebarOpen, newChat, selectChat, deleteChat, setShowSettings } = useApp();
+  const { chats, activeId, sidebarOpen, setSidebarOpen, newChat, selectChat, deleteChat, setShowSettings, setShowHelp } = useApp();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
 
@@ -155,7 +155,7 @@ export default function Sidebar() {
       <div className="border-t border-slate-100 px-2 py-2 space-y-0.5">
         {[
           { icon: <Settings size={14} />, label: "Settings", id: "settings-btn", onClick: () => setShowSettings(true) },
-          { icon: <HelpCircle size={14} />, label: "Help", id: "help-btn", onClick: () => {} },
+          { icon: <HelpCircle size={14} />, label: "Help", id: "help-btn", onClick: () => setShowHelp(true) },
         ].map(({ icon, label, id, onClick }) => (
           <button
             key={id}

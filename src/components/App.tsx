@@ -4,12 +4,13 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import ChatCanvas from "./ChatCanvas";
 import SettingsPanel from "./SettingsPanel";
+import HelpPanel from "./HelpPanel";
 
 /**
  * Inner shell — separated so it can consume AppProvider context.
  */
 function AppShell() {
-  const { showSettings } = useApp();
+  const { showSettings, showHelp } = useApp();
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 font-sans">
       <Sidebar />
@@ -18,6 +19,7 @@ function AppShell() {
         <ChatCanvas />
       </div>
       {showSettings && <SettingsPanel />}
+      {showHelp && <HelpPanel />}
     </div>
   );
 }
