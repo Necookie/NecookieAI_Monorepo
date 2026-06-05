@@ -145,7 +145,9 @@ function SelectField({
 // ─── Main SettingsPanel ─────────────────────────────────────────────────────
 
 export default function SettingsPanel() {
-  const { setShowSettings, language, setLanguage } = useApp();
+  const setShowSettings = useAppStore(s => s.setShowSettings);
+  const language = useAppStore(s => s.language);
+  const setLanguage = useAppStore(s => s.setLanguage);
   const t = getTranslations(language).settings;
   const { signOut } = useClerk();
 

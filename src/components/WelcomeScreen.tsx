@@ -17,7 +17,7 @@
 import React from "react";
 import { Pencil, Code2, FileText, Lightbulb } from "lucide-react";
 import { SUGGESTION_PROMPTS } from "../lib/store";
-import { useApp } from "../lib/context";
+import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
 
 const iconMap = {
@@ -30,7 +30,8 @@ const iconMap = {
 type IconKey = keyof typeof iconMap;
 
 export default function WelcomeScreen() {
-  const { sendMessage, language } = useApp();
+  const sendMessage = useAppStore(s => s.sendMessage);
+  const language = useAppStore(s => s.language);
   const t = getTranslations(language).welcome;
 
   return (

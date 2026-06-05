@@ -15,7 +15,7 @@
  */
 
 import React from "react";
-import { AppProvider, useApp } from "../lib/context";
+import { AppProvider, useAppStore } from "../lib/context";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import ChatCanvas from "./ChatCanvas";
@@ -26,7 +26,8 @@ import HelpPanel from "./HelpPanel";
  * Inner shell — separated so it can consume AppProvider context.
  */
 function AppShell() {
-  const { showSettings, showHelp } = useApp();
+  const showSettings = useAppStore(s => s.showSettings);
+  const showHelp = useAppStore(s => s.showHelp);
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 font-sans">
       <Sidebar />

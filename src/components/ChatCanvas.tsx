@@ -16,14 +16,20 @@
 
 import React, { useRef, useEffect } from "react";
 import { AlertCircle, X } from "lucide-react";
-import { useApp } from "../lib/context";
+import { useAppStore } from "../lib/context";
 import ChatMessage from "./ChatMessage";
 import WelcomeScreen from "./WelcomeScreen";
 import ChatInput from "./ChatInput";
 import { getTranslations } from "../lib/i18n";
 
 export default function ChatCanvas() {
-  const { activeChat, sendMessage, isStreaming, error, clearError, language } = useApp();
+  const activeChat = useAppStore(s => s.activeChat());
+  const sendMessage = useAppStore(s => s.sendMessage);
+  const isStreaming = useAppStore(s => s.isStreaming);
+  const error = useAppStore(s => s.error);
+  const clearError = useAppStore(s => s.clearError);
+  const language = useAppStore(s => s.language);
+  
   const t = getTranslations(language);
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);

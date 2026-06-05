@@ -99,7 +99,8 @@ function ShortcutRow({ label, keys }: { label: string; keys: string[] }) {
 // ─── Main HelpPanel ─────────────────────────────────────────────────────────
 
 export default function HelpPanel() {
-  const { setShowHelp, language } = useApp();
+  const setShowHelp = useAppStore(s => s.setShowHelp);
+  const language = useAppStore(s => s.language);
   const t = getTranslations(language).help;
 
   return (

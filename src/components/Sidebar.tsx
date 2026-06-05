@@ -25,12 +25,22 @@ import {
   MessageSquare,
   Trash2,
 } from "lucide-react";
-import { useApp } from "../lib/context";
+import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
 import { UserButton, useUser } from "@clerk/clerk-react";
 
 export default function Sidebar() {
-  const { chats, activeId, sidebarOpen, setSidebarOpen, newChat, selectChat, deleteChat, setShowSettings, setShowHelp, language } = useApp();
+  const chats = useAppStore(s => s.chats);
+  const activeId = useAppStore(s => s.activeId);
+  const sidebarOpen = useAppStore(s => s.sidebarOpen);
+  const setSidebarOpen = useAppStore(s => s.setSidebarOpen);
+  const newChat = useAppStore(s => s.newChat);
+  const selectChat = useAppStore(s => s.selectChat);
+  const deleteChat = useAppStore(s => s.deleteChat);
+  const setShowSettings = useAppStore(s => s.setShowSettings);
+  const setShowHelp = useAppStore(s => s.setShowHelp);
+  const language = useAppStore(s => s.language);
+  
   const t = getTranslations(language).sidebar;
   const { user } = useUser();
   const [searchQuery, setSearchQuery] = React.useState("");

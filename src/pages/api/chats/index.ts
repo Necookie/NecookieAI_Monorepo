@@ -32,9 +32,6 @@ export const GET: APIRoute = async (context) => {
     const allChats = await db.query.chats.findMany({
       where: eq(chats.userId, userId),
       orderBy: [desc(chats.createdAt)],
-      with: {
-        messages: true,
-      },
     });
 
     return new Response(JSON.stringify(allChats), {

@@ -14,48 +14,13 @@
  * limitations under the License.
  */
 
-import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from "react";
+import React, { useEffect } from "react";
+import { create } from "zustand";
 import type { Chat, Message, Model } from "./store";
 import { uid, deriveTitle, AVAILABLE_MODELS } from "./store";
 import type { Locale } from "./i18n";
 
-/* ─── Context shape ─── */
-interface AppCtx {
-  chats: Chat[];
-  activeId: string | null;
-  activeChat: Chat | null;
-  model: Model;
-  sidebarOpen: boolean;
-  setSidebarOpen: (v: boolean) => void;
-  showSettings: boolean;
-  setShowSettings: (v: boolean) => void;
-  showHelp: boolean;
-  setShowHelp: (v: boolean) => void;
-  language: Locale;
-  setLanguage: (l: Locale) => void;
-  setModel: (m: Model) => void;
-  newChat: () => void;
-  selectChat: (id: string) => void;
-  deleteChat: (id: string) => void;
-  sendMessage: (content: string) => Promise<void>;
-  isStreaming: boolean;
-  error: string | null;
-  clearError: () => void;
-}
-
-const Ctx = createContext<AppCtx | null>(null);
-
-export function useApp() {
-  const ctx = useContext(Ctx);
-  if (!ctx) throw new Error("useApp must be used inside AppProvider");
-  return ctx;
-}
-
-/* ─── Ollama NDJSON streaming helper ───────────────────────────────────────
- * The Necookie AI endpoint returns newline-delimited JSON (Ollama format).
- * Each line: { message: { role, content }, done: boolean }
- * We accumulate the `content` delta from each chunk and yield it.
- * ──────────────────────────────────────────────────────────────────────── */
+/* ─── Ollama NDJSON streaming helper ─── */
 async function streamNecookieAI(
   messages: Array<{ role: string; content: string }>,
   onChunk: (delta: string) => void,
@@ -83,7 +48,6 @@ async function streamNecookieAI(
   const decoder = new TextDecoder();
   let buffer = "";
 
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     if (signal.aborted) break;
 
@@ -92,9 +56,7 @@ async function streamNecookieAI(
 
     buffer += decoder.decode(value, { stream: true });
 
-    // Ollama sends one JSON object per line
     const lines = buffer.split("\n");
-    // Keep the last partial line in the buffer
     buffer = lines.pop() ?? "";
 
     for (const line of lines) {
@@ -104,7 +66,7 @@ async function streamNecookieAI(
         const chunk = JSON.parse(trimmed);
         const delta: string = chunk?.message?.content ?? "";
         if (delta) onChunk(delta);
-        if (chunk?.done) return; // final chunk
+        if (chunk?.done) return;
       } catch {
         // malformed line — skip
       }
@@ -112,60 +74,78 @@ async function streamNecookieAI(
   }
 }
 
-/* ─── Provider ─── */
-export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [chats, setChats] = useState<Chat[]>([]);
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const [model, setModel] = useState<Model>(AVAILABLE_MODELS[0]);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [showSettings, setShowSettings] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
-  const [language, setLanguage] = useState<Locale>("en");
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const abortRef = useRef<AbortController | null>(null);
-  // Keep a ref mirror of chats so we can read the latest state synchronously
-  const chatsRef = useRef(chats);
-  chatsRef.current = chats;
+/* ─── Zustand Store ─── */
+interface AppStore {
+  chats: Chat[];
+  activeId: string | null;
+  model: Model;
+  sidebarOpen: boolean;
+  showSettings: boolean;
+  showHelp: boolean;
+  language: Locale;
+  isStreaming: boolean;
+  error: string | null;
+  abortController: AbortController | null;
 
-  const activeChat = chats.find((c) => c.id === activeId) ?? null;
+  activeChat: () => Chat | null;
+  
+  setSidebarOpen: (v: boolean) => void;
+  setShowSettings: (v: boolean) => void;
+  setShowHelp: (v: boolean) => void;
+  setLanguage: (l: Locale) => void;
+  setModel: (m: Model) => void;
+  newChat: () => void;
+  selectChat: (id: string) => void;
+  deleteChat: (id: string) => void;
+  sendMessage: (content: string) => Promise<void>;
+  clearError: () => void;
+  
+  _fetchInitialData: () => Promise<void>;
+  _fetchMessages: (chatId: string) => Promise<void>;
+}
 
-  const clearError = useCallback(() => setError(null), []);
+export const useAppStore = create<AppStore>((set, get) => ({
+  chats: [],
+  activeId: null,
+  model: AVAILABLE_MODELS[0],
+  sidebarOpen: true,
+  showSettings: false,
+  showHelp: false,
+  language: "en",
+  isStreaming: false,
+  error: null,
+  abortController: null,
 
-  // Restore chats and settings from Turso on mount
-  useEffect(() => {
-    // 1. Fetch chats
-    fetch("/api/chats")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setChats(data);
-          if (data.length > 0) {
-            setActiveId(data[0].id);
-          }
-        }
-      })
-      .catch((err) => {
-        console.error("Error fetching chats from DB:", err);
-        setError("Failed to load chat history.");
-      });
+  activeChat: () => {
+    const { chats, activeId } = get();
+    return chats.find((c) => c.id === activeId) ?? null;
+  },
 
-    // 2. Fetch settings
-    fetch("/api/settings")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.language) setLanguage(data.language as Locale);
-        if (data.model) {
-          const found = AVAILABLE_MODELS.find((m) => m.id === data.model);
-          if (found) setModel(found);
-        }
-      })
-      .catch((err) => {
-        console.error("Error fetching settings from DB:", err);
-      });
-  }, []);
+  setSidebarOpen: (v) => set({ sidebarOpen: v }),
+  setShowSettings: (v) => set({ showSettings: v }),
+  setShowHelp: (v) => set({ showHelp: v }),
+  
+  setLanguage: (l) => {
+    set({ language: l });
+    fetch("/api/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ language: l }),
+    }).catch(console.error);
+  },
 
-  const newChat = useCallback(async () => {
+  setModel: (m) => {
+    set({ model: m });
+    fetch("/api/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model: m.id }),
+    }).catch(console.error);
+  },
+
+  clearError: () => set({ error: null }),
+
+  newChat: async () => {
     const id = uid();
     const chat: Chat = {
       id,
@@ -178,217 +158,250 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       await fetch("/api/chats", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(chat),
+        body: JSON.stringify({ id, title: chat.title, createdAt: chat.createdAt }),
       });
-      setChats((prev) => [chat, ...prev]);
-      setActiveId(id);
+      set((state) => ({ chats: [chat, ...state.chats], activeId: id }));
     } catch (err) {
       console.error("Failed to create chat in DB:", err);
-      setError("Failed to create chat session.");
+      set({ error: "Failed to create chat session." });
     }
-  }, []);
+  },
 
-  const selectChat = useCallback((id: string) => setActiveId(id), []);
+  selectChat: async (id) => {
+    set({ activeId: id });
+    await get()._fetchMessages(id);
+  },
 
-  const deleteChat = useCallback(
-    async (id: string) => {
-      try {
-        await fetch(`/api/chats/delete?id=${id}`, {
-          method: "DELETE",
-        });
-        setChats((prev) => prev.filter((c) => c.id !== id));
-        if (activeId === id) setActiveId(null);
-      } catch (err) {
-        console.error("Failed to delete chat in DB:", err);
-        setError("Failed to delete chat.");
+  deleteChat: async (id) => {
+    try {
+      await fetch(`/api/chats/delete?id=${id}`, { method: "DELETE" });
+      set((state) => ({
+        chats: state.chats.filter((c) => c.id !== id),
+        activeId: state.activeId === id ? null : state.activeId,
+      }));
+    } catch (err) {
+      console.error("Failed to delete chat in DB:", err);
+      set({ error: "Failed to delete chat." });
+    }
+  },
+
+  _fetchInitialData: async () => {
+    try {
+      const [chatsRes, settingsRes] = await Promise.all([
+        fetch("/api/chats"),
+        fetch("/api/settings")
+      ]);
+
+      if (chatsRes.ok) {
+        const data = await chatsRes.json();
+        if (Array.isArray(data)) {
+          // Initialize with empty messages since backend now omits them
+          const chatsWithEmptyMsgs = data.map(c => ({ ...c, messages: c.messages || [] }));
+          set({ chats: chatsWithEmptyMsgs });
+          if (data.length > 0) {
+            get().selectChat(data[0].id);
+          }
+        }
+      } else {
+        set({ error: "Failed to load chat history." });
       }
-    },
-    [activeId]
-  );
 
-  const changeLanguage = useCallback((l: Locale) => {
-    setLanguage(l);
-    fetch("/api/settings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ language: l }),
-    }).catch((err) => console.error("Error saving language setting:", err));
-  }, []);
+      if (settingsRes.ok) {
+        const data = await settingsRes.json();
+        if (data.language) set({ language: data.language as Locale });
+        if (data.model) {
+          const found = AVAILABLE_MODELS.find((m) => m.id === data.model);
+          if (found) set({ model: found });
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching initial data:", err);
+      set({ error: "Failed to load initial data." });
+    }
+  },
 
-  const changeModel = useCallback((m: Model) => {
-    setModel(m);
-    fetch("/api/settings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: m.id }),
-    }).catch((err) => console.error("Error saving model setting:", err));
-  }, []);
+  _fetchMessages: async (chatId: string) => {
+    const { chats } = get();
+    const chat = chats.find(c => c.id === chatId);
+    // If we already have messages loaded, no need to re-fetch unless they are empty
+    // But since empty could mean a new chat, we verify if it's already populated
+    // To be safe and simple, we fetch if messages.length === 0 and it's not a brand new inline chat
+    // For optimal perf, we can just fetch every time we select if we want to ensure freshness,
+    // or cache them. We'll cache them and only fetch if empty.
+    if (chat && chat.messages && chat.messages.length > 0) return;
 
-  const sendMessage = useCallback(
-    async (content: string) => {
-      if (!content.trim() || isStreaming) return;
+    try {
+      const res = await fetch(`/api/chats/${chatId}/messages`);
+      if (res.ok) {
+        const messages = await res.json();
+        set(state => ({
+          chats: state.chats.map(c => c.id === chatId ? { ...c, messages } : c)
+        }));
+      }
+    } catch (err) {
+      console.error("Error fetching messages for chat", chatId, err);
+    }
+  },
 
-      setError(null);
+  sendMessage: async (content) => {
+    const { isStreaming, activeId, chats } = get();
+    if (!content.trim() || isStreaming) return;
 
-      // Abort any prior stream
-      abortRef.current?.abort();
-      const abort = new AbortController();
-      abortRef.current = abort;
+    set({ error: null });
 
-      const userMsg: Message = {
-        id: uid(),
-        role: "user",
-        content: content.trim(),
-        timestamp: new Date().toISOString(),
+    // Abort prior
+    const prevAbort = get().abortController;
+    prevAbort?.abort();
+    const abort = new AbortController();
+    set({ abortController: abort });
+
+    const userMsg: Message = {
+      id: uid(),
+      role: "user",
+      content: content.trim(),
+      timestamp: new Date().toISOString(),
+    };
+
+    let targetId = activeId;
+    let targetChatTitle = "New Chat";
+
+    if (!targetId) {
+      const newId = uid();
+      targetId = newId;
+      targetChatTitle = deriveTitle(content);
+      const newC: Chat = {
+        id: newId,
+        title: targetChatTitle,
+        messages: [userMsg],
+        createdAt: new Date().toISOString(),
       };
 
-      // Resolve (or create) the target chat
-      let targetId = activeId;
-      let targetChatTitle = "New Chat";
-
-      if (!targetId) {
-        // No active chat — create one inline first
-        const newId = uid();
-        targetId = newId;
+      try {
+        await fetch("/api/chats", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: newId, title: targetChatTitle, createdAt: newC.createdAt }),
+        });
+        set(state => ({ chats: [newC, ...state.chats], activeId: newId }));
+      } catch (err) {
+        set({ error: "Failed to start chat session." });
+        return;
+      }
+    } else {
+      const currentChat = chats.find((c) => c.id === targetId);
+      if (currentChat && (!currentChat.messages || currentChat.messages.length === 0)) {
         targetChatTitle = deriveTitle(content);
-        const newC: Chat = {
-          id: newId,
-          title: targetChatTitle,
-          messages: [userMsg],
-          createdAt: new Date().toISOString(),
-        };
-
         try {
           await fetch("/api/chats", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newC),
+            body: JSON.stringify({
+              id: targetId,
+              title: targetChatTitle,
+              createdAt: currentChat.createdAt,
+            }),
           });
-          setChats((prev) => [newC, ...prev]);
-          setActiveId(newId);
+          set(state => ({
+            chats: state.chats.map((c) => (c.id === targetId ? { ...c, title: targetChatTitle } : c))
+          }));
         } catch (err) {
-          console.error("Failed to initialize chat in DB:", err);
-          setError("Failed to start chat session.");
-          return;
-        }
-      } else {
-        // Appending to an existing chat. Check if title needs updating (if first message)
-        const currentChat = chatsRef.current.find((c) => c.id === targetId);
-        if (currentChat && currentChat.messages.length === 0) {
-          targetChatTitle = deriveTitle(content);
-          try {
-            await fetch("/api/chats", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                id: targetId,
-                title: targetChatTitle,
-                createdAt: currentChat.createdAt,
-              }),
-            });
-            setChats((prev) =>
-              prev.map((c) => (c.id === targetId ? { ...c, title: targetChatTitle } : c))
-            );
-          } catch (err) {
-            console.error("Failed to update chat title in DB:", err);
-          }
+          console.error("Failed to update chat title in DB:", err);
         }
       }
+      
+      // Opt UI: add user msg immediately
+      set(state => ({
+        chats: state.chats.map(c => c.id === targetId ? {
+          ...c,
+          messages: [...(c.messages || []).filter(m => m.id !== userMsg.id), userMsg]
+        } : c)
+      }));
+    }
 
-      // Save user message to database
-      try {
+    try {
+      await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: userMsg.id,
+          chatId: targetId,
+          role: userMsg.role,
+          content: userMsg.content,
+          timestamp: userMsg.timestamp,
+        }),
+      });
+    } catch (err) {
+      set({ error: "Failed to save message." });
+      return;
+    }
+
+    const assistantId = uid();
+    const assistantMsgTimestamp = new Date().toISOString();
+    set(state => ({
+      chats: state.chats.map((c) =>
+        c.id === targetId ? {
+          ...c,
+          messages: [
+            ...(c.messages || []),
+            {
+              id: assistantId,
+              role: "assistant" as const,
+              content: "",
+              timestamp: assistantMsgTimestamp,
+              streaming: true,
+            },
+          ],
+        } : c
+      ),
+      isStreaming: true
+    }));
+
+    const currentChatState = get().chats.find((c) => c.id === targetId);
+    const priorMsgs = (currentChatState?.messages ?? [])
+      .filter((m) => m.id !== assistantId && m.content)
+      .map((m) => ({ role: m.role, content: m.content }));
+    
+    const hasUserMsg = priorMsgs.some((m) => m.content === userMsg.content && m.role === "user");
+    const historySnapshot = hasUserMsg ? priorMsgs : [...priorMsgs, { role: userMsg.role, content: userMsg.content }];
+
+    let accumulatedText = "";
+
+    try {
+      await streamNecookieAI(
+        historySnapshot,
+        (delta) => {
+          accumulatedText += delta;
+          set(state => ({
+            chats: state.chats.map((c) =>
+              c.id === targetId ? {
+                ...c,
+                messages: (c.messages || []).map((m) =>
+                  m.id === assistantId ? { ...m, content: accumulatedText } : m
+                ),
+              } : c
+            )
+          }));
+        },
+        abort.signal
+      );
+
+      if (accumulatedText.trim()) {
         await fetch("/api/messages", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            id: userMsg.id,
+            id: assistantId,
             chatId: targetId,
-            role: userMsg.role,
-            content: userMsg.content,
-            timestamp: userMsg.timestamp,
+            role: "assistant",
+            content: accumulatedText,
+            timestamp: assistantMsgTimestamp,
           }),
         });
-
-        // Update UI state for user message
-        setChats((prev) =>
-          prev.map((c) => {
-            if (c.id !== targetId) return c;
-            return {
-              ...c,
-              messages: [...c.messages.filter((m) => m.id !== userMsg.id), userMsg],
-            };
-          })
-        );
-      } catch (err) {
-        console.error("Failed to save user message in DB:", err);
-        setError("Failed to save message.");
-        return;
       }
-
-      // Add empty assistant placeholder message
-      const assistantId = uid();
-      const assistantMsgTimestamp = new Date().toISOString();
-      setChats((prev) =>
-        prev.map((c) =>
-          c.id === targetId
-            ? {
-                ...c,
-                messages: [
-                  ...c.messages,
-                  {
-                    id: assistantId,
-                    role: "assistant" as const,
-                    content: "",
-                    timestamp: assistantMsgTimestamp,
-                    streaming: true,
-                  },
-                ],
-              }
-            : c
-        )
-      );
-
-      setIsStreaming(true);
-
-      // Build message history to send to LLM
-      const chatSnapshot = chatsRef.current.find((c) => c.id === targetId);
-      const priorMsgs = (chatSnapshot?.messages ?? [])
-        .filter((m) => m.id !== assistantId && m.content)
-        .map((m) => ({ role: m.role, content: m.content }));
-      
-      const hasUserMsg = priorMsgs.some((m) => m.content === userMsg.content && m.role === "user");
-      const historySnapshot = hasUserMsg
-        ? priorMsgs
-        : [...priorMsgs, { role: userMsg.role, content: userMsg.content }];
-
-      let accumulatedText = "";
-
-      try {
-        await streamNecookieAI(
-          historySnapshot,
-          (delta) => {
-            accumulatedText += delta;
-            setChats((prev) =>
-              prev.map((c) =>
-                c.id === targetId
-                  ? {
-                      ...c,
-                      messages: c.messages.map((m) =>
-                        m.id === assistantId
-                          ? { ...m, content: accumulatedText }
-                          : m
-                      ),
-                    }
-                  : c
-              )
-            );
-          },
-          abort.signal
-        );
-
-        // Save assistant response to database on successful stream completion
+    } catch (err) {
+      if ((err as Error).name === "AbortError") {
         if (accumulatedText.trim()) {
-          await fetch("/api/messages", {
+          fetch("/api/messages", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -398,85 +411,55 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               content: accumulatedText,
               timestamp: assistantMsgTimestamp,
             }),
-          });
+          }).catch(console.error);
         }
-      } catch (err) {
-        if ((err as Error).name === "AbortError") {
-          // User stopped the stream - save whatever was generated so far
-          if (accumulatedText.trim()) {
-            await fetch("/api/messages", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                id: assistantId,
-                chatId: targetId,
-                role: "assistant",
-                content: accumulatedText,
-                timestamp: assistantMsgTimestamp,
-              }),
-            }).catch((dbErr) => console.error("Failed to save partial AI message:", dbErr));
-          }
-        } else {
-          const message = err instanceof Error ? err.message : "Unknown error from AI.";
-          setError(message);
-          // Remove assistant placeholder on error
-          setChats((prev) =>
-            prev.map((c) =>
-              c.id === targetId
-                ? {
-                    ...c,
-                    messages: c.messages.filter((m) => m.id !== assistantId),
-                  }
-                : c
-            )
-          );
-        }
-      } finally {
-        // Mark stream complete
-        setChats((prev) =>
-          prev.map((c) =>
-            c.id === targetId
-              ? {
-                  ...c,
-                  messages: c.messages.map((m) =>
-                    m.id === assistantId ? { ...m, streaming: false } : m
-                  ),
-                }
-              : c
+      } else {
+        const message = err instanceof Error ? err.message : "Unknown error from AI.";
+        set(state => ({
+          error: message,
+          chats: state.chats.map((c) =>
+            c.id === targetId ? {
+              ...c,
+              messages: (c.messages || []).filter((m) => m.id !== assistantId),
+            } : c
           )
-        );
-        setIsStreaming(false);
+        }));
       }
-    },
-    [activeId, isStreaming]
-  );
+    } finally {
+      set(state => ({
+        isStreaming: false,
+        chats: state.chats.map((c) =>
+          c.id === targetId ? {
+            ...c,
+            messages: (c.messages || []).map((m) =>
+              m.id === assistantId ? { ...m, streaming: false } : m
+            ),
+          } : c
+        )
+      }));
+    }
+  },
+}));
 
-  return (
-    <Ctx.Provider
-      value={{
-        chats,
-        activeId,
-        activeChat,
-        model,
-        sidebarOpen,
-        setSidebarOpen,
-        showSettings,
-        setShowSettings,
-        showHelp,
-        setShowHelp,
-        language: language,
-        setLanguage: changeLanguage,
-        setModel: changeModel,
-        newChat,
-        selectChat,
-        deleteChat,
-        sendMessage,
-        isStreaming,
-        error,
-        clearError,
-      }}
-    >
-      {children}
-    </Ctx.Provider>
-  );
+/* ─── Provider Component ─── */
+// We keep AppProvider to handle initial data fetching on mount.
+// We export useApp which returns a proxy to useAppStore so existing code doesn't break entirely, 
+// though refactoring components to use `useAppStore` directly is ideal for performance.
+export function AppProvider({ children }: { children: React.ReactNode }) {
+  const fetchInitialData = useAppStore(s => s._fetchInitialData);
+
+  useEffect(() => {
+    fetchInitialData();
+  }, [fetchInitialData]);
+
+  return <>{children}</>;
+}
+
+// Backward compatibility hook:
+export function useApp() {
+  const store = useAppStore();
+  return {
+    ...store,
+    activeChat: store.activeChat()
+  };
 }

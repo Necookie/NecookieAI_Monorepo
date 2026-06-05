@@ -16,13 +16,17 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, Sun, Moon } from "lucide-react";
-import { useApp } from "../lib/context";
+import { useAppStore } from "../lib/context";
 import { AVAILABLE_MODELS } from "../lib/store";
 import type { Model } from "../lib/store";
 import { getTranslations } from "../lib/i18n";
 
 export default function Header() {
-  const { activeChat, model, setModel, language } = useApp();
+  const activeChat = useAppStore(s => s.activeChat());
+  const model = useAppStore(s => s.model);
+  const setModel = useAppStore(s => s.setModel);
+  const language = useAppStore(s => s.language);
+  
   const t = getTranslations(language).header;
   const [modelOpen, setModelOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
