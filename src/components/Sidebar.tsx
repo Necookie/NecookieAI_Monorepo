@@ -12,7 +12,7 @@ import {
 import { useApp } from "../lib/context";
 
 export default function Sidebar() {
-  const { chats, activeId, sidebarOpen, setSidebarOpen, newChat, selectChat, deleteChat } = useApp();
+  const { chats, activeId, sidebarOpen, setSidebarOpen, newChat, selectChat, deleteChat, setShowSettings } = useApp();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
 
@@ -154,12 +154,13 @@ export default function Sidebar() {
       {/* ─── Footer ─── */}
       <div className="border-t border-slate-100 px-2 py-2 space-y-0.5">
         {[
-          { icon: <Settings size={14} />, label: "Settings", id: "settings-btn" },
-          { icon: <HelpCircle size={14} />, label: "Help", id: "help-btn" },
-        ].map(({ icon, label, id }) => (
+          { icon: <Settings size={14} />, label: "Settings", id: "settings-btn", onClick: () => setShowSettings(true) },
+          { icon: <HelpCircle size={14} />, label: "Help", id: "help-btn", onClick: () => {} },
+        ].map(({ icon, label, id, onClick }) => (
           <button
             key={id}
             id={id}
+            onClick={onClick}
             className={[
               "flex items-center gap-2 w-full rounded-[6px] text-slate-500 hover:bg-slate-100 hover:text-slate-700 text-sm transition-colors",
               sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
