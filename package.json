@@ -1,7 +1,7 @@
 {
   "name": "necookie-ai",
   "type": "module",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "engines": {
     "node": ">=22.12.0"
   },
@@ -26,11 +26,13 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.1",
     "remark-gfm": "^4.0.1",
     "tailwindcss": "^4.3.0",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@types/react-syntax-highlighter": "^15.5.13",
     "drizzle-kit": "^0.31.10"
   }
 }
