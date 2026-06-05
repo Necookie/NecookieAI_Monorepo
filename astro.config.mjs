@@ -16,7 +16,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
     server: {
       watch: {
-        ignored: ['**/*.db', '**/*.db-*', '**/*.sqlite', '**/*.sqlite-*']
+        ignored: ['**/*.db', '**/*.db-*', '**/*.sqlite', '**/*.sqlite-*', '**/.data/**']
       }
     }
   },

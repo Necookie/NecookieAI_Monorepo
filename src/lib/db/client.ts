@@ -17,6 +17,8 @@
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
+import fs from "fs";
+import path from "path";
 
 const url = import.meta.env.TURSO_DATABASE_URL || process.env.TURSO_DATABASE_URL;
 const authToken = import.meta.env.TURSO_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN;
@@ -29,10 +31,21 @@ const isLocalFile = url.startsWith("file:");
 
 // Use embedded replica if the URL is a remote Turso DB.
 // This requires persistent local disk storage (e.g. VPS or Docker, not Vercel/Netlify Serverless).
+if (!isLocalFile) {
+  try {
+    const dataDir = path.join(process.cwd(), ".data");
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+  } catch (err) {
+    console.error("Failed to create .data directory for local replica:", err);
+  }
+}
+
 const clientConfig = isLocalFile
   ? { url, authToken }
   : {
-      url: "file:local-replica.db",
+      url: "file:.data/local-replica.db",
       syncUrl: url,
       authToken,
       syncInterval: 60, // Auto sync every 60 seconds
