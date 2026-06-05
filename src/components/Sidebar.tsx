@@ -194,19 +194,49 @@ export default function Sidebar() {
         {user && (
           <div
             className={[
-              "flex items-center gap-2.5 border-t border-slate-100 mt-2 pt-2.5 px-1.5",
-              sidebarOpen ? "justify-start" : "justify-center",
+              "border border-slate-200 bg-slate-50 mt-3 rounded-[8px] transition-all duration-300 ease-in-out overflow-hidden",
+              sidebarOpen ? "p-3" : "p-1.5 flex justify-center"
             ].join(" ")}
           >
-            <UserButton afterSignOutUrl="/" />
-            {sidebarOpen && (
-              <div className="flex flex-col min-w-0">
-                <span className="text-[11px] font-semibold text-slate-700 truncate leading-tight">
-                  {user.fullName || user.username || user.primaryEmailAddress?.emailAddress}
-                </span>
-                <span className="text-[9px] text-slate-400 truncate leading-none mt-0.5">
-                  {user.primaryEmailAddress?.emailAddress}
-                </span>
+            {sidebarOpen ? (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span
+                    className="text-[9px] font-medium uppercase tracking-[0.12em] text-slate-400"
+                    style={{ fontFamily: '"JetBrains Mono", monospace' }}
+                  >
+                    [ user_session ]
+                  </span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-500" title="Connected" />
+                </div>
+                <div className="flex items-center gap-2.5 min-w-0 mt-1">
+                  <div className="flex-shrink-0 border border-slate-200 rounded-full p-0.5 bg-white">
+                    <UserButton afterSignOutUrl="/" appearance={{
+                      elements: {
+                        userButtonAvatarBox: "w-6 h-6",
+                      }
+                    }} />
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[11px] font-semibold text-slate-800 truncate leading-tight">
+                      {user.fullName || user.username || "User"}
+                    </span>
+                    <span
+                      className="text-[9px] text-slate-500 truncate leading-none mt-0.5"
+                      style={{ fontFamily: '"JetBrains Mono", monospace' }}
+                    >
+                      {user.primaryEmailAddress?.emailAddress}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center p-0.5 bg-white rounded-full border border-slate-200">
+                <UserButton afterSignOutUrl="/" appearance={{
+                  elements: {
+                    userButtonAvatarBox: "w-6 h-6",
+                  }
+                }} />
               </div>
             )}
           </div>

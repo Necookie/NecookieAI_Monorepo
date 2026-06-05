@@ -40,8 +40,10 @@ function AppShell() {
   );
 }
 
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-react";
 import SignInPage from "./SignInPage";
+
+const publishableKey = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 /**
  * Root application shell mounted as a single React island.
@@ -49,13 +51,15 @@ import SignInPage from "./SignInPage";
  */
 export default function App() {
   return (
-    <AppProvider>
-      <SignedIn>
-        <AppShell />
-      </SignedIn>
-      <SignedOut>
-        <SignInPage />
-      </SignedOut>
-    </AppProvider>
+    <ClerkProvider publishableKey={publishableKey}>
+      <AppProvider>
+        <SignedIn>
+          <AppShell />
+        </SignedIn>
+        <SignedOut>
+          <SignInPage />
+        </SignedOut>
+      </AppProvider>
+    </ClerkProvider>
   );
 }

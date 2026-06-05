@@ -15,12 +15,12 @@
  */
 
 import React from "react";
-import { SignInButton } from "@clerk/clerk-react";
+import { SignInButton, SignUpButton } from "@clerk/clerk-react";
 
 export default function SignInPage() {
   return (
     <div
-      className="flex items-center justify-center min-h-screen px-4 font-sans select-none"
+      className="flex items-center justify-center min-h-screen px-4 select-none"
       style={{ background: "#f8f9ff" }}
     >
       <div
@@ -29,25 +29,36 @@ export default function SignInPage() {
           boxShadow: "none",
         }}
       >
+        {/* Top Session Tag */}
+        <div className="text-center mb-4">
+          <span
+            className="text-[9px] uppercase tracking-[0.2em] font-medium text-slate-400"
+            style={{ fontFamily: '"JetBrains Mono", monospace' }}
+          >
+            [ AUTH.INIT_SESSION ]
+          </span>
+        </div>
+
         {/* Brand Header */}
         <div className="text-center mb-8">
           <h1
-            className="text-[26px] font-semibold tracking-tight text-slate-900"
+            className="text-[28px] font-semibold tracking-tight text-slate-900 leading-none"
             style={{ fontFamily: "Geist, sans-serif" }}
           >
             Necookie AI
           </h1>
-          <p className="mt-2 text-sm text-slate-500 font-normal leading-relaxed">
-            Your intelligence assistant for research, development, and creative engineering.
+          <p className="mt-3 text-xs text-slate-500 font-normal leading-relaxed max-w-[280px] mx-auto">
+            Clinical-grade intelligence interface for writing, development, and engineering operations.
           </p>
         </div>
 
-        {/* Action Button wrapper */}
-        <div className="space-y-3">
+        {/* Action Buttons */}
+        <div className="flex flex-col gap-3.5">
           <SignInButton mode="modal">
             <button
-              className="flex items-center justify-center w-full h-11 text-sm font-medium rounded-[6px] transition-all cursor-pointer"
+              className="flex items-center justify-center w-full h-11 text-xs font-medium rounded-[6px] tracking-wider uppercase transition-all duration-200 cursor-pointer"
               style={{
+                fontFamily: '"JetBrains Mono", monospace',
                 background: "#0b1c30",
                 color: "#ffffff",
                 border: "none",
@@ -59,18 +70,40 @@ export default function SignInPage() {
                 e.currentTarget.style.background = "#0b1c30";
               }}
             >
-              Sign In to Workspace
+              Sign In
             </button>
           </SignInButton>
+
+          <SignUpButton mode="modal">
+            <button
+              className="flex items-center justify-center w-full h-11 text-xs font-medium rounded-[6px] tracking-wider uppercase transition-all duration-200 cursor-pointer"
+              style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                background: "transparent",
+                color: "#475569",
+                border: "1px solid #cbd5e1",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "#0d9488";
+                e.currentTarget.style.color = "#0d9488";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#cbd5e1";
+                e.currentTarget.style.color = "#475569";
+              }}
+            >
+              Create Account
+            </button>
+          </SignUpButton>
         </div>
 
         {/* Footer info */}
-        <div className="mt-8 text-center">
+        <div className="mt-9 text-center">
           <span
-            className="text-[10px] uppercase tracking-wider font-medium text-slate-400"
+            className="text-[9px] uppercase tracking-wider font-medium text-slate-400"
             style={{ fontFamily: '"JetBrains Mono", monospace' }}
           >
-            Secured by Clerk
+            Secured via Clerk Gateway
           </span>
         </div>
       </div>
