@@ -10,9 +10,11 @@ import {
   Trash2,
 } from "lucide-react";
 import { useApp } from "../lib/context";
+import { getTranslations } from "../lib/i18n";
 
 export default function Sidebar() {
-  const { chats, activeId, sidebarOpen, setSidebarOpen, newChat, selectChat, deleteChat, setShowSettings, setShowHelp } = useApp();
+  const { chats, activeId, sidebarOpen, setSidebarOpen, newChat, selectChat, deleteChat, setShowSettings, setShowHelp, language } = useApp();
+  const t = getTranslations(language).sidebar;
   const [searchQuery, setSearchQuery] = React.useState("");
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
 
@@ -32,10 +34,10 @@ export default function Sidebar() {
         {sidebarOpen && (
           <div className="min-w-0">
             <p className="text-[11px] font-semibold tracking-wider text-slate-400 uppercase leading-none">
-              History
+              {t.history}
             </p>
             <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
-              Last 7 days
+              {t.lastSevenDays}
             </p>
           </div>
         )}
@@ -67,7 +69,7 @@ export default function Sidebar() {
           ].join(" ")}
         >
           <Plus size={15} className="flex-shrink-0 text-slate-500" />
-          {sidebarOpen && <span>New Chat</span>}
+          {sidebarOpen && <span>{t.newChat}</span>}
         </button>
       </div>
 
@@ -81,7 +83,7 @@ export default function Sidebar() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search Chat"
+              placeholder={t.searchChat}
               className="flex-1 bg-transparent text-sm text-slate-600 placeholder-slate-400 outline-none min-w-0"
             />
           </div>
@@ -92,7 +94,7 @@ export default function Sidebar() {
       <nav className="flex-1 overflow-y-auto py-1 px-2 mt-1">
         {sidebarOpen && (
           <p className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase px-3 py-1.5 mb-0.5">
-            Recent
+            {t.recent}
           </p>
         )}
         <ul className="space-y-0.5">
@@ -154,8 +156,8 @@ export default function Sidebar() {
       {/* ─── Footer ─── */}
       <div className="border-t border-slate-100 px-2 py-2 space-y-0.5">
         {[
-          { icon: <Settings size={14} />, label: "Settings", id: "settings-btn", onClick: () => setShowSettings(true) },
-          { icon: <HelpCircle size={14} />, label: "Help", id: "help-btn", onClick: () => setShowHelp(true) },
+          { icon: <Settings size={14} />, label: t.settings, id: "settings-btn", onClick: () => setShowSettings(true) },
+          { icon: <HelpCircle size={14} />, label: t.help, id: "help-btn", onClick: () => setShowHelp(true) },
         ].map(({ icon, label, id, onClick }) => (
           <button
             key={id}

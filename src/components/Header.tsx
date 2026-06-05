@@ -3,9 +3,11 @@ import { ChevronDown, Sun, Moon } from "lucide-react";
 import { useApp } from "../lib/context";
 import { AVAILABLE_MODELS } from "../lib/store";
 import type { Model } from "../lib/store";
+import { getTranslations } from "../lib/i18n";
 
 export default function Header() {
-  const { activeChat, model, setModel } = useApp();
+  const { activeChat, model, setModel, language } = useApp();
+  const t = getTranslations(language).header;
   const [modelOpen, setModelOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const dropRef = useRef<HTMLDivElement>(null);
@@ -42,7 +44,7 @@ export default function Header() {
             onClick={() => setModelOpen(!modelOpen)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-sm text-slate-600 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 transition-colors"
           >
-            <span className="font-medium">Model</span>
+            <span className="font-medium">{t.model}</span>
             <ChevronDown
               size={13}
               className={`text-slate-400 transition-transform duration-150 ${modelOpen ? "rotate-180" : ""}`}
@@ -52,7 +54,7 @@ export default function Header() {
           {modelOpen && (
             <div className="absolute right-0 top-full mt-1.5 w-52 bg-white border border-slate-200 rounded-[8px] shadow-lg shadow-slate-200/60 py-1 z-50">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 px-3 py-1.5">
-                Select Model
+                {t.selectModel}
               </p>
               {AVAILABLE_MODELS.map((m) => (
                 <button

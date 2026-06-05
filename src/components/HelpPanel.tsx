@@ -11,6 +11,7 @@ import {
   MessageSquareText,
 } from "lucide-react";
 import { useApp } from "../lib/context";
+import { getTranslations } from "../lib/i18n";
 
 // ─── Shared sub-components ──────────────────────────────────────────────────
 
@@ -66,13 +67,7 @@ function Kbd({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ShortcutRow({
-  label,
-  keys,
-}: {
-  label: string;
-  keys: string[];
-}) {
+function ShortcutRow({ label, keys }: { label: string; keys: string[] }) {
   return (
     <div className="flex items-center justify-between py-2 border-b border-slate-100 last:border-b-0">
       <span className="text-sm text-slate-600">{label}</span>
@@ -88,7 +83,8 @@ function ShortcutRow({
 // ─── Main HelpPanel ─────────────────────────────────────────────────────────
 
 export default function HelpPanel() {
-  const { setShowHelp } = useApp();
+  const { setShowHelp, language } = useApp();
+  const t = getTranslations(language).help;
 
   return (
     /* Backdrop */
@@ -109,11 +105,9 @@ export default function HelpPanel() {
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 flex-shrink-0">
           <div>
             <h2 className="text-base font-semibold text-slate-800 tracking-tight">
-              Help &amp; Documentation
+              {t.title}
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Everything you need to set up, use, and master Necookie AI.
-            </p>
+            <p className="text-xs text-slate-500 mt-0.5">{t.subtitle}</p>
           </div>
           <button
             id="help-close-btn"
@@ -130,45 +124,43 @@ export default function HelpPanel() {
 
           {/* ── Documentation ── */}
           <section className="pl-4 border-l-2 border-slate-200 hover:border-teal-400 transition-colors duration-300">
-            <SectionHeader icon={<BookOpen size={16} />} title="Documentation" />
+            <SectionHeader icon={<BookOpen size={16} />} title={t.documentation} />
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <DocCard
                 id="help-doc-getting-started"
                 icon={<RocketIcon size={20} />}
-                title="Getting Started"
-                description="Basic setup, authentication, and your first request."
+                title={t.gettingStarted}
+                description={t.gettingStartedDesc}
               />
               <DocCard
                 id="help-doc-api-reference"
                 icon={<Code2 size={20} />}
-                title="API Reference"
-                description="Detailed endpoints, parameters, and response structures."
+                title={t.apiReference}
+                description={t.apiReferenceDesc}
               />
               <DocCard
                 id="help-doc-best-practices"
                 icon={<BadgeCheck size={20} />}
-                title="Best Practices"
-                description="Optimize prompts, handle errors, and manage rate limits."
+                title={t.bestPractices}
+                description={t.bestPracticesDesc}
               />
             </div>
           </section>
 
           {/* ── Keyboard Shortcuts ── */}
           <section className="pl-4 border-l-2 border-slate-200 hover:border-teal-400 transition-colors duration-300">
-            <SectionHeader icon={<Keyboard size={16} />} title="Keyboard Shortcuts" />
+            <SectionHeader icon={<Keyboard size={16} />} title={t.keyboardShortcuts} />
             <div className="bg-slate-50 border border-slate-200 rounded-lg overflow-hidden">
               <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
-                {/* Left column */}
                 <div className="p-4">
-                  <ShortcutRow label="New Chat" keys={["⌘", "N"]} />
-                  <ShortcutRow label="Search Chats" keys={["⌘", "K"]} />
-                  <ShortcutRow label="Focus Input" keys={["/"]} />
+                  <ShortcutRow label={t.shortcutNewChat} keys={["⌘", "N"]} />
+                  <ShortcutRow label={t.shortcutSearchChats} keys={["⌘", "K"]} />
+                  <ShortcutRow label={t.shortcutFocusInput} keys={["/"]} />
                 </div>
-                {/* Right column */}
                 <div className="p-4">
-                  <ShortcutRow label="Toggle Sidebar" keys={["⌘", "\\"]} />
-                  <ShortcutRow label="Settings" keys={["⌘", ","]} />
-                  <ShortcutRow label="Clear Conversation" keys={["⌘", "⇧", "⌫"]} />
+                  <ShortcutRow label={t.shortcutToggleSidebar} keys={["⌘", "\\"]} />
+                  <ShortcutRow label={t.shortcutSettings} keys={["⌘", ","]} />
+                  <ShortcutRow label={t.shortcutClearConversation} keys={["⌘", "⇧", "⌫"]} />
                 </div>
               </div>
             </div>
@@ -176,21 +168,21 @@ export default function HelpPanel() {
 
           {/* ── Support ── */}
           <section className="pl-4 border-l-2 border-slate-200 hover:border-teal-400 transition-colors duration-300">
-            <SectionHeader icon={<Headphones size={16} />} title="Support" />
+            <SectionHeader icon={<Headphones size={16} />} title={t.support} />
             <div className="flex flex-wrap gap-3">
               <button
                 id="help-report-issue-btn"
                 className="flex items-center gap-2 bg-slate-800 text-white px-5 py-2.5 rounded-[6px] text-sm font-semibold hover:bg-slate-700 transition-colors"
               >
                 <BugPlay size={16} />
-                Report an Issue
+                {t.reportIssue}
               </button>
               <button
                 id="help-community-btn"
                 className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-[6px] text-sm font-semibold hover:border-slate-400 transition-colors"
               >
                 <MessageSquareText size={16} />
-                Join Community
+                {t.joinCommunity}
               </button>
             </div>
           </section>
@@ -203,7 +195,7 @@ export default function HelpPanel() {
             onClick={() => setShowHelp(false)}
             className="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-[6px] font-medium transition-colors"
           >
-            Close
+            {t.close}
           </button>
         </div>
       </div>

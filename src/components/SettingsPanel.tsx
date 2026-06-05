@@ -1,10 +1,22 @@
 import React, { useState } from "react";
 import { X, Sliders, Palette, Lock, ChevronDown, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { useApp } from "../lib/context";
+import { getTranslations } from "../lib/i18n";
+import type { Locale } from "../lib/i18n";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 type ThemeMode = "light" | "dark" | "system";
+
+// ─── Language options ────────────────────────────────────────────────────────
+
+const LANGUAGE_OPTIONS: { value: Locale; label: string }[] = [
+  { value: "en", label: "English (US)" },
+  { value: "es", label: "Español" },
+  { value: "fr", label: "Français" },
+  { value: "de", label: "Deutsch" },
+  { value: "ja", label: "日本語" },
+];
 
 // ─── Section wrapper ────────────────────────────────────────────────────────
 
@@ -116,11 +128,12 @@ function SelectField({
 // ─── Main SettingsPanel ─────────────────────────────────────────────────────
 
 export default function SettingsPanel() {
-  const { setShowSettings } = useApp();
+  const { setShowSettings, language, setLanguage } = useApp();
+  const t = getTranslations(language).settings;
 
-  // General
+  // General — local state, applied on Save
   const [defaultModel, setDefaultModel] = useState("pro");
-  const [outputLanguage, setOutputLanguage] = useState("en");
+  const [pendingLanguage, setPendingLanguage] = useState<Locale>(language);
 
   // Appearance
   const [theme, setTheme] = useState<ThemeMode>("light");
@@ -132,7 +145,12 @@ export default function SettingsPanel() {
   const [apiKeyStatus, setApiKeyStatus] = useState<"active" | "idle">("active");
 
   function handleSave() {
-    // TODO: persist settings
+    setLanguage(pendingLanguage); // ← apply language change globally
+    setShowSettings(false);
+  }
+
+  function handleCancel() {
+    setPendingLanguage(language); // reset pending selection
     setShowSettings(false);
   }
 
@@ -142,28 +160,26 @@ export default function SettingsPanel() {
       id="settings-backdrop"
       className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-[2px] flex items-center justify-center p-4"
       onClick={(e) => {
-        if (e.target === e.currentTarget) setShowSettings(false);
+        if (e.target === e.currentTarget) handleCancel();
       }}
     >
       {/* Panel */}
       <div
         id="settings-panel"
-        className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-xl shadow-2xl shadow-slate-300/40 border border-slate-200 flex flex-col overflow-hidden animate-in"
+        className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-xl shadow-2xl shadow-slate-300/40 border border-slate-200 flex flex-col overflow-hidden"
         style={{ animation: "settingsFadeIn 0.18s ease-out" }}
       >
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 flex-shrink-0">
           <div>
             <h2 className="text-base font-semibold text-slate-800 tracking-tight">
-              Preferences
+              {t.title}
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Manage model configuration, interface appearance, and security credentials.
-            </p>
+            <p className="text-xs text-slate-500 mt-0.5">{t.subtitle}</p>
           </div>
           <button
             id="settings-close-btn"
-            onClick={() => setShowSettings(false)}
+            onClick={handleCancel}
             className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors ml-4 flex-shrink-0"
             aria-label="Close settings"
           >
@@ -175,11 +191,8 @@ export default function SettingsPanel() {
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
 
           {/* ── General ── */}
-          <Section icon={<Sliders size={15} />} title="General">
-            <SettingRow
-              label="Default Model"
-              description="Select the primary model for new conversations."
-            >
+          <Section icon={<Sliders size={15} />} title={t.general}>
+            <SettingRow label={t.defaultModel} description={t.defaultModelDesc}>
               <SelectField
                 id="settings-default-model"
                 value={defaultModel}
@@ -194,56 +207,48 @@ export default function SettingsPanel() {
 
             <hr className="border-slate-200" />
 
-            <SettingRow
-              label="Output Language"
-              description="Preferred language for AI responses."
-            >
+            <SettingRow label={t.outputLanguage} description={t.outputLanguageDesc}>
               <SelectField
                 id="settings-output-language"
-                value={outputLanguage}
-                onChange={setOutputLanguage}
-                options={[
-                  { value: "en", label: "English (US)" },
-                  { value: "es", label: "Español" },
-                  { value: "fr", label: "Français" },
-                  { value: "de", label: "Deutsch" },
-                  { value: "ja", label: "日本語" },
-                ]}
+                value={pendingLanguage}
+                onChange={(v) => setPendingLanguage(v as Locale)}
+                options={LANGUAGE_OPTIONS}
               />
             </SettingRow>
           </Section>
 
           {/* ── Appearance ── */}
-          <Section icon={<Palette size={15} />} title="Appearance">
-            <SettingRow
-              label="Interface Theme"
-              description="Customize the visual appearance of the app."
-            >
+          <Section icon={<Palette size={15} />} title={t.appearance}>
+            <SettingRow label={t.interfaceTheme} description={t.interfaceThemeDesc}>
               <div className="flex bg-white border border-slate-200 rounded-[6px] p-0.5 gap-0.5">
-                {(["light", "dark", "system"] as ThemeMode[]).map((t) => (
-                  <button
-                    key={t}
-                    id={`settings-theme-${t}`}
-                    onClick={() => setTheme(t)}
-                    className={[
-                      "px-3 py-1.5 rounded-[4px] text-xs font-medium transition-colors capitalize",
-                      theme === t
-                        ? "bg-teal-50 text-teal-700 border border-teal-200"
-                        : "text-slate-500 hover:text-slate-700 hover:bg-slate-50",
-                    ].join(" ")}
-                  >
-                    {t}
-                  </button>
-                ))}
+                {(["light", "dark", "system"] as ThemeMode[]).map((mode) => {
+                  const labels: Record<ThemeMode, string> = {
+                    light: t.light,
+                    dark: t.dark,
+                    system: t.system,
+                  };
+                  return (
+                    <button
+                      key={mode}
+                      id={`settings-theme-${mode}`}
+                      onClick={() => setTheme(mode)}
+                      className={[
+                        "px-3 py-1.5 rounded-[4px] text-xs font-medium transition-colors",
+                        theme === mode
+                          ? "bg-teal-50 text-teal-700 border border-teal-200"
+                          : "text-slate-500 hover:text-slate-700 hover:bg-slate-50",
+                      ].join(" ")}
+                    >
+                      {labels[mode]}
+                    </button>
+                  );
+                })}
               </div>
             </SettingRow>
 
             <hr className="border-slate-200" />
 
-            <SettingRow
-              label="Compact Mode"
-              description="Reduce spacing in chat interface for higher information density."
-            >
+            <SettingRow label={t.compactMode} description={t.compactModeDesc}>
               <Toggle
                 id="settings-compact-mode"
                 checked={compactMode}
@@ -253,15 +258,13 @@ export default function SettingsPanel() {
           </Section>
 
           {/* ── Security ── */}
-          <Section icon={<Lock size={15} />} title="Security">
+          <Section icon={<Lock size={15} />} title={t.security}>
             <div className="flex flex-col gap-3">
               <div>
                 <p className="text-xs font-semibold text-slate-700 mb-0.5 uppercase tracking-wide font-mono">
-                  API Key Configuration
+                  {t.apiKeyConfig}
                 </p>
-                <p className="text-sm text-slate-500 leading-snug">
-                  Provide your custom API key to unlock extended rate limits and enterprise features.
-                </p>
+                <p className="text-sm text-slate-500 leading-snug">{t.apiKeyDesc}</p>
               </div>
               <div className="flex gap-2 w-full">
                 <div className="relative flex-1">
@@ -294,16 +297,14 @@ export default function SettingsPanel() {
                   onClick={() => setApiKeyStatus("active")}
                   className="px-4 py-2 bg-slate-800 text-white hover:bg-slate-700 rounded-[6px] text-xs font-semibold transition-colors flex-shrink-0"
                 >
-                  Update
+                  {t.update}
                 </button>
               </div>
 
               {apiKeyStatus === "active" && (
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 size={14} className="text-teal-500 flex-shrink-0" />
-                  <span className="text-xs text-teal-600 font-medium">
-                    Key is active and validated
-                  </span>
+                  <span className="text-xs text-teal-600 font-medium">{t.keyActive}</span>
                 </div>
               )}
             </div>
@@ -314,17 +315,17 @@ export default function SettingsPanel() {
         <div className="flex justify-end px-6 py-4 border-t border-slate-200 gap-2 flex-shrink-0 bg-white">
           <button
             id="settings-cancel-btn"
-            onClick={() => setShowSettings(false)}
+            onClick={handleCancel}
             className="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-[6px] font-medium transition-colors"
           >
-            Cancel
+            {t.cancel}
           </button>
           <button
             id="settings-save-btn"
             onClick={handleSave}
             className="px-5 py-2 bg-slate-800 text-white hover:bg-slate-700 rounded-[6px] text-sm font-semibold transition-colors shadow-sm"
           >
-            Save Changes
+            {t.saveChanges}
           </button>
         </div>
       </div>

@@ -4,9 +4,11 @@ import { useApp } from "../lib/context";
 import ChatMessage from "./ChatMessage";
 import WelcomeScreen from "./WelcomeScreen";
 import ChatInput from "./ChatInput";
+import { getTranslations } from "../lib/i18n";
 
 export default function ChatCanvas() {
-  const { activeChat, sendMessage, isStreaming, error, clearError } = useApp();
+  const { activeChat, sendMessage, isStreaming, error, clearError, language } = useApp();
+  const t = getTranslations(language);
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -60,7 +62,7 @@ export default function ChatCanvas() {
       {/* Input area */}
       <div className="flex-shrink-0 border-t border-slate-200 bg-white">
         <div className="max-w-[760px] mx-auto px-6 py-3">
-          <ChatInput onSend={sendMessage} isStreaming={isStreaming} />
+          <ChatInput onSend={sendMessage} isStreaming={isStreaming} placeholder={t.chat.placeholder} />
           <p className="text-center text-[11px] text-slate-400 mt-2">
             Necookie AI can make mistakes. Verify important info.
           </p>
