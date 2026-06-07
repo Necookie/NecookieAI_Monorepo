@@ -17,7 +17,9 @@ export default function FolderModal({ initialFolder, onClose, onSave }: FolderMo
       inputRef.current.focus();
       inputRef.current.select();
     }
+  }, []);
 
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
       if (e.key === "Enter") onSave(folderName);
