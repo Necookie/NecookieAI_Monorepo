@@ -1,13 +1,12 @@
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
+import cloudflare from '@astrojs/cloudflare';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import clerk from '@clerk/astro';
 
 // https://astro.build/config
 export default defineConfig({
-  // Node adapter required for server-rendered API routes
-  adapter: node({ mode: 'standalone' }),
+  adapter: cloudflare(),
   output: 'server',
 
   integrations: [react(), clerk()],
