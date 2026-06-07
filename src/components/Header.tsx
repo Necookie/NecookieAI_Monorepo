@@ -116,13 +116,13 @@ export default function Header() {
         <button
           id="theme-toggle-btn"
           onClick={() => {
-            const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+            const isDark = theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches);
             setTheme(isDark ? "light" : "dark");
           }}
           className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           aria-label="Toggle theme"
         >
-          {theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches) ? (
+          {theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches) ? (
             <Sun size={15} />
           ) : (
             <Moon size={15} />
