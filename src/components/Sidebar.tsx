@@ -32,6 +32,7 @@ import {
 import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
 import { UserButton, useUser } from "@clerk/clerk-react";
+import FolderModal from "./FolderModal";
 
 export default function Sidebar() {
   const chats = useAppStore(s => s.chats);
@@ -50,6 +51,7 @@ export default function Sidebar() {
   const { user } = useUser();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
+  const [folderModalChatId, setFolderModalChatId] = React.useState<string | null>(null);
 
   const filtered = chats.filter((c) =>
     c.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -84,10 +86,10 @@ export default function Sidebar() {
       <div className="flex items-center justify-between px-3 pt-3 pb-2">
         {sidebarOpen && (
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold tracking-wider text-slate-400 dark:text-slate-500 uppercase leading-none">
+            <p className="text-[11px] font-semibold tracking-wider text-slate-400 dark:text-slate-950 uppercase leading-none">
               {t.history}
             </p>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug mt-0.5">
+            <p className="text-[11px] text-slate-400 dark:text-slate-950 leading-snug mt-0.5">
               {t.lastSevenDays}
             </p>
           </div>
@@ -96,7 +98,7 @@ export default function Sidebar() {
           id="sidebar-toggle"
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className={[
-            "flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
+            "flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
             sidebarOpen ? "ml-auto" : "mx-auto",
           ].join(" ")}
           aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
@@ -115,11 +117,11 @@ export default function Sidebar() {
           id="new-chat-btn"
           onClick={newChat}
           className={[
-            "flex items-center gap-2 w-full rounded-[6px] text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm font-medium",
+            "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm font-medium",
             sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
           ].join(" ")}
         >
-          <Plus size={15} className="flex-shrink-0 text-slate-500 dark:text-slate-400" />
+          <Plus size={15} className="flex-shrink-0 text-slate-950 dark:text-slate-400" />
           {sidebarOpen && <span>{t.newChat}</span>}
         </button>
       </div>
@@ -135,7 +137,7 @@ export default function Sidebar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t.searchChat}
-              className="flex-1 bg-transparent text-sm text-slate-600 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 outline-none min-w-0"
+              className="flex-1 bg-transparent text-sm text-slate-950 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 outline-none min-w-0"
             />
           </div>
         </div>
@@ -153,7 +155,7 @@ export default function Sidebar() {
                 {sidebarOpen && (
                   <button
                     onClick={() => toggleFolder(folderName)}
-                    className="flex items-center gap-1.5 w-full text-[10px] font-semibold tracking-wider text-slate-400 dark:text-slate-500 uppercase px-3 py-1 mb-0.5 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                    className="flex items-center gap-1.5 w-full text-[10px] font-semibold tracking-wider text-slate-400 dark:text-slate-950 uppercase px-3 py-1 mb-0.5 hover:text-slate-950 dark:hover:text-slate-300 transition-colors"
                   >
                     {isCollapsed ? <ChevronRight size={12} /> : <ChevronDown size={12} />}
                     {folderName !== "Recent" && <Folder size={10} className="mr-0.5" />}
@@ -181,14 +183,14 @@ export default function Sidebar() {
                                 sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
                                 isActive
                                   ? "bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 font-medium"
-                                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
+                                  : "text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
                               ].join(" ")}
                             >
                               <MessageSquare
                                 size={14}
                                 className={[
                                   "flex-shrink-0",
-                                  isActive ? "text-teal-500 dark:text-teal-400" : "text-slate-400 dark:text-slate-500",
+                                  isActive ? "text-teal-500 dark:text-teal-400" : "text-slate-400 dark:text-slate-950",
                                 ].join(" ")}
                               />
                               {sidebarOpen && (
@@ -203,12 +205,9 @@ export default function Sidebar() {
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    const newFolder = prompt("Enter folder name (leave blank to remove):", chat.folder || "");
-                                    if (newFolder !== null) {
-                                      updateChatFolder(chat.id, newFolder.trim() || null);
-                                    }
+                                    setFolderModalChatId(chat.id);
                                   }}
-                                  className="flex items-center justify-center w-5 h-5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-teal-500 text-slate-400 dark:text-slate-500 transition-colors"
+                                  className="flex items-center justify-center w-5 h-5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-teal-500 text-slate-400 dark:text-slate-950 transition-colors"
                                   title="Move to folder"
                                 >
                                   <FolderPlus size={12} />
@@ -219,7 +218,7 @@ export default function Sidebar() {
                                     e.stopPropagation();
                                     deleteChat(chat.id);
                                   }}
-                                  className="flex items-center justify-center w-5 h-5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400 text-slate-400 dark:text-slate-500 transition-colors"
+                                  className="flex items-center justify-center w-5 h-5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400 text-slate-400 dark:text-slate-950 transition-colors"
                                   title={`Delete ${chat.title}`}
                                 >
                                   <Trash2 size={12} />
@@ -249,7 +248,7 @@ export default function Sidebar() {
             id={id}
             onClick={onClick}
             className={[
-              "flex items-center gap-2 w-full rounded-[6px] text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-300 text-sm transition-colors",
+              "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-slate-300 text-sm transition-colors",
               sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
             ].join(" ")}
           >
@@ -268,7 +267,7 @@ export default function Sidebar() {
             {sidebarOpen ? (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400 dark:text-slate-500">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400 dark:text-slate-950">
                     Session Status
                   </span>
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-500" title="Connected" />
@@ -285,7 +284,7 @@ export default function Sidebar() {
                     <span className="text-[11px] font-semibold text-slate-950 dark:text-slate-200 truncate leading-tight">
                       {user.fullName || user.username || "User"}
                     </span>
-                    <span className="text-[9px] text-slate-500 dark:text-slate-400 truncate leading-none mt-1">
+                    <span className="text-[9px] text-slate-950 dark:text-slate-400 truncate leading-none mt-1">
                       {user.primaryEmailAddress?.emailAddress}
                     </span>
                   </div>
@@ -303,6 +302,17 @@ export default function Sidebar() {
           </div>
         )}
       </div>
+
+      {folderModalChatId && (
+        <FolderModal
+          initialFolder={chats.find((c) => c.id === folderModalChatId)?.folder || ""}
+          onClose={() => setFolderModalChatId(null)}
+          onSave={(folder) => {
+            updateChatFolder(folderModalChatId, folder.trim() || null);
+            setFolderModalChatId(null);
+          }}
+        />
+      )}
     </aside>
   );
 }

@@ -57,7 +57,7 @@ export default function Header() {
       <div className="flex items-center gap-2 min-w-0 flex-1">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="md:hidden flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+          className="md:hidden flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-950 hover:text-slate-950 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
         >
           <Menu size={18} />
         </button>
@@ -73,18 +73,18 @@ export default function Header() {
           <button
             id="model-selector-btn"
             onClick={() => setModelOpen(!modelOpen)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-sm text-slate-950 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors"
           >
             <span className="font-medium">{t.model}</span>
             <ChevronDown
               size={13}
-              className={`text-slate-400 dark:text-slate-500 transition-transform duration-150 ${modelOpen ? "rotate-180" : ""}`}
+              className={`text-slate-400 dark:text-slate-950 transition-transform duration-150 ${modelOpen ? "rotate-180" : ""}`}
             />
           </button>
 
           {modelOpen && (
             <div className="absolute right-0 top-full mt-1.5 w-52 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-[8px] shadow-lg shadow-slate-200/60 dark:shadow-slate-900/60 py-1 z-50">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 px-3 py-1.5">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-950 px-3 py-1.5">
                 {t.selectModel}
               </p>
               {AVAILABLE_MODELS.map((m) => (
@@ -96,7 +96,7 @@ export default function Header() {
                     "flex items-center gap-2 w-full px-3 py-2 text-sm text-left transition-colors",
                     m.id === model.id
                       ? "bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400"
-                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700",
+                      : "text-slate-950 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700",
                   ].join(" ")}
                 >
                   <span
@@ -119,7 +119,7 @@ export default function Header() {
             const isDark = theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches);
             setTheme(isDark ? "light" : "dark");
           }}
-          className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 dark:text-slate-950 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           aria-label="Toggle theme"
         >
           {theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches) ? (

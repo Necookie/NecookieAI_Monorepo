@@ -298,7 +298,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
                   setIsEditing(false);
                   setEditValue(message.content);
                 }}
-                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-[8px] transition-colors"
+                className="px-4 py-2 text-sm font-medium text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-[8px] transition-colors"
               >
                 Cancel
               </button>
@@ -327,7 +327,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
                 setEditValue(message.content);
                 setIsEditing(true);
               }}
-              className="flex items-center justify-center w-8 h-8 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors opacity-0 group-hover:opacity-100 mb-2"
+              className="flex items-center justify-center w-8 h-8 rounded-full text-slate-400 hover:text-slate-950 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors opacity-0 group-hover:opacity-100 mb-2"
               title="Edit and resend"
             >
               <Pencil size={15} />
@@ -365,7 +365,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
       <div className="w-full flex">
         <div className="w-[2px] bg-teal-500 rounded-full mr-4 flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <div className="prose-chat text-slate-700 dark:text-slate-200">
+          <div className="prose-chat text-slate-950 dark:text-slate-200">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
@@ -399,7 +399,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
             <div className="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <button
                 onClick={handleCopy}
-                className="flex items-center justify-center w-7 h-7 rounded-[6px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f] transition-colors"
+                className="flex items-center justify-center w-7 h-7 rounded-[6px] text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f] transition-colors"
                 title="Copy message"
               >
                 {isCopied ? <Check size={14} className="text-teal-500" /> : <Copy size={14} />}
@@ -408,7 +408,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
               {onRegenerate && (
                 <button
                   onClick={() => onRegenerate(message.id)}
-                  className="flex items-center justify-center w-7 h-7 rounded-[6px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f] transition-colors"
+                  className="flex items-center justify-center w-7 h-7 rounded-[6px] text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f] transition-colors"
                   title="Regenerate response"
                 >
                   <RefreshCw size={14} />

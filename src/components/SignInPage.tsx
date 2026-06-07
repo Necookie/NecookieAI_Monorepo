@@ -37,7 +37,7 @@ export default function SignInPage() {
           >
             Necookie AI
           </h1>
-          <p className="mt-3 text-xs text-slate-500 dark:text-slate-400 font-normal leading-relaxed max-w-[280px] mx-auto">
+          <p className="mt-3 text-xs text-slate-950 dark:text-slate-400 font-normal leading-relaxed max-w-[280px] mx-auto">
             Clinical-grade intelligence interface for writing, development, and engineering operations.
           </p>
         </div>
@@ -54,7 +54,7 @@ export default function SignInPage() {
 
           <SignUpButton mode="modal">
             <button
-              className="flex items-center justify-center w-full h-11 text-xs font-semibold rounded-[6px] tracking-wider uppercase transition-all duration-200 cursor-pointer bg-transparent border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-teal-600 hover:text-teal-600 dark:hover:border-teal-500 dark:hover:text-teal-500"
+              className="flex items-center justify-center w-full h-11 text-xs font-semibold rounded-[6px] tracking-wider uppercase transition-all duration-200 cursor-pointer bg-transparent border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-slate-400 hover:border-teal-600 hover:text-teal-600 dark:hover:border-teal-500 dark:hover:text-teal-500"
             >
               Create Account
             </button>
@@ -63,7 +63,7 @@ export default function SignInPage() {
 
         {/* Footer info */}
         <div className="mt-9 text-center">
-          <span className="text-[10px] tracking-wider font-semibold text-slate-400 dark:text-slate-500 uppercase">
+          <span className="text-[10px] tracking-wider font-semibold text-slate-400 dark:text-slate-950 uppercase">
             Secured by Clerk
           </span>
         </div>

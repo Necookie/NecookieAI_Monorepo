@@ -37,7 +37,7 @@ export default function WelcomeScreen() {
   return (
     <div className="flex flex-col items-center justify-center h-full min-h-[480px] px-6 select-none">
       {/* Greeting */}
-      <h2 className="text-[22px] font-semibold text-slate-700 dark:text-slate-300 mb-6 tracking-tight">
+      <h2 className="text-[22px] font-semibold text-slate-950 dark:text-slate-300 mb-6 tracking-tight">
         {t.greeting}
       </h2>
 
@@ -64,9 +64,9 @@ export default function WelcomeScreen() {
                 <div className="flex items-center justify-center w-6 h-6 rounded-[4px] bg-teal-100 dark:bg-teal-900/50 group-hover:bg-teal-200 dark:group-hover:bg-teal-800/50 transition-colors">
                   <Icon size={13} className="text-teal-600 dark:text-teal-400" />
                 </div>
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{s.title}</span>
+                <span className="text-sm font-semibold text-slate-950 dark:text-slate-300">{s.title}</span>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">{s.description}</p>
+              <p className="text-xs text-slate-950 dark:text-slate-400 leading-snug">{s.description}</p>
             </button>
           );
         })}

@@ -48,7 +48,7 @@ function Section({
     <section className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden">
       <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 flex items-center gap-2">
         <span className="text-slate-400 flex-shrink-0">{icon}</span>
-        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">{title}</h3>
+        <h3 className="text-sm font-semibold text-slate-950 dark:text-slate-300">{title}</h3>
       </div>
       <div className="p-5 space-y-5">{children}</div>
     </section>
@@ -69,11 +69,11 @@ function SettingRow({
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
       <div className="min-w-0">
-        <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-0.5 uppercase tracking-wide font-mono">
+        <p className="text-xs font-semibold text-slate-950 dark:text-slate-300 mb-0.5 uppercase tracking-wide font-mono">
           {label}
         </p>
         {description && (
-          <p className="text-sm text-slate-500 dark:text-slate-400 leading-snug">{description}</p>
+          <p className="text-sm text-slate-950 dark:text-slate-400 leading-snug">{description}</p>
         )}
       </div>
       <div className="flex-shrink-0">{children}</div>
@@ -124,7 +124,7 @@ function SelectField({
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full appearance-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-mono text-sm py-2 pl-3 pr-9 rounded-[6px] focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors cursor-pointer"
+        className="w-full appearance-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-950 dark:text-slate-200 font-mono text-sm py-2 pl-3 pr-9 rounded-[6px] focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors cursor-pointer"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -194,12 +194,12 @@ export default function SettingsPanel() {
             <h2 className="text-base font-semibold text-slate-950 dark:text-slate-200 tracking-tight">
               {t.title}
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t.subtitle}</p>
+            <p className="text-xs text-slate-950 dark:text-slate-400 mt-0.5">{t.subtitle}</p>
           </div>
           <button
             id="settings-close-btn"
             onClick={handleCancel}
-            className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-4 flex-shrink-0"
+            className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 hover:text-slate-950 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-4 flex-shrink-0"
             aria-label="Close settings"
           >
             <X size={16} />
@@ -255,7 +255,7 @@ export default function SettingsPanel() {
                         "px-3 py-1.5 rounded-[4px] text-xs font-medium transition-colors",
                         theme === mode
                           ? "bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-900/30 dark:text-teal-400 dark:border-teal-800/50"
-                          : "text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:hover:text-slate-300 dark:hover:bg-slate-700",
+                          : "text-slate-950 hover:text-slate-950 hover:bg-slate-50 dark:hover:text-slate-300 dark:hover:bg-slate-700",
                       ].join(" ")}
                     >
                       {labels[mode]}
@@ -280,10 +280,10 @@ export default function SettingsPanel() {
           <Section icon={<Lock size={15} />} title={t.security}>
             <div className="flex flex-col gap-3">
               <div>
-                <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-0.5 uppercase tracking-wide font-mono">
+                <p className="text-xs font-semibold text-slate-950 dark:text-slate-300 mb-0.5 uppercase tracking-wide font-mono">
                   {t.apiKeyConfig}
                 </p>
-                <p className="text-sm text-slate-500 dark:text-slate-400 leading-snug">{t.apiKeyDesc}</p>
+                <p className="text-sm text-slate-950 dark:text-slate-400 leading-snug">{t.apiKeyDesc}</p>
               </div>
               <div className="flex gap-2 w-full">
                 <div className="relative flex-1">
@@ -299,13 +299,13 @@ export default function SettingsPanel() {
                       setApiKeyStatus("idle");
                     }}
                     placeholder="sk-..."
-                    className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-mono text-sm rounded-[6px] focus:ring-1 focus:ring-teal-500 focus:border-teal-500 block w-full pl-9 pr-10 py-2.5 transition-colors"
+                    className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-950 dark:text-slate-200 font-mono text-sm rounded-[6px] focus:ring-1 focus:ring-teal-500 focus:border-teal-500 block w-full pl-9 pr-10 py-2.5 transition-colors"
                   />
                   <button
                     id="settings-api-key-visibility"
                     type="button"
                     onClick={() => setApiKeyVisible(!apiKeyVisible)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-950"
                     aria-label={apiKeyVisible ? "Hide API key" : "Show API key"}
                   >
                     {apiKeyVisible ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -354,7 +354,7 @@ export default function SettingsPanel() {
           <button
             id="settings-cancel-btn"
             onClick={handleCancel}
-            className="px-4 py-2 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-[6px] font-medium transition-colors"
+            className="px-4 py-2 text-sm text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-[6px] font-medium transition-colors"
           >
             {t.cancel}
           </button>

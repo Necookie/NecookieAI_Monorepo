@@ -66,18 +66,18 @@ function DocCard({
       className="block p-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-slate-400 dark:hover:border-slate-500 hover:shadow-sm transition-all group"
       onClick={(e) => e.preventDefault()}
     >
-      <span className="text-slate-400 dark:text-slate-500 group-hover:text-teal-500 mb-3 block transition-colors">
+      <span className="text-slate-400 dark:text-slate-950 group-hover:text-teal-500 mb-3 block transition-colors">
         {icon}
       </span>
       <h3 className="text-sm font-semibold text-slate-950 dark:text-slate-200 mb-1">{title}</h3>
-      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{description}</p>
+      <p className="text-xs text-slate-950 dark:text-slate-400 leading-relaxed">{description}</p>
     </a>
   );
 }
 
 function Kbd({ children }: { children: React.ReactNode }) {
   return (
-    <kbd className="font-mono text-[11px] bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded min-w-[24px] text-center inline-block">
+    <kbd className="font-mono text-[11px] bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-950 dark:text-slate-300 px-2 py-0.5 rounded min-w-[24px] text-center inline-block">
       {children}
     </kbd>
   );
@@ -86,7 +86,7 @@ function Kbd({ children }: { children: React.ReactNode }) {
 function ShortcutRow({ label, keys }: { label: string; keys: string[] }) {
   return (
     <div className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800 last:border-b-0">
-      <span className="text-sm text-slate-600 dark:text-slate-400">{label}</span>
+      <span className="text-sm text-slate-950 dark:text-slate-400">{label}</span>
       <div className="flex items-center gap-1">
         {keys.map((k, i) => (
           <Kbd key={i}>{k}</Kbd>
@@ -124,12 +124,12 @@ export default function HelpPanel() {
             <h2 className="text-base font-semibold text-slate-950 dark:text-slate-200 tracking-tight">
               {t.title}
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t.subtitle}</p>
+            <p className="text-xs text-slate-950 dark:text-slate-400 mt-0.5">{t.subtitle}</p>
           </div>
           <button
             id="help-close-btn"
             onClick={() => setShowHelp(false)}
-            className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-4 flex-shrink-0"
+            className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 dark:text-slate-950 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-4 flex-shrink-0"
             aria-label="Close help"
           >
             <X size={16} />
@@ -196,7 +196,7 @@ export default function HelpPanel() {
               </button>
               <button
                 id="help-community-btn"
-                className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-2.5 rounded-[6px] text-sm font-semibold hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
+                className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-950 dark:text-slate-300 px-5 py-2.5 rounded-[6px] text-sm font-semibold hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
               >
                 <MessageSquareText size={16} />
                 {t.joinCommunity}
@@ -210,7 +210,7 @@ export default function HelpPanel() {
           <button
             id="help-close-footer-btn"
             onClick={() => setShowHelp(false)}
-            className="px-4 py-2 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-[6px] font-medium transition-colors"
+            className="px-4 py-2 text-sm text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-[6px] font-medium transition-colors"
           >
             {t.close}
           </button>
