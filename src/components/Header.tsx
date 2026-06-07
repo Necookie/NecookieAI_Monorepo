@@ -15,7 +15,7 @@
  */
 
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronDown, Sun, Moon } from "lucide-react";
+import { ChevronDown, Sun, Moon, Menu } from "lucide-react";
 import { useAppStore } from "../lib/context";
 import { AVAILABLE_MODELS } from "../lib/store";
 import type { Model } from "../lib/store";
@@ -23,6 +23,8 @@ import { getTranslations } from "../lib/i18n";
 
 export default function Header() {
   const activeChat = useAppStore(s => s.activeChat());
+  const sidebarOpen = useAppStore(s => s.sidebarOpen);
+  const setSidebarOpen = useAppStore(s => s.setSidebarOpen);
   const model = useAppStore(s => s.model);
   const setModel = useAppStore(s => s.setModel);
   const language = useAppStore(s => s.language);
@@ -52,9 +54,17 @@ export default function Header() {
   return (
     <header className="flex items-center justify-between gap-3 px-5 py-3 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 flex-shrink-0 h-[52px]">
       {/* Title — min-w-0 lets flex truncate correctly */}
-      <h1 className="min-w-0 flex-1 text-[15px] font-semibold text-slate-800 dark:text-slate-200 tracking-tight truncate">
-        {activeChat?.title ?? "Necookie AI"}
-      </h1>
+      <div className="flex items-center gap-2 min-w-0 flex-1">
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="md:hidden flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+        >
+          <Menu size={18} />
+        </button>
+        <h1 className="min-w-0 flex-1 text-[15px] font-semibold text-slate-800 dark:text-slate-200 tracking-tight truncate">
+          {activeChat?.title ?? "Necookie AI"}
+        </h1>
+      </div>
 
       {/* Right controls — flex-shrink-0 keeps buttons always visible */}
       <div className="flex items-center gap-2 flex-shrink-0">

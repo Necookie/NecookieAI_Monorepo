@@ -28,8 +28,15 @@ import HelpPanel from "./HelpPanel";
 function AppShell() {
   const showSettings = useAppStore(s => s.showSettings);
   const showHelp = useAppStore(s => s.showHelp);
+  const sidebarOpen = useAppStore(s => s.sidebarOpen);
+  const setSidebarOpen = useAppStore(s => s.setSidebarOpen);
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 font-sans">
+    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 font-sans relative">
+      {/* Mobile overlay */}
+      <div 
+        className={`md:hidden fixed inset-0 bg-slate-900/50 z-30 transition-opacity ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} 
+        onClick={() => setSidebarOpen(false)} 
+      />
       <Sidebar />
       <div className="flex flex-col flex-1 min-w-0">
         <Header />
