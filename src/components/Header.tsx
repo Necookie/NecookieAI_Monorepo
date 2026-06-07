@@ -61,7 +61,7 @@ export default function Header() {
         >
           <Menu size={18} />
         </button>
-        <h1 className="min-w-0 flex-1 text-[15px] font-semibold text-slate-800 dark:text-slate-200 tracking-tight truncate">
+        <h1 className="min-w-0 flex-1 text-[15px] font-semibold text-slate-950 dark:text-slate-200 tracking-tight truncate">
           {activeChat?.title ?? "Necookie AI"}
         </h1>
       </div>

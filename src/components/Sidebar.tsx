@@ -282,7 +282,7 @@ export default function Sidebar() {
                     }} />
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[11px] font-semibold text-slate-800 dark:text-slate-200 truncate leading-tight">
+                    <span className="text-[11px] font-semibold text-slate-950 dark:text-slate-200 truncate leading-tight">
                       {user.fullName || user.username || "User"}
                     </span>
                     <span className="text-[9px] text-slate-500 dark:text-slate-400 truncate leading-none mt-1">

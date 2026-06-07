@@ -191,7 +191,7 @@ export default function SettingsPanel() {
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
           <div>
-            <h2 className="text-base font-semibold text-slate-800 dark:text-slate-200 tracking-tight">
+            <h2 className="text-base font-semibold text-slate-950 dark:text-slate-200 tracking-tight">
               {t.title}
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t.subtitle}</p>

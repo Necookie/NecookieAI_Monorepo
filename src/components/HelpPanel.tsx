@@ -39,7 +39,7 @@ function SectionHeader({
   title: string;
 }) {
   return (
-    <h2 className="flex items-center gap-2 text-base font-semibold text-slate-800 dark:text-slate-200 mb-5">
+    <h2 className="flex items-center gap-2 text-base font-semibold text-slate-950 dark:text-slate-200 mb-5">
       <span className="text-teal-500 flex-shrink-0">{icon}</span>
       {title}
     </h2>
@@ -69,7 +69,7 @@ function DocCard({
       <span className="text-slate-400 dark:text-slate-500 group-hover:text-teal-500 mb-3 block transition-colors">
         {icon}
       </span>
-      <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">{title}</h3>
+      <h3 className="text-sm font-semibold text-slate-950 dark:text-slate-200 mb-1">{title}</h3>
       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{description}</p>
     </a>
   );
@@ -121,7 +121,7 @@ export default function HelpPanel() {
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
           <div>
-            <h2 className="text-base font-semibold text-slate-800 dark:text-slate-200 tracking-tight">
+            <h2 className="text-base font-semibold text-slate-950 dark:text-slate-200 tracking-tight">
               {t.title}
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t.subtitle}</p>
