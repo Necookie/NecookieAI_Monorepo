@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
 interface FolderModalProps {
   initialFolder: string;
@@ -26,8 +27,8 @@ export default function FolderModal({ initialFolder, onClose, onSave }: FolderMo
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [folderName, onClose, onSave]);
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/20 dark:bg-slate-950/60 backdrop-blur-sm">
+  const modalContent = (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/20 dark:bg-slate-950/60 backdrop-blur-sm">
       <div 
         className="w-full max-w-sm bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-[8px] p-6 m-4 shadow-none"
         onClick={(e) => e.stopPropagation()}
@@ -65,4 +66,7 @@ export default function FolderModal({ initialFolder, onClose, onSave }: FolderMo
       </div>
     </div>
   );
+
+  if (typeof document === "undefined") return null;
+  return createPortal(modalContent, document.body);
 }
