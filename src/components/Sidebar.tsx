@@ -53,6 +53,10 @@ export default function Sidebar() {
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
   const [folderModalChatId, setFolderModalChatId] = React.useState<string | null>(null);
 
+  const existingFolders = React.useMemo(() => {
+    return Array.from(new Set(chats.map((c) => c.folder).filter(Boolean))) as string[];
+  }, [chats]);
+
   const filtered = chats.filter((c) =>
     c.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -306,6 +310,7 @@ export default function Sidebar() {
       {folderModalChatId && (
         <FolderModal
           initialFolder={chats.find((c) => c.id === folderModalChatId)?.folder || ""}
+          existingFolders={existingFolders}
           onClose={() => setFolderModalChatId(null)}
           onSave={(folder) => {
             updateChatFolder(folderModalChatId, folder.trim() || null);
