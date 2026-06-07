@@ -33,13 +33,13 @@ import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
 import { UserButton, useUser } from "@clerk/clerk-react";
 import FolderModal from "./FolderModal";
-import ManageFoldersModal from "./ManageFoldersModal";
 
 export default function Sidebar() {
   const chats = useAppStore(s => s.chats);
   const activeId = useAppStore(s => s.activeId);
   const sidebarOpen = useAppStore(s => s.sidebarOpen);
   const setSidebarOpen = useAppStore(s => s.setSidebarOpen);
+  const setCurrentView = useAppStore(s => s.setCurrentView);
   const newChat = useAppStore(s => s.newChat);
   const selectChat = useAppStore(s => s.selectChat);
   const deleteChat = useAppStore(s => s.deleteChat);
@@ -53,7 +53,6 @@ export default function Sidebar() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
   const [folderModalChatId, setFolderModalChatId] = React.useState<string | null>(null);
-  const [showFoldersModal, setShowFoldersModal] = React.useState(false);
 
   const existingFolders = React.useMemo(() => {
     return Array.from(new Set(chats.map((c) => c.folder).filter(Boolean))) as string[];
@@ -133,7 +132,7 @@ export default function Sidebar() {
 
         <button
           id="manage-folders-btn"
-          onClick={() => setShowFoldersModal(true)}
+          onClick={() => setCurrentView("folders")}
           className={[
             "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm font-medium",
             sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
@@ -330,13 +329,6 @@ export default function Sidebar() {
             updateChatFolder(folderModalChatId, folder.trim() || null);
             setFolderModalChatId(null);
           }}
-        />
-      )}
-
-      {showFoldersModal && (
-        <ManageFoldersModal
-          folders={existingFolders}
-          onClose={() => setShowFoldersModal(false)}
         />
       )}
     </aside>

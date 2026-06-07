@@ -99,6 +99,7 @@ interface AppStore {
   isStreaming: boolean;
   error: string | null;
   abortController: AbortController | null;
+  currentView: "chat" | "folders";
 
   activeChat: () => Chat | null;
   
@@ -108,6 +109,7 @@ interface AppStore {
   setShowHelp: (v: boolean) => void;
   setLanguage: (l: Locale) => void;
   setModel: (m: Model) => void;
+  setCurrentView: (view: "chat" | "folders") => void;
   newChat: () => void;
   selectChat: (id: string) => void;
   deleteChat: (id: string) => void;
@@ -143,6 +145,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   isStreaming: false,
   error: null,
   abortController: null,
+  currentView: "chat",
 
   activeChat: () => {
     const { chats, activeId } = get();
@@ -159,6 +162,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   setSidebarOpen: (v) => set({ sidebarOpen: v }),
   setShowSettings: (v) => set({ showSettings: v }),
   setShowHelp: (v) => set({ showHelp: v }),
+  setCurrentView: (view) => set({ currentView: view }),
   
   setLanguage: (l) => {
     set({ language: l });
@@ -195,7 +199,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, title: chat.title, createdAt: chat.createdAt }),
       });
-      set((state) => ({ chats: [chat, ...state.chats], activeId: id }));
+      set((state) => ({ chats: [chat, ...state.chats], activeId: id, currentView: "chat" }));
     } catch (err) {
       console.error("Failed to create chat in DB:", err);
       set({ error: "Failed to create chat session." });
@@ -203,7 +207,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
 
   selectChat: async (id) => {
-    set({ activeId: id });
+    set({ activeId: id, currentView: "chat" });
     await get()._fetchMessages(id);
   },
 
