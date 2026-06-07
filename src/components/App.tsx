@@ -19,6 +19,7 @@ import { AppProvider, useAppStore } from "../lib/context";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import ChatCanvas from "./ChatCanvas";
+import FoldersView from "./FoldersView";
 import SettingsPanel from "./SettingsPanel";
 import HelpPanel from "./HelpPanel";
 
@@ -30,6 +31,7 @@ function AppShell() {
   const showHelp = useAppStore(s => s.showHelp);
   const sidebarOpen = useAppStore(s => s.sidebarOpen);
   const setSidebarOpen = useAppStore(s => s.setSidebarOpen);
+  const currentView = useAppStore(s => s.currentView);
 
   React.useEffect(() => {
     if (typeof window !== "undefined" && window.innerWidth < 768) {
@@ -47,7 +49,7 @@ function AppShell() {
       <Sidebar />
       <div className="flex flex-col flex-1 min-w-0">
         <Header />
-        <ChatCanvas />
+        {currentView === "folders" ? <FoldersView /> : <ChatCanvas />}
       </div>
       {showSettings && <SettingsPanel />}
       {showHelp && <HelpPanel />}

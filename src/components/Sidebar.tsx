@@ -39,6 +39,7 @@ export default function Sidebar() {
   const activeId = useAppStore(s => s.activeId);
   const sidebarOpen = useAppStore(s => s.sidebarOpen);
   const setSidebarOpen = useAppStore(s => s.setSidebarOpen);
+  const setCurrentView = useAppStore(s => s.setCurrentView);
   const newChat = useAppStore(s => s.newChat);
   const selectChat = useAppStore(s => s.selectChat);
   const deleteChat = useAppStore(s => s.deleteChat);
@@ -52,6 +53,10 @@ export default function Sidebar() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
   const [folderModalChatId, setFolderModalChatId] = React.useState<string | null>(null);
+
+  const existingFolders = React.useMemo(() => {
+    return Array.from(new Set(chats.map((c) => c.folder).filter(Boolean))) as string[];
+  }, [chats]);
 
   const filtered = chats.filter((c) =>
     c.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -111,8 +116,8 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* ─── New Chat ─── */}
-      <div className="px-2 py-1">
+      {/* ─── Actions ─── */}
+      <div className="px-2 py-1 flex flex-col gap-1">
         <button
           id="new-chat-btn"
           onClick={newChat}
@@ -123,6 +128,18 @@ export default function Sidebar() {
         >
           <Plus size={15} className="flex-shrink-0 text-slate-950 dark:text-slate-400" />
           {sidebarOpen && <span>{t.newChat}</span>}
+        </button>
+
+        <button
+          id="manage-folders-btn"
+          onClick={() => setCurrentView("folders")}
+          className={[
+            "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm font-medium",
+            sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
+          ].join(" ")}
+        >
+          <Folder size={15} className="flex-shrink-0 text-slate-950 dark:text-slate-400" />
+          {sidebarOpen && <span>Folders</span>}
         </button>
       </div>
 
@@ -306,6 +323,7 @@ export default function Sidebar() {
       {folderModalChatId && (
         <FolderModal
           initialFolder={chats.find((c) => c.id === folderModalChatId)?.folder || ""}
+          existingFolders={existingFolders}
           onClose={() => setFolderModalChatId(null)}
           onSave={(folder) => {
             updateChatFolder(folderModalChatId, folder.trim() || null);
