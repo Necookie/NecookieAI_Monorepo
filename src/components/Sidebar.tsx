@@ -29,6 +29,7 @@ import {
   ChevronDown,
   ChevronRight,
   Pin,
+  MoreVertical,
 } from "lucide-react";
 import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
@@ -55,6 +56,13 @@ export default function Sidebar() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
   const [folderModalChatId, setFolderModalChatId] = React.useState<string | null>(null);
+  const [openMenuId, setOpenMenuId] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const handleOutsideClick = () => setOpenMenuId(null);
+    document.addEventListener("click", handleOutsideClick);
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, []);
 
   const existingFolders = React.useMemo(() => {
     return Array.from(new Set(chats.map((c) => c.folder).filter(Boolean))) as string[];
@@ -221,39 +229,56 @@ export default function Sidebar() {
                               )}
                             </button>
 
-                            {sidebarOpen && isHovered && !isActive && (
-                              <div className="absolute right-2 flex items-center gap-0.5 z-10 bg-white dark:bg-slate-950 rounded pr-1 shadow-[0_0_8px_4px_rgba(255,255,255,1)] dark:shadow-[0_0_8px_4px_rgba(2,6,23,1)]">
+                            {sidebarOpen && (isHovered || openMenuId === chat.id) && !isActive && (
+                              <div className="absolute right-2 flex items-center z-10 bg-gradient-to-l from-white via-white to-transparent dark:from-slate-950 dark:via-slate-950 pr-1 pl-4 h-full">
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    setFolderModalChatId(chat.id);
+                                    setOpenMenuId(openMenuId === chat.id ? null : chat.id);
                                   }}
-                                  className="flex items-center justify-center w-5 h-5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-500 text-slate-400 dark:text-slate-950 transition-colors"
-                                  title="Move to folder"
+                                  className="flex items-center justify-center w-6 h-6 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 dark:text-slate-500 transition-colors"
+                                  title="Options"
                                 >
-                                  <FolderPlus size={12} />
+                                  <MoreVertical size={14} />
                                 </button>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    togglePinChat(chat.id);
-                                  }}
-                                  className="flex items-center justify-center w-5 h-5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-500 text-slate-400 dark:text-slate-950 transition-colors"
-                                  title={chat.pinned ? "Unpin chat" : "Pin chat"}
-                                >
-                                  <Pin size={12} className={chat.pinned ? "fill-current" : ""} />
-                                </button>
-                                <button
-                                  id={`delete-chat-${chat.id}`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    deleteChat(chat.id);
-                                  }}
-                                  className="flex items-center justify-center w-5 h-5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400 text-slate-400 dark:text-slate-950 transition-colors"
-                                  title={`Delete ${chat.title}`}
-                                >
-                                  <Trash2 size={12} />
-                                </button>
+                                
+                                {openMenuId === chat.id && (
+                                  <div
+                                    className="absolute right-0 top-8 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 py-1 z-50 flex flex-col"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <button
+                                      onClick={() => {
+                                        togglePinChat(chat.id);
+                                        setOpenMenuId(null);
+                                      }}
+                                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+                                    >
+                                      <Pin size={14} className={chat.pinned ? "fill-current" : ""} />
+                                      {chat.pinned ? "Unpin" : "Pin"}
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        setFolderModalChatId(chat.id);
+                                        setOpenMenuId(null);
+                                      }}
+                                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+                                    >
+                                      <FolderPlus size={14} />
+                                      Add to folder
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        deleteChat(chat.id);
+                                        setOpenMenuId(null);
+                                      }}
+                                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-left hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400"
+                                    >
+                                      <Trash2 size={14} />
+                                      Delete
+                                    </button>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>
