@@ -26,8 +26,6 @@ import {
   Trash2,
   FolderPlus,
   Folder,
-  ChevronDown,
-  ChevronRight,
   Pin,
   MoreVertical,
 } from "lucide-react";
@@ -72,33 +70,18 @@ export default function Sidebar() {
     c.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const [collapsedFolders, setCollapsedFolders] = React.useState<Record<string, boolean>>({});
-
-  const groupedChats = React.useMemo(() => {
-    const groups: Record<string, typeof chats> = { Recent: [] };
-    filtered.forEach(chat => {
-      const folderName = chat.folder || "Recent";
-      if (!groups[folderName]) {
-        groups[folderName] = [];
-      }
-      groups[folderName].push(chat);
+  const recentChats = React.useMemo(() => {
+    const recents = filtered.filter(chat => !chat.folder);
+    
+    // Sort pinned chats to top
+    recents.sort((a, b) => {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return 0;
     });
 
-    // Sort pinned chats to top of their respective groups
-    for (const key in groups) {
-      groups[key].sort((a, b) => {
-        if (a.pinned && !b.pinned) return -1;
-        if (!a.pinned && b.pinned) return 1;
-        return 0;
-      });
-    }
-
-    return groups;
+    return recents;
   }, [filtered]);
-
-  const toggleFolder = (folder: string) => {
-    setCollapsedFolders(prev => ({ ...prev, [folder]: !prev[folder] }));
-  };
 
   return (
     <aside
@@ -184,124 +167,105 @@ export default function Sidebar() {
 
       {/* ─── Chat List ─── */}
       <nav className="flex-1 overflow-y-auto py-1 px-2 mt-1">
-        <ul className="space-y-2">
-          {Object.entries(groupedChats).map(([folderName, folderChats]) => {
-            if (folderChats.length === 0) return null;
-            const isCollapsed = collapsedFolders[folderName];
-
+        {sidebarOpen && recentChats.length > 0 && (
+          <div className="flex items-center gap-1.5 w-full text-[11px] font-medium text-slate-500 dark:text-slate-400 px-3 py-1 mb-1">
+            Recents
+          </div>
+        )}
+        <ul className="space-y-0.5">
+          {recentChats.map((chat) => {
+            const isActive = chat.id === activeId;
+            const isHovered = hoveredId === chat.id;
             return (
-              <li key={folderName} className="space-y-0.5">
-                {sidebarOpen && (
+              <li key={chat.id}>
+                <div
+                  className="relative flex items-center"
+                  onMouseEnter={() => setHoveredId(chat.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                >
                   <button
-                    onClick={() => toggleFolder(folderName)}
-                    className="flex items-center gap-1.5 w-full text-[10px] font-semibold tracking-wider text-slate-400 dark:text-slate-950 uppercase px-3 py-1 mb-0.5 hover:text-slate-950 dark:hover:text-slate-300 transition-colors"
+                    id={`chat-item-${chat.id}`}
+                    onClick={() => selectChat(chat.id)}
+                    className={[
+                      "flex items-center gap-2 w-full rounded-[6px] text-sm transition-colors",
+                      sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
+                      isActive
+                        ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium"
+                        : "text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
+                    ].join(" ")}
                   >
-                    {isCollapsed ? <ChevronRight size={12} /> : <ChevronDown size={12} />}
-                    {folderName !== "Recent" && <Folder size={10} className="mr-0.5" />}
-                    {folderName === "Recent" ? t.recent : folderName}
+                    <MessageSquare
+                      size={14}
+                      className={[
+                        "flex-shrink-0",
+                        isActive ? "text-blue-500 dark:text-blue-400" : "text-slate-400 dark:text-slate-950",
+                      ].join(" ")}
+                    />
+                    {sidebarOpen && (
+                      <>
+                        <span className="truncate flex-1 text-left">
+                          {chat.title}
+                        </span>
+                        {chat.pinned && (
+                          <Pin size={12} className="flex-shrink-0 text-slate-400 dark:text-slate-500 fill-current" />
+                        )}
+                      </>
+                    )}
                   </button>
-                )}
-                
-                {!isCollapsed && (
-                  <ul className="space-y-0.5">
-                    {folderChats.map((chat) => {
-                      const isActive = chat.id === activeId;
-                      const isHovered = hoveredId === chat.id;
-                      return (
-                        <li key={chat.id}>
-                          <div
-                            className="relative flex items-center"
-                            onMouseEnter={() => setHoveredId(chat.id)}
-                            onMouseLeave={() => setHoveredId(null)}
-                          >
-                            <button
-                              id={`chat-item-${chat.id}`}
-                              onClick={() => selectChat(chat.id)}
-                              className={[
-                                "flex items-center gap-2 w-full rounded-[6px] text-sm transition-colors",
-                                sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
-                                isActive
-                                  ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium"
-                                  : "text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
-                              ].join(" ")}
-                            >
-                              <MessageSquare
-                                size={14}
-                                className={[
-                                  "flex-shrink-0",
-                                  isActive ? "text-blue-500 dark:text-blue-400" : "text-slate-400 dark:text-slate-950",
-                                ].join(" ")}
-                              />
-                              {sidebarOpen && (
-                                <>
-                                  <span className="truncate flex-1 text-left">
-                                    {chat.title}
-                                  </span>
-                                  {chat.pinned && (
-                                    <Pin size={12} className="flex-shrink-0 text-slate-400 dark:text-slate-500 fill-current" />
-                                  )}
-                                </>
-                              )}
-                            </button>
 
-                            {sidebarOpen && (isHovered || openMenuId === chat.id) && !isActive && (
-                              <div className="absolute right-2 flex items-center z-10 bg-gradient-to-l from-white via-white to-transparent dark:from-slate-950 dark:via-slate-950 pr-1 pl-4 h-full">
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setOpenMenuId(openMenuId === chat.id ? null : chat.id);
-                                  }}
-                                  className="flex items-center justify-center w-6 h-6 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 dark:text-slate-500 transition-colors"
-                                  title="Options"
-                                >
-                                  <MoreVertical size={14} />
-                                </button>
-                                
-                                {openMenuId === chat.id && (
-                                  <div
-                                    className="absolute right-0 top-8 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 py-1 z-50 flex flex-col"
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    <button
-                                      onClick={() => {
-                                        togglePinChat(chat.id);
-                                        setOpenMenuId(null);
-                                      }}
-                                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
-                                    >
-                                      <Pin size={14} className={chat.pinned ? "fill-current" : ""} />
-                                      {chat.pinned ? "Unpin" : "Pin"}
-                                    </button>
-                                    <button
-                                      onClick={() => {
-                                        setFolderModalChatId(chat.id);
-                                        setOpenMenuId(null);
-                                      }}
-                                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
-                                    >
-                                      <FolderPlus size={14} />
-                                      Add to folder
-                                    </button>
-                                    <button
-                                      onClick={() => {
-                                        deleteChat(chat.id);
-                                        setOpenMenuId(null);
-                                      }}
-                                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-left hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400"
-                                    >
-                                      <Trash2 size={14} />
-                                      Delete
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
+                  {sidebarOpen && (isHovered || openMenuId === chat.id) && !isActive && (
+                    <div className="absolute right-2 flex items-center z-10 bg-gradient-to-l from-white via-white to-transparent dark:from-slate-950 dark:via-slate-950 pr-1 pl-4 h-full">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenMenuId(openMenuId === chat.id ? null : chat.id);
+                        }}
+                        className="flex items-center justify-center w-6 h-6 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 dark:text-slate-500 transition-colors"
+                        title="Options"
+                      >
+                        <MoreVertical size={14} />
+                      </button>
+                      
+                      {openMenuId === chat.id && (
+                        <div
+                          className="absolute right-0 top-8 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 py-1 z-50 flex flex-col"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            onClick={() => {
+                              togglePinChat(chat.id);
+                              setOpenMenuId(null);
+                            }}
+                            className="flex items-center gap-3 w-full px-4 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+                          >
+                            <Pin size={14} className={chat.pinned ? "fill-current" : ""} />
+                            {chat.pinned ? "Unpin" : "Pin"}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setFolderModalChatId(chat.id);
+                              setOpenMenuId(null);
+                            }}
+                            className="flex items-center gap-3 w-full px-4 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+                          >
+                            <FolderPlus size={14} />
+                            Add to folder
+                          </button>
+                          <button
+                            onClick={() => {
+                              deleteChat(chat.id);
+                              setOpenMenuId(null);
+                            }}
+                            className="flex items-center gap-3 w-full px-4 py-2 text-sm text-left hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400"
+                          >
+                            <Trash2 size={14} />
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </li>
             );
           })}
