@@ -327,7 +327,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
                 setEditValue(message.content);
                 setIsEditing(true);
               }}
-              className="flex items-center justify-center w-8 h-8 rounded-full text-slate-400 hover:text-slate-950 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors opacity-0 group-hover:opacity-100 mb-2"
+              className="flex items-center justify-center w-8 h-8 rounded-full text-slate-400 hover:text-slate-950 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors mb-2"
               title="Edit and resend"
             >
               <Pencil size={15} />
@@ -394,9 +394,8 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
             )}
           </div>
 
-          {/* Action Bar */}
           {!message.streaming && (
-            <div className="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center gap-2 mt-2 transition-opacity">
               <button
                 onClick={handleCopy}
                 className="flex items-center justify-center w-7 h-7 rounded-[6px] text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f] transition-colors"
