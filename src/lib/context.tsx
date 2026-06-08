@@ -185,26 +185,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
   clearError: () => set({ error: null }),
 
-  newChat: async () => {
-    const id = uid();
-    const chat: Chat = {
-      id,
-      title: "New Chat",
-      messages: [],
-      createdAt: new Date().toISOString(),
-    };
-
-    try {
-      await fetch("/api/chats", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, title: chat.title, createdAt: chat.createdAt }),
-      });
-      set((state) => ({ chats: [chat, ...state.chats], activeId: id, currentView: "chat" }));
-    } catch (err) {
-      console.error("Failed to create chat in DB:", err);
-      set({ error: "Failed to create chat session." });
-    }
+  newChat: () => {
+    set({ activeId: null, currentView: "chat" });
   },
 
   selectChat: async (id) => {
