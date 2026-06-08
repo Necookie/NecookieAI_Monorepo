@@ -75,14 +75,24 @@ export default function Sidebar() {
   const [collapsedFolders, setCollapsedFolders] = React.useState<Record<string, boolean>>({});
 
   const groupedChats = React.useMemo(() => {
-    const groups: Record<string, typeof chats> = { Pinned: [], Recent: [] };
+    const groups: Record<string, typeof chats> = { Recent: [] };
     filtered.forEach(chat => {
-      if (chat.pinned) {
-        groups.Pinned.push(chat);
-      } else if (!chat.folder) {
-        groups.Recent.push(chat);
+      const folderName = chat.folder || "Recent";
+      if (!groups[folderName]) {
+        groups[folderName] = [];
       }
+      groups[folderName].push(chat);
     });
+
+    // Sort pinned chats to top of their respective groups
+    for (const key in groups) {
+      groups[key].sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        return 0;
+      });
+    }
+
     return groups;
   }, [filtered]);
 
@@ -187,8 +197,8 @@ export default function Sidebar() {
                     className="flex items-center gap-1.5 w-full text-[10px] font-semibold tracking-wider text-slate-400 dark:text-slate-950 uppercase px-3 py-1 mb-0.5 hover:text-slate-950 dark:hover:text-slate-300 transition-colors"
                   >
                     {isCollapsed ? <ChevronRight size={12} /> : <ChevronDown size={12} />}
-                    {folderName !== "Recent" && folderName !== "Pinned" && <Folder size={10} className="mr-0.5" />}
-                    {folderName === "Recent" ? t.recent : folderName === "Pinned" ? "Pinned" : folderName}
+                    {folderName !== "Recent" && <Folder size={10} className="mr-0.5" />}
+                    {folderName === "Recent" ? t.recent : folderName}
                   </button>
                 )}
                 
@@ -223,9 +233,14 @@ export default function Sidebar() {
                                 ].join(" ")}
                               />
                               {sidebarOpen && (
-                                <span className="truncate flex-1 text-left pr-5">
-                                  {chat.title}
-                                </span>
+                                <>
+                                  <span className="truncate flex-1 text-left">
+                                    {chat.title}
+                                  </span>
+                                  {chat.pinned && (
+                                    <Pin size={12} className="flex-shrink-0 text-slate-400 dark:text-slate-500 fill-current" />
+                                  )}
+                                </>
                               )}
                             </button>
 
