@@ -1,7 +1,7 @@
 {
   "name": "necookie-ai",
   "type": "module",
-  "version": "0.9.4",
+  "version": "0.11.1",
   "engines": {
     "node": ">=22.12.0"
   },
