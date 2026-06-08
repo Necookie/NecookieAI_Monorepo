@@ -67,9 +67,9 @@ export default function Sidebar() {
   const groupedChats = React.useMemo(() => {
     const groups: Record<string, typeof chats> = { Recent: [] };
     filtered.forEach(chat => {
-      const folderName = chat.folder || "Recent";
-      if (!groups[folderName]) groups[folderName] = [];
-      groups[folderName].push(chat);
+      if (!chat.folder) {
+        groups.Recent.push(chat);
+      }
     });
     return groups;
   }, [filtered]);
