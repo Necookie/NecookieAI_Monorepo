@@ -49,7 +49,7 @@ function AppShell() {
         onClick={() => setSidebarOpen(false)} 
       />
       <Sidebar />
-      <div className="flex flex-col flex-1 min-w-0">
+      <div className="flex flex-col flex-1 min-w-0 relative z-10">
         <Header />
         {currentView === "folders" ? <FoldersView /> : <ChatCanvas />}
       </div>

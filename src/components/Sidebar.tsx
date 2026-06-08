@@ -81,7 +81,7 @@ export default function Sidebar() {
   return (
     <aside
       className={[
-        "flex flex-col h-full bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-transparent transition-all duration-300 ease-in-out flex-shrink-0 absolute z-40 md:relative",
+        "flex flex-col h-full bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-transparent transition-all duration-300 ease-in-out flex-shrink-0 absolute z-40 md:relative md:z-10",
         sidebarOpen 
           ? "w-[240px] translate-x-0" 
           : "w-[240px] -translate-x-full md:translate-x-0 md:w-[52px]",

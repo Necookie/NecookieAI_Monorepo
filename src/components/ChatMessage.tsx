@@ -364,7 +364,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
       {/* Bubble */}
       <div className="w-full flex">
         <div className="w-[2px] bg-blue-500 rounded-full mr-4 flex-shrink-0" />
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md p-4 rounded-[12px] border border-slate-200/50 dark:border-slate-800/50 shadow-sm">
           <div className="prose-chat text-slate-950 dark:text-slate-200">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
