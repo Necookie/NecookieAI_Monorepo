@@ -5,10 +5,12 @@ import { useAppStore } from "../lib/context";
 export default function FoldersView() {
   const chats = useAppStore((s) => s.chats);
   const [activeTab, setActiveTab] = React.useState("All");
+  const [searchQuery, setSearchQuery] = React.useState("");
 
   const existingFolders = React.useMemo(() => {
-    return Array.from(new Set(chats.map((c) => c.folder).filter(Boolean))) as string[];
-  }, [chats]);
+    const folders = Array.from(new Set(chats.map((c) => c.folder).filter(Boolean))) as string[];
+    return folders.filter(f => f.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [chats, searchQuery]);
 
   return (
     <div className="flex-1 flex flex-col items-center justify-start bg-slate-50 dark:bg-slate-950 p-6 sm:p-12 overflow-y-auto">
@@ -24,7 +26,9 @@ export default function FoldersView() {
               <Search size={14} className="text-slate-400" />
               <input
                 type="text"
-                placeholder="Search projects"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search folders"
                 className="bg-transparent text-sm outline-none text-slate-950 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 w-40"
               />
             </div>
