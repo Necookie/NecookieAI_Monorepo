@@ -46,7 +46,7 @@ export default function SignInPage() {
         <div className="flex flex-col gap-3.5">
           <SignInButton mode="modal">
             <button
-              className="flex items-center justify-center w-full h-11 text-xs font-semibold rounded-[6px] tracking-wider uppercase transition-all duration-200 cursor-pointer bg-[#0b1c30] text-white hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
+              className="flex items-center justify-center w-full h-11 text-xs font-semibold rounded-[6px] tracking-wider uppercase transition-all duration-200 cursor-pointer bg-[#0b1c30] text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500"
             >
               Sign In
             </button>
@@ -54,7 +54,7 @@ export default function SignInPage() {
 
           <SignUpButton mode="modal">
             <button
-              className="flex items-center justify-center w-full h-11 text-xs font-semibold rounded-[6px] tracking-wider uppercase transition-all duration-200 cursor-pointer bg-transparent border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-slate-400 hover:border-teal-600 hover:text-teal-600 dark:hover:border-teal-500 dark:hover:text-teal-500"
+              className="flex items-center justify-center w-full h-11 text-xs font-semibold rounded-[6px] tracking-wider uppercase transition-all duration-200 cursor-pointer bg-transparent border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-slate-400 hover:border-blue-600 hover:text-blue-600 dark:hover:border-blue-500 dark:hover:text-blue-500"
             >
               Create Account
             </button>

@@ -51,9 +51,9 @@ export default function WelcomeScreen() {
               id={`suggestion-${i}`}
               onClick={() => sendMessage(s.prompt + " ")}
               className={[
-                "group text-left p-4 rounded-[8px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900",
-                "hover:border-teal-300 dark:hover:border-teal-700 hover:bg-teal-50/40 dark:hover:bg-teal-900/30 hover:shadow-sm",
-                "transition-all duration-150",
+                "group text-left p-4 rounded-[8px] border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40",
+                "hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50/40 dark:hover:bg-blue-900/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.15)] dark:hover:shadow-[0_0_15px_rgba(59,130,246,0.15)]",
+                "transition-all duration-300",
                 // Make the last card in 4-card grid span if odd
                 i === SUGGESTION_PROMPTS.length - 1 && SUGGESTION_PROMPTS.length % 2 !== 0
                   ? "col-span-2"
@@ -61,8 +61,8 @@ export default function WelcomeScreen() {
               ].join(" ")}
             >
               <div className="flex items-center gap-2.5 mb-2">
-                <div className="flex items-center justify-center w-6 h-6 rounded-[4px] bg-teal-100 dark:bg-teal-900/50 group-hover:bg-teal-200 dark:group-hover:bg-teal-800/50 transition-colors">
-                  <Icon size={13} className="text-teal-600 dark:text-teal-400" />
+                <div className="flex items-center justify-center w-6 h-6 rounded-[4px] bg-blue-100 dark:bg-blue-900/50 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
+                  <Icon size={13} className="text-blue-600 dark:text-blue-400" />
                 </div>
                 <span className="text-sm font-semibold text-slate-950 dark:text-slate-300">{s.title}</span>
               </div>

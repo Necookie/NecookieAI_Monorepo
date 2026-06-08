@@ -81,7 +81,7 @@ export default function Sidebar() {
   return (
     <aside
       className={[
-        "flex flex-col h-full bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-transparent transition-all duration-300 ease-in-out flex-shrink-0 absolute z-40 md:relative",
+        "flex flex-col h-full bg-slate-50/50 dark:bg-slate-900/60 border-r border-slate-200 dark:border-transparent transition-all duration-300 ease-in-out flex-shrink-0 absolute z-40 md:relative",
         sidebarOpen 
           ? "w-[240px] translate-x-0" 
           : "w-[240px] -translate-x-full md:translate-x-0 md:w-[52px]",
@@ -122,7 +122,7 @@ export default function Sidebar() {
           id="new-chat-btn"
           onClick={newChat}
           className={[
-            "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm font-medium",
+            "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-[0_0_12px_rgba(59,130,246,0.2)] transition-all duration-300 text-sm font-medium",
             sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
           ].join(" ")}
         >
@@ -134,7 +134,7 @@ export default function Sidebar() {
           id="manage-folders-btn"
           onClick={() => setCurrentView("folders")}
           className={[
-            "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm font-medium",
+            "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-[0_0_12px_rgba(59,130,246,0.2)] transition-all duration-300 text-sm font-medium",
             sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
           ].join(" ")}
         >
@@ -199,7 +199,7 @@ export default function Sidebar() {
                                 "flex items-center gap-2 w-full rounded-[6px] text-sm transition-colors",
                                 sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
                                 isActive
-                                  ? "bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 font-medium"
+                                  ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium"
                                   : "text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
                               ].join(" ")}
                             >
@@ -207,7 +207,7 @@ export default function Sidebar() {
                                 size={14}
                                 className={[
                                   "flex-shrink-0",
-                                  isActive ? "text-teal-500 dark:text-teal-400" : "text-slate-400 dark:text-slate-950",
+                                  isActive ? "text-blue-500 dark:text-blue-400" : "text-slate-400 dark:text-slate-950",
                                 ].join(" ")}
                               />
                               {sidebarOpen && (
@@ -224,7 +224,7 @@ export default function Sidebar() {
                                     e.stopPropagation();
                                     setFolderModalChatId(chat.id);
                                   }}
-                                  className="flex items-center justify-center w-5 h-5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-teal-500 text-slate-400 dark:text-slate-950 transition-colors"
+                                  className="flex items-center justify-center w-5 h-5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-500 text-slate-400 dark:text-slate-950 transition-colors"
                                   title="Move to folder"
                                 >
                                   <FolderPlus size={12} />
@@ -265,7 +265,7 @@ export default function Sidebar() {
             id={id}
             onClick={onClick}
             className={[
-              "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-slate-300 text-sm transition-colors",
+              "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-[0_0_12px_rgba(59,130,246,0.2)] transition-all duration-300 text-sm",
               sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
             ].join(" ")}
           >
@@ -287,7 +287,7 @@ export default function Sidebar() {
                   <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400 dark:text-slate-950">
                     Session Status
                   </span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-teal-500" title="Connected" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500" title="Connected" />
                 </div>
                 <div className="flex items-center gap-2.5 min-w-0 mt-1">
                   <div className="flex-shrink-0 border border-slate-200 dark:border-slate-700 rounded-full p-0.5 bg-white dark:bg-slate-800">

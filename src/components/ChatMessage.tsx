@@ -35,7 +35,7 @@ const TypingIndicator = () => (
     {[0, 1, 2].map((i) => (
       <span
         key={i}
-        className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce"
+        className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-bounce"
         style={{ animationDelay: `${i * 0.15}s` }}
       />
     ))}
@@ -305,7 +305,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
               <button
                 onClick={handleEditSubmit}
                 disabled={!editValue.trim()}
-                className="px-4 py-2 text-sm font-medium text-white bg-teal-500 hover:bg-teal-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-[8px] transition-colors"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-[8px] transition-colors"
               >
                 Save & Submit
               </button>
@@ -348,7 +348,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
     <div className="flex flex-col items-start mb-8 group">
       {/* Label */}
       <div className="flex items-center gap-2 mb-3">
-        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center shadow-sm">
+        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-sm">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
             <path
               d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"
@@ -356,14 +356,14 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
             />
           </svg>
         </div>
-        <span className="text-[11px] font-medium tracking-widest text-teal-600 dark:text-teal-400 uppercase font-mono">
+        <span className="text-[11px] font-medium tracking-widest text-blue-600 dark:text-blue-400 uppercase font-mono">
           AI
         </span>
       </div>
 
       {/* Bubble */}
       <div className="w-full flex">
-        <div className="w-[2px] bg-teal-500 rounded-full mr-4 flex-shrink-0" />
+        <div className="w-[2px] bg-blue-500 rounded-full mr-4 flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="prose-chat text-slate-950 dark:text-slate-200">
             <ReactMarkdown
@@ -390,7 +390,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
             </ReactMarkdown>
             {message.streaming && !smoothedContent && <TypingIndicator />}
             {message.streaming && smoothedContent && (
-              <span className="inline-block w-0.5 h-4 bg-teal-500 ml-0.5 animate-pulse align-middle" />
+              <span className="inline-block w-0.5 h-4 bg-blue-500 ml-0.5 animate-pulse align-middle" />
             )}
           </div>
 
@@ -402,7 +402,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
                 className="flex items-center justify-center w-7 h-7 rounded-[6px] text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f] transition-colors"
                 title="Copy message"
               >
-                {isCopied ? <Check size={14} className="text-teal-500" /> : <Copy size={14} />}
+                {isCopied ? <Check size={14} className="text-blue-500" /> : <Copy size={14} />}
               </button>
 
               {onRegenerate && (

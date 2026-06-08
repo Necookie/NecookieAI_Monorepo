@@ -40,7 +40,7 @@ function SectionHeader({
 }) {
   return (
     <h2 className="flex items-center gap-2 text-base font-semibold text-slate-950 dark:text-slate-200 mb-5">
-      <span className="text-teal-500 flex-shrink-0">{icon}</span>
+      <span className="text-blue-500 flex-shrink-0">{icon}</span>
       {title}
     </h2>
   );
@@ -66,7 +66,7 @@ function DocCard({
       className="block p-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-slate-400 dark:hover:border-slate-500 hover:shadow-sm transition-all group"
       onClick={(e) => e.preventDefault()}
     >
-      <span className="text-slate-400 dark:text-slate-950 group-hover:text-teal-500 mb-3 block transition-colors">
+      <span className="text-slate-400 dark:text-slate-950 group-hover:text-blue-500 mb-3 block transition-colors">
         {icon}
       </span>
       <h3 className="text-sm font-semibold text-slate-950 dark:text-slate-200 mb-1">{title}</h3>
@@ -140,7 +140,7 @@ export default function HelpPanel() {
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-8">
 
           {/* ── Documentation ── */}
-          <section className="pl-4 border-l-2 border-slate-200 dark:border-slate-800 hover:border-teal-400 dark:hover:border-teal-500 transition-colors duration-300">
+          <section className="pl-4 border-l-2 border-slate-200 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-500 transition-colors duration-300">
             <SectionHeader icon={<BookOpen size={16} />} title={t.documentation} />
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <DocCard
@@ -165,7 +165,7 @@ export default function HelpPanel() {
           </section>
 
           {/* ── Keyboard Shortcuts ── */}
-          <section className="pl-4 border-l-2 border-slate-200 dark:border-slate-800 hover:border-teal-400 dark:hover:border-teal-500 transition-colors duration-300">
+          <section className="pl-4 border-l-2 border-slate-200 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-500 transition-colors duration-300">
             <SectionHeader icon={<Keyboard size={16} />} title={t.keyboardShortcuts} />
             <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden">
               <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 dark:divide-slate-800">
@@ -184,7 +184,7 @@ export default function HelpPanel() {
           </section>
 
           {/* ── Support ── */}
-          <section className="pl-4 border-l-2 border-slate-200 dark:border-slate-800 hover:border-teal-400 dark:hover:border-teal-500 transition-colors duration-300">
+          <section className="pl-4 border-l-2 border-slate-200 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-500 transition-colors duration-300">
             <SectionHeader icon={<Headphones size={16} />} title={t.support} />
             <div className="flex flex-wrap gap-3">
               <button

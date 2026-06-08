@@ -15,12 +15,12 @@
   --color-slate-900: #171717;
   --color-slate-950: #000000;
 
-  --color-teal-400: #2dd4bf;
-  --color-teal-500: #14b8a6;
-  --color-teal-600: #0d9488;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
 
-  --color-accent: #14b8a6;
-  --color-accent-hover: #0d9488;
+  --color-accent: #3b82f6;
+  --color-accent-hover: #2563eb;
 
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -119,7 +119,7 @@
 
   .prose-chat code:not(pre code) {
     background: var(--color-slate-150);
-    color: var(--color-teal-600);
+    color: var(--color-blue-600);
     padding: 0.125rem 0.375rem;
     border-radius: 3px;
     font-family: var(--font-mono);
@@ -128,7 +128,7 @@
   }
   .dark .prose-chat code:not(pre code) {
     background: var(--color-slate-800);
-    color: var(--color-teal-400);
+    color: var(--color-blue-400);
     border-color: var(--color-slate-700);
   }
 
@@ -214,7 +214,7 @@
   }
 
   .prose-chat blockquote {
-    border-left: 3px solid var(--color-teal-500);
+    border-left: 3px solid var(--color-blue-500);
     margin: 0.75rem 0;
     padding: 0.25rem 0 0.25rem 1rem;
     color: var(--color-slate-500);
@@ -225,14 +225,14 @@
   }
 
   .prose-chat a {
-    color: var(--color-teal-600);
+    color: var(--color-blue-600);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
   }
 
   .prose-chat a:hover {
-    color: var(--color-teal-500);
+    color: var(--color-blue-500);
   }
 
   .prose-chat strong {

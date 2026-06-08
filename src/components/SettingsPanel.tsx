@@ -91,8 +91,8 @@ function Toggle({ checked, onChange, id }: { checked: boolean; onChange: (v: boo
       aria-checked={checked}
       onClick={() => onChange(!checked)}
       className={[
-        "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2",
-        checked ? "bg-teal-500" : "bg-slate-200 dark:bg-slate-700",
+        "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+        checked ? "bg-blue-500" : "bg-slate-200 dark:bg-slate-700",
       ].join(" ")}
     >
       <span
@@ -124,7 +124,7 @@ function SelectField({
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full appearance-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-950 dark:text-slate-200 font-mono text-sm py-2 pl-3 pr-9 rounded-[6px] focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors cursor-pointer"
+        className="w-full appearance-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-950 dark:text-slate-200 font-mono text-sm py-2 pl-3 pr-9 rounded-[6px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors cursor-pointer"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -254,7 +254,7 @@ export default function SettingsPanel() {
                       className={[
                         "px-3 py-1.5 rounded-[4px] text-xs font-medium transition-colors",
                         theme === mode
-                          ? "bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-900/30 dark:text-teal-400 dark:border-teal-800/50"
+                          ? "bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50"
                           : "text-slate-950 hover:text-slate-950 hover:bg-slate-50 dark:hover:text-slate-300 dark:hover:bg-slate-700",
                       ].join(" ")}
                     >
@@ -299,7 +299,7 @@ export default function SettingsPanel() {
                       setApiKeyStatus("idle");
                     }}
                     placeholder="sk-..."
-                    className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-950 dark:text-slate-200 font-mono text-sm rounded-[6px] focus:ring-1 focus:ring-teal-500 focus:border-teal-500 block w-full pl-9 pr-10 py-2.5 transition-colors"
+                    className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-950 dark:text-slate-200 font-mono text-sm rounded-[6px] focus:ring-1 focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 pr-10 py-2.5 transition-colors"
                   />
                   <button
                     id="settings-api-key-visibility"
@@ -322,8 +322,8 @@ export default function SettingsPanel() {
 
               {apiKeyStatus === "active" && (
                 <div className="flex items-center gap-1.5">
-                  <CheckCircle2 size={14} className="text-teal-500 flex-shrink-0" />
-                  <span className="text-xs text-teal-600 font-medium">{t.keyActive}</span>
+                  <CheckCircle2 size={14} className="text-blue-500 flex-shrink-0" />
+                  <span className="text-xs text-blue-600 font-medium">{t.keyActive}</span>
                 </div>
               )}
             </div>
@@ -361,7 +361,7 @@ export default function SettingsPanel() {
           <button
             id="settings-save-btn"
             onClick={handleSave}
-            className="px-5 py-2 bg-slate-800 dark:bg-teal-600 text-white hover:bg-slate-700 dark:hover:bg-teal-500 rounded-[6px] text-sm font-semibold transition-colors shadow-sm"
+            className="px-5 py-2 bg-slate-800 dark:bg-blue-600 text-white hover:bg-slate-700 dark:hover:bg-blue-500 rounded-[6px] text-sm font-semibold transition-colors shadow-sm"
           >
             {t.saveChanges}
           </button>

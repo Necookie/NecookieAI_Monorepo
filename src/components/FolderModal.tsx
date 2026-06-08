@@ -49,7 +49,7 @@ export default function FolderModal({ initialFolder, existingFolders, onClose, o
           value={folderName}
           onChange={(e) => setFolderName(e.target.value)}
           placeholder="Folder name..."
-          className="w-full px-3 py-2 bg-transparent border border-slate-200 dark:border-slate-800 rounded-[6px] text-slate-950 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-teal-500 dark:focus:border-teal-500 transition-colors mb-6 text-sm"
+          className="w-full px-3 py-2 bg-transparent border border-slate-200 dark:border-slate-800 rounded-[6px] text-slate-950 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-500 transition-colors mb-6 text-sm"
         />
 
         {existingFolders.length > 0 && (
@@ -65,7 +65,7 @@ export default function FolderModal({ initialFolder, existingFolders, onClose, o
                     setFolderName(f);
                     if (inputRef.current) inputRef.current.focus();
                   }}
-                  className="px-2 py-1 text-xs font-mono rounded-[4px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-teal-900/30 hover:text-teal-600 dark:hover:text-teal-400 transition-colors border border-transparent hover:border-teal-200 dark:hover:border-teal-800"
+                  className="px-2 py-1 text-xs font-mono rounded-[4px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 transition-colors border border-transparent hover:border-blue-200 dark:hover:border-blue-800"
                 >
                   {f}
                 </button>
@@ -83,7 +83,7 @@ export default function FolderModal({ initialFolder, existingFolders, onClose, o
           </button>
           <button
             onClick={() => onSave(folderName)}
-            className="px-4 py-2 border border-teal-500 text-teal-600 dark:text-teal-400 font-mono text-xs uppercase tracking-wider rounded-[6px] hover:bg-teal-500 hover:text-white dark:hover:bg-teal-500 dark:hover:text-slate-950 transition-colors"
+            className="px-4 py-2 border border-blue-500 text-blue-600 dark:text-blue-400 font-mono text-xs uppercase tracking-wider rounded-[6px] hover:bg-blue-500 hover:text-white dark:hover:bg-blue-500 dark:hover:text-slate-950 transition-colors"
           >
             Save
           </button>
