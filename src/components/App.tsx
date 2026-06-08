@@ -22,6 +22,7 @@ import ChatCanvas from "./ChatCanvas";
 import FoldersView from "./FoldersView";
 import SettingsPanel from "./SettingsPanel";
 import HelpPanel from "./HelpPanel";
+import RainBackground from "./RainBackground";
 
 /**
  * Inner shell — separated so it can consume AppProvider context.
@@ -41,6 +42,7 @@ function AppShell() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 font-sans relative">
+      <RainBackground />
       {/* Mobile overlay */}
       <div 
         className={`md:hidden fixed inset-0 bg-slate-900/50 z-30 transition-opacity ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} 
