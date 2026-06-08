@@ -213,8 +213,12 @@ export default function Sidebar() {
                     )}
                   </button>
 
-                  {sidebarOpen && (isHovered || openMenuId === chat.id) && !isActive && (
-                    <div className="absolute right-2 flex items-center z-10 bg-gradient-to-l from-white via-white to-transparent dark:from-slate-950 dark:via-slate-950 pr-1 pl-4 h-full">
+                  {sidebarOpen && (isHovered || openMenuId === chat.id) && (
+                    <div className={`absolute right-2 flex items-center z-10 bg-gradient-to-l pr-1 pl-4 h-full to-transparent dark:to-transparent ${
+                      isActive 
+                        ? "from-blue-50 via-blue-50 dark:from-[#101b33] dark:via-[#101b33]" 
+                        : "from-slate-100 via-slate-100 dark:from-slate-800 dark:via-slate-800"
+                    }`}>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
