@@ -14,7 +14,7 @@ export const PATCH: APIRoute = async (context) => {
     }
 
     const body = await context.request.json();
-    const { id, folder } = body;
+    const { id, folder, pinned } = body;
 
     if (!id) {
       return new Response(JSON.stringify({ error: "Missing chat ID" }), {
@@ -23,9 +23,13 @@ export const PATCH: APIRoute = async (context) => {
       });
     }
 
+    const updateData: any = {};
+    if (folder !== undefined) updateData.folder = folder || null;
+    if (pinned !== undefined) updateData.pinned = pinned;
+
     // Securely update only if the chat belongs to the authenticated user
     await db.update(chats)
-      .set({ folder: folder || null })
+      .set(updateData)
       .where(and(eq(chats.id, id), eq(chats.userId, userId)));
 
     return new Response(JSON.stringify({ success: true }), {

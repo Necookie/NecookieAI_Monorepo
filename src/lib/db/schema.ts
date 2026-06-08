@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 
 /**
@@ -37,6 +37,7 @@ export const chats = sqliteTable("chats", {
   title: text("title").notNull(),
   createdAt: text("created_at").notNull(),
   folder: text("folder"),
+  pinned: integer("pinned", { mode: "boolean" }).default(false),
 });
 
 export const chatsRelations = relations(chats, ({ many }) => ({

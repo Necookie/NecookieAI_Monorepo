@@ -114,6 +114,7 @@ interface AppStore {
   selectChat: (id: string) => void;
   deleteChat: (id: string) => void;
   updateChatFolder: (chatId: string, folder: string | null) => Promise<void>;
+  togglePinChat: (chatId: string) => Promise<void>;
   sendMessage: (content: string) => Promise<void>;
   regenerateMessage: (messageId: string) => Promise<void>;
   editAndResend: (messageId: string, newContent: string) => Promise<void>;
@@ -238,6 +239,26 @@ export const useAppStore = create<AppStore>((set, get) => ({
       });
     } catch (err) {
       console.error("Failed to update folder", err);
+    }
+  },
+
+  togglePinChat: async (chatId) => {
+    const chat = get().chats.find(c => c.id === chatId);
+    if (!chat) return;
+    const newPinned = !chat.pinned;
+    
+    set((state) => ({
+      chats: state.chats.map((c) => (c.id === chatId ? { ...c, pinned: newPinned } : c)),
+    }));
+
+    try {
+      await fetch("/api/chats/update", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: chatId, pinned: newPinned }),
+      });
+    } catch (err) {
+      console.error("Failed to update pin status", err);
     }
   },
 

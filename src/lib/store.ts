@@ -39,6 +39,7 @@ export interface Chat {
   messages: Message[];
   createdAt: string;
   folder?: string | null;
+  pinned?: boolean;
 }
 
 export interface Model {

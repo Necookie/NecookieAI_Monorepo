@@ -28,6 +28,7 @@ import {
   Folder,
   ChevronDown,
   ChevronRight,
+  Pin,
 } from "lucide-react";
 import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
@@ -47,6 +48,7 @@ export default function Sidebar() {
   const setShowHelp = useAppStore(s => s.setShowHelp);
   const language = useAppStore(s => s.language);
   const updateChatFolder = useAppStore(s => s.updateChatFolder);
+  const togglePinChat = useAppStore(s => s.togglePinChat);
   
   const t = getTranslations(language).sidebar;
   const { user } = useUser();
@@ -65,9 +67,11 @@ export default function Sidebar() {
   const [collapsedFolders, setCollapsedFolders] = React.useState<Record<string, boolean>>({});
 
   const groupedChats = React.useMemo(() => {
-    const groups: Record<string, typeof chats> = { Recent: [] };
+    const groups: Record<string, typeof chats> = { Pinned: [], Recent: [] };
     filtered.forEach(chat => {
-      if (!chat.folder) {
+      if (chat.pinned) {
+        groups.Pinned.push(chat);
+      } else if (!chat.folder) {
         groups.Recent.push(chat);
       }
     });
@@ -175,8 +179,8 @@ export default function Sidebar() {
                     className="flex items-center gap-1.5 w-full text-[10px] font-semibold tracking-wider text-slate-400 dark:text-slate-950 uppercase px-3 py-1 mb-0.5 hover:text-slate-950 dark:hover:text-slate-300 transition-colors"
                   >
                     {isCollapsed ? <ChevronRight size={12} /> : <ChevronDown size={12} />}
-                    {folderName !== "Recent" && <Folder size={10} className="mr-0.5" />}
-                    {folderName === "Recent" ? t.recent : folderName}
+                    {folderName !== "Recent" && folderName !== "Pinned" && <Folder size={10} className="mr-0.5" />}
+                    {folderName === "Recent" ? t.recent : folderName === "Pinned" ? "Pinned" : folderName}
                   </button>
                 )}
                 
@@ -228,6 +232,16 @@ export default function Sidebar() {
                                   title="Move to folder"
                                 >
                                   <FolderPlus size={12} />
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    togglePinChat(chat.id);
+                                  }}
+                                  className="flex items-center justify-center w-5 h-5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-500 text-slate-400 dark:text-slate-950 transition-colors"
+                                  title={chat.pinned ? "Unpin chat" : "Pin chat"}
+                                >
+                                  <Pin size={12} className={chat.pinned ? "fill-current" : ""} />
                                 </button>
                                 <button
                                   id={`delete-chat-${chat.id}`}
