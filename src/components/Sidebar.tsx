@@ -96,10 +96,10 @@ export default function Sidebar() {
       <div className="flex items-center justify-between px-3 pt-3 pb-2">
         {sidebarOpen && (
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold tracking-wider text-slate-400 dark:text-slate-950 uppercase leading-none">
+            <p className="text-[11px] font-semibold tracking-wider text-slate-400 dark:text-slate-400 uppercase leading-none">
               {t.history}
             </p>
-            <p className="text-[11px] text-slate-400 dark:text-slate-950 leading-snug mt-0.5">
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug mt-0.5">
               {t.lastSevenDays}
             </p>
           </div>
@@ -198,7 +198,7 @@ export default function Sidebar() {
                       size={14}
                       className={[
                         "flex-shrink-0",
-                        isActive ? "text-blue-500 dark:text-blue-400" : "text-slate-400 dark:text-slate-950",
+                        isActive ? "text-blue-500 dark:text-blue-400" : "text-slate-400 dark:text-slate-400",
                       ].join(" ")}
                     />
                     {sidebarOpen && (
@@ -306,7 +306,7 @@ export default function Sidebar() {
             {sidebarOpen ? (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400 dark:text-slate-950">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400 dark:text-slate-400">
                     Session Status
                   </span>
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500" title="Connected" />

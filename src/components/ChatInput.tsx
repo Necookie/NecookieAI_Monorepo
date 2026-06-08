@@ -93,7 +93,7 @@ export default function ChatInput({ onSend, isStreaming, placeholder = "Message 
           "flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-[6px] transition-all mb-0.5",
           canSend || isStreaming
             ? "bg-slate-800 dark:bg-white text-white dark:text-black shadow-sm"
-            : "bg-slate-100 dark:bg-transparent text-slate-400 dark:text-slate-950 cursor-not-allowed",
+            : "bg-slate-100 dark:bg-transparent text-slate-400 dark:text-slate-600 cursor-not-allowed",
         ].join(" ")}
         disabled={!canSend && !isStreaming}
         aria-label={isStreaming ? "Stop generation" : "Send message"}

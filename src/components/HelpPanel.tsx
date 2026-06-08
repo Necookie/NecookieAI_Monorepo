@@ -66,7 +66,7 @@ function DocCard({
       className="block p-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-slate-400 dark:hover:border-slate-500 hover:shadow-sm transition-all group"
       onClick={(e) => e.preventDefault()}
     >
-      <span className="text-slate-400 dark:text-slate-950 group-hover:text-blue-500 mb-3 block transition-colors">
+      <span className="text-slate-400 dark:text-slate-400 group-hover:text-blue-500 mb-3 block transition-colors">
         {icon}
       </span>
       <h3 className="text-sm font-semibold text-slate-950 dark:text-slate-200 mb-1">{title}</h3>
@@ -129,7 +129,7 @@ export default function HelpPanel() {
           <button
             id="help-close-btn"
             onClick={() => setShowHelp(false)}
-            className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 dark:text-slate-950 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-4 flex-shrink-0"
+            className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-4 flex-shrink-0"
             aria-label="Close help"
           >
             <X size={16} />

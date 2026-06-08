@@ -63,7 +63,7 @@ export default function SignInPage() {
 
         {/* Footer info */}
         <div className="mt-9 text-center">
-          <span className="text-[10px] tracking-wider font-semibold text-slate-400 dark:text-slate-950 uppercase">
+          <span className="text-[10px] tracking-wider font-semibold text-slate-400 dark:text-slate-400 uppercase">
             Secured by Clerk
           </span>
         </div>

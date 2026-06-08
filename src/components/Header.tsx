@@ -78,13 +78,13 @@ export default function Header() {
             <span className="font-medium">{t.model}</span>
             <ChevronDown
               size={13}
-              className={`text-slate-400 dark:text-slate-950 transition-transform duration-150 ${modelOpen ? "rotate-180" : ""}`}
+              className={`text-slate-400 dark:text-slate-400 transition-transform duration-150 ${modelOpen ? "rotate-180" : ""}`}
             />
           </button>
 
           {modelOpen && (
             <div className="absolute right-0 top-full mt-1.5 w-52 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-[8px] shadow-lg shadow-slate-200/60 dark:shadow-slate-900/60 py-1 z-50">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-950 px-3 py-1.5">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400 px-3 py-1.5">
                 {t.selectModel}
               </p>
               {AVAILABLE_MODELS.map((m) => (
@@ -119,7 +119,7 @@ export default function Header() {
             const isDark = theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches);
             setTheme(isDark ? "light" : "dark");
           }}
-          className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 dark:text-slate-950 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           aria-label="Toggle theme"
         >
           {theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches) ? (
