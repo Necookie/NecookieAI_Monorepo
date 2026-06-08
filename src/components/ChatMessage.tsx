@@ -371,8 +371,8 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
               components={{
                 code({ node, inline, className, children, ...props }: any) {
                   const match = /language-(\w+)/.exec(className || "");
-                  const isInline = inline || (!match && !className?.includes("language-"));
-                  const lang = match ? match[1] : "";
+                  const isInline = !!inline;
+                  const lang = match ? match[1] : "text";
 
                   if (isInline) {
                     return <code className={className} {...props}>{children}</code>;
