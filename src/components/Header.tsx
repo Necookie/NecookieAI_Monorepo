@@ -32,6 +32,7 @@ export default function Header() {
   const t = getTranslations(language).header;
   const theme = useAppStore(s => s.theme);
   const setTheme = useAppStore(s => s.setTheme);
+  const compactMode = useAppStore(s => s.compactMode);
   const [modelOpen, setModelOpen] = useState(false);
   const dropRef = useRef<HTMLDivElement>(null);
 
@@ -52,7 +53,7 @@ export default function Header() {
   }
 
   return (
-    <header className="flex items-center justify-between gap-3 px-5 py-3 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 flex-shrink-0 h-[52px]">
+    <header className={`flex items-center justify-between gap-3 px-5 ${compactMode ? "py-1.5 h-[42px]" : "py-3 h-[52px]"} border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 flex-shrink-0`}>
       {/* Title — min-w-0 lets flex truncate correctly */}
       <div className="flex items-center gap-2 min-w-0 flex-1">
         <button
@@ -73,7 +74,7 @@ export default function Header() {
           <button
             id="model-selector-btn"
             onClick={() => setModelOpen(!modelOpen)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-sm text-slate-950 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors"
+            className={`flex items-center gap-1.5 px-3 ${compactMode ? "py-1" : "py-1.5"} rounded-[6px] text-sm text-slate-950 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors`}
           >
             <span className="font-medium">{t.model}</span>
             <ChevronDown
@@ -121,7 +122,7 @@ export default function Header() {
             const isDark = theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches);
             setTheme(isDark ? "light" : "dark");
           }}
-          className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className={`flex items-center justify-center ${compactMode ? "w-7 h-7" : "w-8 h-8"} rounded-[6px] text-slate-400 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors`}
           aria-label="Toggle theme"
         >
           {theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches) ? (

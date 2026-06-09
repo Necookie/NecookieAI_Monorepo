@@ -46,6 +46,7 @@ export default function Sidebar() {
   const setShowSettings = useAppStore(s => s.setShowSettings);
   const setShowHelp = useAppStore(s => s.setShowHelp);
   const language = useAppStore(s => s.language);
+  const compactMode = useAppStore(s => s.compactMode);
   const updateChatFolder = useAppStore(s => s.updateChatFolder);
   const togglePinChat = useAppStore(s => s.togglePinChat);
   
@@ -128,7 +129,7 @@ export default function Sidebar() {
           onClick={newChat}
           className={[
             "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-[0_0_12px_rgba(59,130,246,0.2)] transition-all duration-300 text-sm font-medium",
-            sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
+            sidebarOpen ? (compactMode ? "px-3 py-1.5" : "px-3 py-2") : "p-2 justify-center",
           ].join(" ")}
         >
           <Plus size={15} className="flex-shrink-0 text-slate-950 dark:text-slate-400" />
@@ -140,7 +141,7 @@ export default function Sidebar() {
           onClick={() => setCurrentView("folders")}
           className={[
             "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-[0_0_12px_rgba(59,130,246,0.2)] transition-all duration-300 text-sm font-medium",
-            sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
+            sidebarOpen ? (compactMode ? "px-3 py-1.5" : "px-3 py-2") : "p-2 justify-center",
           ].join(" ")}
         >
           <Folder size={15} className="flex-shrink-0 text-slate-950 dark:text-slate-400" />
@@ -188,7 +189,7 @@ export default function Sidebar() {
                     onClick={() => selectChat(chat.id)}
                     className={[
                       "flex items-center gap-2 w-full rounded-[6px] text-sm transition-colors",
-                      sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
+                      sidebarOpen ? (compactMode ? "px-3 py-1" : "px-3 py-2") : "p-2 justify-center",
                       isActive
                         ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium"
                         : "text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
@@ -288,7 +289,7 @@ export default function Sidebar() {
             onClick={onClick}
             className={[
               "flex items-center gap-2 w-full rounded-[6px] text-slate-950 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-[0_0_12px_rgba(59,130,246,0.2)] transition-all duration-300 text-sm",
-              sidebarOpen ? "px-3 py-2" : "p-2 justify-center",
+              sidebarOpen ? (compactMode ? "px-3 py-1.5" : "px-3 py-2") : "p-2 justify-center",
             ].join(" ")}
           >
             <span className="flex-shrink-0">{icon}</span>
