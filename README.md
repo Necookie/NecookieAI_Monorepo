@@ -4,7 +4,7 @@ Welcome to **Necookie AI**, an intelligent, self-hosted web interface and assist
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 - **Model Selection:** Seamlessly switch between configured upstream models (e.g., `necookie-ai`, `necookie-ai-8b`) directly from the header.
 - **Authentication:** Integrated [Clerk](https://clerk.com/) authentication to securely manage users and session status.
@@ -15,7 +15,7 @@ Welcome to **Necookie AI**, an intelligent, self-hosted web interface and assist
 
 ---
 
-## 🎨 Design Philosophy & Aesthetic
+## Design Philosophy & Aesthetic
 
 The interface is built around a **Modern Minimalist & Technical/Developer-centric** design philosophy. It is engineered to evoke mental clarity and industrial precision, prioritizing typographic flow and clean spacing over heavy decorative containers.
 
@@ -29,7 +29,7 @@ The interface is built around a **Modern Minimalist & Technical/Developer-centri
 
 ---
 
-## 🏗️ Tech Stack & Architecture
+## Tech Stack & Architecture
 
 Necookie AI is built as a server-rendered (SSR) application using a single-island React architecture on top of Astro.
 
@@ -49,7 +49,7 @@ Necookie AI is built as a server-rendered (SSR) application using a single-islan
 
 ---
 
-## 📂 Folder Structure
+## Folder Structure
 
 ```text
 /
@@ -74,7 +74,7 @@ Necookie AI is built as a server-rendered (SSR) application using a single-islan
 
 ---
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
 Follow these steps to run Necookie AI locally.
 
@@ -113,7 +113,7 @@ pnpm run build
 
 ---
 
-## 🔒 AI Safety & Privacy
+## AI Safety & Privacy
 
 ### Zero Data Leakage
 Your queries, secrets, and code snippets are handled with privacy by design:
@@ -123,6 +123,6 @@ Your queries, secrets, and code snippets are handled with privacy by design:
 
 ---
 
-## 📜 Acknowledgments & License
+## Acknowledgments & License
 
 This project uses the Qwen2.5-Coder 3B model by Alibaba Cloud, licensed under the Apache License 2.0. The Necookie AI configuration, web UI, and backend wrapper code are also distributed under the Apache License 2.0.
