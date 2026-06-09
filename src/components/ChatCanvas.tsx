@@ -31,6 +31,7 @@ export default function ChatCanvas() {
   const error = useAppStore(s => s.error);
   const clearError = useAppStore(s => s.clearError);
   const language = useAppStore(s => s.language);
+  const compactMode = useAppStore(s => s.compactMode);
   
   const t = getTranslations(language);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -72,7 +73,7 @@ export default function ChatCanvas() {
         id="chat-scroll-area"
       >
         {hasMessages ? (
-          <div className="max-w-[760px] mx-auto px-6 py-6">
+          <div className={`max-w-[760px] mx-auto ${compactMode ? "px-4 py-3" : "px-6 py-6"}`}>
             {activeChat!.messages.map((msg) => (
               <ChatMessage 
                 key={msg.id} 
@@ -108,7 +109,7 @@ export default function ChatCanvas() {
 
       {/* Input area */}
       <div className="flex-shrink-0 border-t border-slate-200 dark:border-transparent bg-white dark:bg-slate-950">
-        <div className="max-w-[760px] mx-auto px-6 py-3">
+        <div className={`max-w-[760px] mx-auto ${compactMode ? "px-4 py-2" : "px-6 py-3"}`}>
           <ChatInput onSend={sendMessage} isStreaming={isStreaming} placeholder={t.chat.placeholder} />
           <p className="text-center text-[11px] text-slate-400 dark:text-slate-500 mt-2">
             Necookie AI can make mistakes. Verify important info.

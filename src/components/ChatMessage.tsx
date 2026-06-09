@@ -20,6 +20,7 @@ import remarkGfm from "remark-gfm";
 import { RefreshCw, Pencil, Copy, Check } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useAppStore } from "../lib/context";
 import type { Message } from "../lib/store";
 
 interface Props {
@@ -218,6 +219,7 @@ function ActionButton({
 // ─── ChatMessage ─────────────────────────────────────────────────────────────
 
 const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAndResend }: Props) {
+  const compactMode = useAppStore(s => s.compactMode);
   const isUser = message.role === "user";
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(message.content);
@@ -283,7 +285,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
   if (isUser) {
     if (isEditing) {
       return (
-        <div className="flex flex-col items-end mb-8 w-full max-w-3xl ml-auto">
+        <div className={`flex flex-col items-end w-full max-w-3xl ml-auto ${compactMode ? "mb-4" : "mb-8"}`}>
           <div className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-[12px] p-3 shadow-sm">
             <textarea
               className="w-full bg-transparent text-[#0b1c30] dark:text-slate-100 text-[15px] outline-none resize-none min-h-[100px] mb-2"
@@ -316,8 +318,8 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
     }
 
     return (
-      <div className="flex flex-col items-end mb-8 group w-full">
-        <span className="text-[11px] font-medium tracking-widest text-slate-400 uppercase font-mono mb-2 mr-2">
+      <div className={`flex flex-col items-end group w-full ${compactMode ? "mb-4" : "mb-8"}`}>
+        <span className={`text-[11px] font-medium tracking-widest text-slate-400 uppercase font-mono mr-2 ${compactMode ? "mb-1" : "mb-2"}`}>
           User
         </span>
         <div className="flex items-end gap-3 max-w-[85%]">
@@ -334,7 +336,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
             </button>
           )}
           <div
-            className="px-5 py-3 rounded-[12px] bg-[#eff4ff] dark:bg-[#2f2f2f] text-[#0b1c30] dark:text-slate-100 text-[15px] leading-relaxed border border-[#e5eeff] dark:border-transparent"
+            className={`${compactMode ? "px-4 py-2" : "px-5 py-3"} rounded-[12px] bg-[#eff4ff] dark:bg-[#2f2f2f] text-[#0b1c30] dark:text-slate-100 text-[15px] leading-relaxed border border-[#e5eeff] dark:border-transparent`}
             style={{ wordBreak: "break-word" }}
           >
             {message.content}
@@ -345,9 +347,9 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
   }
 
   return (
-    <div className="flex flex-col items-start mb-8 group">
+    <div className={`flex flex-col items-start group ${compactMode ? "mb-4" : "mb-8"}`}>
       {/* Label */}
-      <div className="flex items-center gap-2 mb-3">
+      <div className={`flex items-center gap-2 ${compactMode ? "mb-1.5" : "mb-3"}`}>
         <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-sm">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
             <path
@@ -364,7 +366,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
       {/* Bubble */}
       <div className="w-full flex">
         <div className="w-[2px] bg-blue-500 rounded-full mr-4 flex-shrink-0" />
-        <div className="flex-1 min-w-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md p-4 rounded-[12px] border border-slate-200/50 dark:border-slate-800/50 shadow-sm">
+        <div className={`flex-1 min-w-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md ${compactMode ? "p-3" : "p-4"} rounded-[12px] border border-slate-200/50 dark:border-slate-800/50 shadow-sm`}>
           <div className="prose-chat text-slate-950 dark:text-slate-200">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
