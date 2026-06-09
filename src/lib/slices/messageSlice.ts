@@ -12,6 +12,7 @@ export interface MessageSlice {
   sendMessage: (content: string) => Promise<void>;
   regenerateMessage: (messageId: string) => Promise<void>;
   editAndResend: (messageId: string, newContent: string) => Promise<void>;
+  rateMessage: (chatId: string, messageId: string, rating: "like" | "dislike" | null) => void;
   _fetchInitialData: () => Promise<void>;
   _fetchMessages: (chatId: string) => Promise<void>;
 }
@@ -508,5 +509,15 @@ export const createMessageSlice: StateCreator<AppStore, [], [], MessageSlice> = 
 
     // Re-send the message as a fresh prompt
     await get().sendMessage(newContent);
+  },
+
+  rateMessage: (chatId: string, messageId: string, rating: "like" | "dislike" | null) => {
+    set(state => ({
+      chats: state.chats.map(c => c.id === chatId ? {
+        ...c,
+        messages: (c.messages || []).map(m => m.id === messageId ? { ...m, rating } : m)
+      } : c)
+    }));
+    // Note: optionally save rating to database here
   },
 });
