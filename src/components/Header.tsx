@@ -91,12 +91,14 @@ export default function Header() {
                 <button
                   key={m.id}
                   id={`model-option-${m.id}`}
-                  onClick={() => selectModel(m)}
+                  onClick={() => !m.disabled && selectModel(m)}
+                  disabled={m.disabled}
                   className={[
                     "flex items-center gap-2 w-full px-3 py-2 text-sm text-left transition-colors",
-                    m.id === model.id
+                    m.disabled ? "opacity-50 cursor-not-allowed" : "",
+                    m.id === model.id && !m.disabled
                       ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                      : "text-slate-950 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700",
+                      : (!m.disabled ? "text-slate-950 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700" : "text-slate-950 dark:text-slate-300"),
                   ].join(" ")}
                 >
                   <span

@@ -45,10 +45,12 @@ export interface Chat {
 export interface Model {
   id: string;
   label: string;
+  disabled?: boolean;
 }
 
 export const AVAILABLE_MODELS: Model[] = [
   { id: "neco-ai-1.0", label: "Neco AI 1.0" },
+  { id: "gemini", label: "Gemini (Coming Soon)", disabled: true },
 ];
 
 export const SUGGESTION_PROMPTS = [
