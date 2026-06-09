@@ -17,7 +17,7 @@
 import React, { memo, useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { RefreshCw, Pencil, Copy, Check } from "lucide-react";
+import { RefreshCw, Pencil, Copy, Check, ThumbsUp, ThumbsDown } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useAppStore } from "../lib/context";
@@ -220,6 +220,8 @@ function ActionButton({
 
 const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAndResend }: Props) {
   const compactMode = useAppStore(s => s.compactMode);
+  const activeId = useAppStore(s => s.activeId);
+  const rateMessage = useAppStore(s => s.rateMessage);
   const isUser = message.role === "user";
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(message.content);
@@ -414,6 +416,26 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
                 >
                   <RefreshCw size={14} />
                 </button>
+              )}
+
+              {activeId && (
+                <>
+                  <div className="w-px h-3 bg-slate-200 dark:bg-slate-700 mx-1" />
+                  <button
+                    onClick={() => rateMessage(activeId, message.id, message.rating === "like" ? null : "like")}
+                    className={`flex items-center justify-center w-7 h-7 rounded-[6px] transition-colors ${message.rating === "like" ? "text-teal-500 bg-teal-50 dark:bg-teal-900/30" : "text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f]"}`}
+                    title="Like response"
+                  >
+                    <ThumbsUp size={14} />
+                  </button>
+                  <button
+                    onClick={() => rateMessage(activeId, message.id, message.rating === "dislike" ? null : "dislike")}
+                    className={`flex items-center justify-center w-7 h-7 rounded-[6px] transition-colors ${message.rating === "dislike" ? "text-red-500 bg-red-50 dark:bg-red-900/30" : "text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f]"}`}
+                    title="Dislike response"
+                  >
+                    <ThumbsDown size={14} />
+                  </button>
+                </>
               )}
             </div>
           )}

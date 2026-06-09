@@ -31,6 +31,8 @@ export interface Message {
   timestamp: string;
   /** True while streaming */
   streaming?: boolean;
+  /** User rating */
+  rating?: "like" | "dislike" | null;
 }
 
 export interface Chat {
