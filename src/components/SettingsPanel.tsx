@@ -54,7 +54,9 @@ export default function SettingsPanel() {
   const [pendingLanguage, setPendingLanguage] = useState<Locale>(language);
 
   // Appearance
-  const [compactMode, setCompactMode] = useState(false);
+  const globalCompactMode = useAppStore(s => s.compactMode);
+  const setGlobalCompactMode = useAppStore(s => s.setCompactMode);
+  const [compactMode, setCompactMode] = useState(globalCompactMode);
 
   // Security
   const [apiKey, setApiKey] = useState("sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
@@ -63,11 +65,13 @@ export default function SettingsPanel() {
 
   function handleSave() {
     setLanguage(pendingLanguage); // ← apply language change globally
+    setGlobalCompactMode(compactMode);
     setShowSettings(false);
   }
 
   function handleCancel() {
     setPendingLanguage(language); // reset pending selection
+    setCompactMode(globalCompactMode);
     setShowSettings(false);
   }
 

@@ -8,12 +8,14 @@ export interface UISlice {
   showSettings: boolean;
   showHelp: boolean;
   currentView: "chat" | "folders";
+  compactMode: boolean;
 
   setTheme: (t: ThemeMode) => void;
   setSidebarOpen: (v: boolean) => void;
   setShowSettings: (v: boolean) => void;
   setShowHelp: (v: boolean) => void;
   setCurrentView: (view: "chat" | "folders") => void;
+  setCompactMode: (v: boolean) => void;
 }
 
 export const getInitialTheme = (): ThemeMode => {
@@ -24,6 +26,13 @@ export const getInitialTheme = (): ThemeMode => {
     }
   }
   return "light";
+};
+
+export const getInitialCompactMode = (): boolean => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("necookie-compact") === "true";
+  }
+  return false;
 };
 
 export const applyThemeClass = (theme: ThemeMode) => {
@@ -44,6 +53,7 @@ export const createUISlice: StateCreator<AppStore, [], [], UISlice> = (set) => (
   showSettings: false,
   showHelp: false,
   currentView: "chat",
+  compactMode: getInitialCompactMode(),
 
   setTheme: (t) => {
     set({ theme: t });
@@ -56,4 +66,10 @@ export const createUISlice: StateCreator<AppStore, [], [], UISlice> = (set) => (
   setShowSettings: (v) => set({ showSettings: v }),
   setShowHelp: (v) => set({ showHelp: v }),
   setCurrentView: (view) => set({ currentView: view }),
+  setCompactMode: (v) => {
+    set({ compactMode: v });
+    if (typeof window !== "undefined") {
+      localStorage.setItem("necookie-compact", String(v));
+    }
+  },
 });
