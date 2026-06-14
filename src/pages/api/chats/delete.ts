@@ -16,7 +16,7 @@
 
 import type { APIRoute } from "astro";
 import { db } from "../../../lib/db/client";
-import { chats } from "../../../lib/db/schema";
+import { chats, messages } from "../../../lib/db/schema";
 import { and, eq } from "drizzle-orm";
 
 export const DELETE: APIRoute = async (context) => {
@@ -39,8 +39,20 @@ export const DELETE: APIRoute = async (context) => {
       });
     }
 
-    // Securely delete only if the chat belongs to the authenticated user
-    await db.delete(chats).where(and(eq(chats.id, id), eq(chats.userId, userId)));
+    const existingChats = await db.select().from(chats).where(and(eq(chats.id, id), eq(chats.userId, userId)));
+    
+    if (existingChats.length === 0) {
+      return new Response(JSON.stringify({ error: "Chat not found or unauthorized" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Securely delete messages first to avoid foreign key constraint errors
+    await db.delete(messages).where(eq(messages.chatId, id));
+    
+    // Then delete the chat
+    await db.delete(chats).where(eq(chats.id, id));
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
