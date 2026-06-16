@@ -34,18 +34,18 @@ export default function WeatherTimeWidget() {
   }, []);
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md p-3 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-3 transition-all hover:scale-105 pointer-events-auto">
+    <div className="fixed bottom-4 right-4 z-50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md p-2 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-2 transition-all hover:scale-105 pointer-events-auto">
       <div className="flex flex-col text-right">
-        <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+        <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
           {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </span>
-        <span className="text-xs text-slate-500 dark:text-slate-400">
+        <span className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
           Laguna, PH
         </span>
       </div>
       {weather && (
-        <div className="flex items-center justify-center bg-blue-50 dark:bg-blue-900/30 rounded-full px-3 py-1.5 shadow-inner">
-          <span className="text-sm font-bold text-blue-600 dark:text-blue-300">
+        <div className="flex items-center justify-center bg-blue-50 dark:bg-blue-900/30 rounded-full px-2 py-1 shadow-inner">
+          <span className="text-xs font-bold text-blue-600 dark:text-blue-300">
             {weather.temp}°C
           </span>
         </div>
