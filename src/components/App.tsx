@@ -23,6 +23,7 @@ import FoldersView from "./FoldersView";
 import SettingsPanel from "./SettingsPanel";
 import HelpPanel from "./HelpPanel";
 import LeavesBackground from "./LeavesBackground";
+import WeatherTimeWidget from "./WeatherTimeWidget";
 
 /**
  * Inner shell — separated so it can consume AppProvider context.
@@ -55,6 +56,7 @@ function AppShell() {
       </div>
       {showSettings && <SettingsPanel />}
       {showHelp && <HelpPanel />}
+      <WeatherTimeWidget />
     </div>
   );
 }
