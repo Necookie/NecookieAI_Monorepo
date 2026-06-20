@@ -13,6 +13,9 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      exclude: ['@clerk/astro']
+    },
     server: {
       watch: {
         ignored: [

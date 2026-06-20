@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+@import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -27,6 +27,7 @@
   --color-surface-dark:           #181715;
   --color-surface-dark-elevated:  #252320;
   --color-surface-dark-soft:      #1f1e1b;
+  --color-backdrop:               rgba(250, 249, 245, 0.85);
 
   /* ── Borders ── */
   --color-hairline:       #e6dfd8;
@@ -53,14 +54,14 @@
   --font-mono:    "JetBrains Mono", "Fira Code", ui-monospace, monospace;
 
   /* ── Spacing ── */
-  --spacing-xxs:     4px;
-  --spacing-xs:      8px;
-  --spacing-sm:      12px;
-  --spacing-md:      16px;
-  --spacing-lg:      24px;
-  --spacing-xl:      32px;
-  --spacing-xxl:     48px;
-  --spacing-section: 96px;
+  --space-xxs:     4px;
+  --space-xs:      8px;
+  --space-sm:      12px;
+  --space-md:      16px;
+  --space-lg:      24px;
+  --space-xl:      32px;
+  --space-xxl:     48px;
+  --space-section: 96px;
 }
 
 @layer base {
@@ -101,6 +102,7 @@
     --color-muted-soft:           #6c6a64;
     --color-on-dark:              #faf9f5;
     --color-on-dark-soft:         #a09d96;
+    --color-backdrop:             rgba(24, 23, 21, 0.85);
   }
 
   /* Dark mode — navy product surface */

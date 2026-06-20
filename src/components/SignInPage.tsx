@@ -22,7 +22,7 @@ export default function SignInPage() {
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-4 select-none"
       style={{
-        background: "rgba(250,249,245,0.85)",
+        background: "var(--color-backdrop)",
         backdropFilter: "blur(6px)",
         animation: "authFadeIn 0.22s ease-out",
       }}

@@ -83,7 +83,7 @@ export default function WelcomeScreen() {
                   : "",
               ].join(" ")}
               style={{
-                padding: "var(--spacing-xl)",
+                padding: "var(--space-xl)",
                 borderRadius: "var(--radius-lg)",
                 background: "var(--color-surface-card)",
                 border: "1px solid var(--color-hairline-soft)",
