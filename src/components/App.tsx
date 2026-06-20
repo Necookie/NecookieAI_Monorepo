@@ -42,7 +42,7 @@ function AppShell() {
   }, [setSidebarOpen]);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 font-sans relative">
+    <div className="flex h-screen overflow-hidden font-sans relative" style={{ background: "var(--color-canvas)" }} data-app-root>
       <LeavesBackground />
       {/* Mobile overlay */}
       <div 

@@ -15,7 +15,7 @@
  */
 
 import React, { useState } from "react";
-import { X, Sliders, Palette, Lock, ChevronDown, CheckCircle2, Eye, EyeOff, LogOut } from "lucide-react";
+import { X, Sliders, Palette, Lock, CheckCircle2, Eye, EyeOff, LogOut } from "lucide-react";
 import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
 import type { Locale } from "../lib/i18n";
@@ -49,60 +49,94 @@ export default function SettingsPanel() {
   const t = getTranslations(language).settings;
   const { signOut } = useClerk();
 
-  // General — local state, applied on Save
   const [defaultModel, setDefaultModel] = useState("pro");
   const [pendingLanguage, setPendingLanguage] = useState<Locale>(language);
 
-  // Appearance
   const globalCompactMode = useAppStore(s => s.compactMode);
   const setGlobalCompactMode = useAppStore(s => s.setCompactMode);
   const [compactMode, setCompactMode] = useState(globalCompactMode);
 
-  // Security
   const [apiKey, setApiKey] = useState("sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
   const [apiKeyVisible, setApiKeyVisible] = useState(false);
   const [apiKeyStatus, setApiKeyStatus] = useState<"active" | "idle">("active");
 
   function handleSave() {
-    setLanguage(pendingLanguage); // ← apply language change globally
+    setLanguage(pendingLanguage);
     setGlobalCompactMode(compactMode);
     setShowSettings(false);
   }
 
   function handleCancel() {
-    setPendingLanguage(language); // reset pending selection
+    setPendingLanguage(language);
     setCompactMode(globalCompactMode);
     setShowSettings(false);
   }
+
+  const themeLabels: Record<ThemeMode, string> = {
+    light: t.light,
+    dark: t.dark,
+    system: t.system,
+  };
 
   return (
     /* Backdrop */
     <div
       id="settings-backdrop"
-      className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-[2px] flex items-center justify-center p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) handleCancel();
+      className="fixed inset-0 z-40 flex items-center justify-center p-4"
+      style={{
+        background: "rgba(20,20,19,0.25)",
+        backdropFilter: "blur(3px)",
       }}
+      onClick={(e) => { if (e.target === e.currentTarget) handleCancel(); }}
     >
       {/* Panel */}
       <div
         id="settings-panel"
-        className="relative w-full max-w-2xl max-h-[90vh] bg-white dark:bg-slate-950 rounded-xl shadow-2xl shadow-slate-300/40 dark:shadow-slate-950/40 border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden"
-        style={{ animation: "settingsFadeIn 0.18s ease-out" }}
+        className="relative w-full max-w-2xl flex flex-col overflow-hidden"
+        style={{
+          maxHeight: "90vh",
+          background: "var(--color-canvas)",
+          border: "1px solid var(--color-hairline)",
+          borderRadius: "var(--radius-lg)",
+          boxShadow: "0 8px 32px rgba(20,20,19,0.12)",
+          animation: "settingsFadeIn 0.18s ease-out",
+        }}
       >
         {/* ── Header ── */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
+        <div
+          className="flex items-center justify-between px-6 py-4 flex-shrink-0"
+          style={{ borderBottom: "1px solid var(--color-hairline)" }}
+        >
           <div>
-            <h2 className="text-base font-semibold text-slate-950 dark:text-slate-200 tracking-tight">
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "22px",
+                fontWeight: 400,
+                letterSpacing: "-0.2px",
+                color: "var(--color-ink)",
+              }}
+            >
               {t.title}
             </h2>
-            <p className="text-xs text-slate-950 dark:text-slate-400 mt-0.5">{t.subtitle}</p>
+            <p
+              className="mt-0.5"
+              style={{ fontSize: "13px", color: "var(--color-muted)", fontFamily: "var(--font-sans)" }}
+            >
+              {t.subtitle}
+            </p>
           </div>
           <button
             id="settings-close-btn"
             onClick={handleCancel}
-            className="flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-400 hover:text-slate-950 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-4 flex-shrink-0"
+            className="flex items-center justify-center w-8 h-8 ml-4 flex-shrink-0 transition-colors"
+            style={{
+              borderRadius: "var(--radius-sm)",
+              color: "var(--color-muted-soft)",
+            }}
             aria-label="Close settings"
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "var(--color-surface-card)"; (e.currentTarget as HTMLElement).style.color = "var(--color-ink)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--color-muted-soft)"; }}
           >
             <X size={16} />
           </button>
@@ -126,7 +160,7 @@ export default function SettingsPanel() {
               />
             </SettingRow>
 
-            <hr className="border-slate-200" />
+            <hr style={{ border: "none", borderTop: "1px solid var(--color-hairline)" }} />
 
             <SettingRow label={t.outputLanguage} description={t.outputLanguageDesc}>
               <SelectField
@@ -141,33 +175,36 @@ export default function SettingsPanel() {
           {/* ── Appearance ── */}
           <Section icon={<Palette size={15} />} title={t.appearance}>
             <SettingRow label={t.interfaceTheme} description={t.interfaceThemeDesc}>
-              <div className="flex bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-[6px] p-0.5 gap-0.5">
-                {(["light", "dark", "system"] as ThemeMode[]).map((mode) => {
-                  const labels: Record<ThemeMode, string> = {
-                    light: t.light,
-                    dark: t.dark,
-                    system: t.system,
-                  };
-                  return (
-                    <button
-                      key={mode}
-                      id={`settings-theme-${mode}`}
-                      onClick={() => setTheme(mode)}
-                      className={[
-                        "px-3 py-1.5 rounded-[4px] text-xs font-medium transition-colors",
-                        theme === mode
-                          ? "bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50"
-                          : "text-slate-950 hover:text-slate-950 hover:bg-slate-50 dark:hover:text-slate-300 dark:hover:bg-slate-700",
-                      ].join(" ")}
-                    >
-                      {labels[mode]}
-                    </button>
-                  );
-                })}
+              <div
+                className="flex p-0.5 gap-0.5"
+                style={{
+                  background: "var(--color-surface-card)",
+                  border: "1px solid var(--color-hairline)",
+                  borderRadius: "var(--radius-sm)",
+                }}
+              >
+                {(["light", "dark", "system"] as ThemeMode[]).map((mode) => (
+                  <button
+                    key={mode}
+                    id={`settings-theme-${mode}`}
+                    onClick={() => setTheme(mode)}
+                    className="px-3 py-1.5 text-xs font-medium transition-colors"
+                    style={{
+                      borderRadius: "var(--radius-xs)",
+                      background: theme === mode ? "var(--color-canvas)" : "transparent",
+                      color: theme === mode ? "var(--color-ink)" : "var(--color-muted)",
+                      border: theme === mode ? "1px solid var(--color-hairline)" : "1px solid transparent",
+                      fontFamily: "var(--font-sans)",
+                      fontWeight: theme === mode ? 500 : 400,
+                    }}
+                  >
+                    {themeLabels[mode]}
+                  </button>
+                ))}
               </div>
             </SettingRow>
 
-            <hr className="border-slate-200 dark:border-slate-700" />
+            <hr style={{ border: "none", borderTop: "1px solid var(--color-hairline)" }} />
 
             <SettingRow label={t.compactMode} description={t.compactModeDesc}>
               <Toggle
@@ -182,32 +219,55 @@ export default function SettingsPanel() {
           <Section icon={<Lock size={15} />} title={t.security}>
             <div className="flex flex-col gap-3">
               <div>
-                <p className="text-xs font-semibold text-slate-950 dark:text-slate-300 mb-0.5 uppercase tracking-wide font-mono">
+                <p
+                  className="mb-0.5"
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    textTransform: "uppercase",
+                    letterSpacing: "1px",
+                    color: "var(--color-muted)",
+                    fontFamily: "var(--font-mono)",
+                  }}
+                >
                   {t.apiKeyConfig}
                 </p>
-                <p className="text-sm text-slate-950 dark:text-slate-400 leading-snug">{t.apiKeyDesc}</p>
+                <p
+                  className="leading-snug"
+                  style={{ fontSize: "14px", color: "var(--color-muted)", fontFamily: "var(--font-sans)" }}
+                >
+                  {t.apiKeyDesc}
+                </p>
               </div>
               <div className="flex gap-2 w-full">
                 <div className="relative flex-1">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <Lock size={14} className="text-slate-400" />
+                    <Lock size={14} style={{ color: "var(--color-muted-soft)" }} />
                   </span>
                   <input
                     id="settings-api-key-input"
                     type={apiKeyVisible ? "text" : "password"}
                     value={apiKey}
-                    onChange={(e) => {
-                      setApiKey(e.target.value);
-                      setApiKeyStatus("idle");
-                    }}
+                    onChange={(e) => { setApiKey(e.target.value); setApiKeyStatus("idle"); }}
                     placeholder="sk-..."
-                    className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-950 dark:text-slate-200 font-mono text-sm rounded-[6px] focus:ring-1 focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 pr-10 py-2.5 transition-colors"
+                    className="block w-full pl-9 pr-10 py-2.5 transition-colors outline-none"
+                    style={{
+                      background: "var(--color-canvas)",
+                      border: "1px solid var(--color-hairline)",
+                      color: "var(--color-ink)",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "14px",
+                      borderRadius: "var(--radius-sm)",
+                    }}
+                    onFocus={e => (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)"}
+                    onBlur={e => (e.currentTarget as HTMLElement).style.borderColor = "var(--color-hairline)"}
                   />
                   <button
                     id="settings-api-key-visibility"
                     type="button"
                     onClick={() => setApiKeyVisible(!apiKeyVisible)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-950"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3"
+                    style={{ color: "var(--color-muted-soft)" }}
                     aria-label={apiKeyVisible ? "Hide API key" : "Show API key"}
                   >
                     {apiKeyVisible ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -216,7 +276,17 @@ export default function SettingsPanel() {
                 <button
                   id="settings-api-key-update"
                   onClick={() => setApiKeyStatus("active")}
-                  className="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-600 rounded-[6px] text-xs font-semibold transition-colors flex-shrink-0"
+                  className="px-4 py-2 flex-shrink-0 transition-colors"
+                  style={{
+                    background: "var(--color-ink)",
+                    color: "var(--color-on-dark)",
+                    borderRadius: "var(--radius-sm)",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    fontFamily: "var(--font-sans)",
+                  }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "var(--color-body-strong)"}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "var(--color-ink)"}
                 >
                   {t.update}
                 </button>
@@ -224,8 +294,17 @@ export default function SettingsPanel() {
 
               {apiKeyStatus === "active" && (
                 <div className="flex items-center gap-1.5">
-                  <CheckCircle2 size={14} className="text-blue-500 flex-shrink-0" />
-                  <span className="text-xs text-blue-600 font-medium">{t.keyActive}</span>
+                  <CheckCircle2 size={14} style={{ color: "var(--color-success)", flexShrink: 0 }} />
+                  <span
+                    style={{
+                      fontSize: "13px",
+                      color: "var(--color-success)",
+                      fontWeight: 500,
+                      fontFamily: "var(--font-sans)",
+                    }}
+                  >
+                    {t.keyActive}
+                  </span>
                 </div>
               )}
             </div>
@@ -239,11 +318,19 @@ export default function SettingsPanel() {
             >
               <button
                 id="settings-logout-btn"
-                onClick={() => {
-                  signOut();
-                  setShowSettings(false);
+                onClick={() => { signOut(); setShowSettings(false); }}
+                className="px-4 py-2 transition-colors cursor-pointer"
+                style={{
+                  border: "1px solid rgba(198,69,69,0.30)",
+                  color: "var(--color-error)",
+                  background: "transparent",
+                  borderRadius: "var(--radius-sm)",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  fontFamily: "var(--font-sans)",
                 }}
-                className="px-4 py-2 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300 dark:hover:border-red-900/70 rounded-[6px] text-xs font-semibold font-mono tracking-wider uppercase transition-colors cursor-pointer"
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "rgba(198,69,69,0.06)"}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
               >
                 Log Out
               </button>
@@ -252,18 +339,52 @@ export default function SettingsPanel() {
         </div>
 
         {/* ── Footer ── */}
-        <div className="flex justify-end px-6 py-4 border-t border-slate-200 dark:border-slate-800 gap-2 flex-shrink-0 bg-white dark:bg-slate-950">
+        <div
+          className="flex justify-end px-6 py-4 gap-2 flex-shrink-0"
+          style={{
+            borderTop: "1px solid var(--color-hairline)",
+            background: "var(--color-canvas)",
+          }}
+        >
           <button
             id="settings-cancel-btn"
             onClick={handleCancel}
-            className="px-4 py-2 text-sm text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-[6px] font-medium transition-colors"
+            className="px-4 py-2 transition-colors"
+            style={{
+              fontSize: "14px",
+              fontWeight: 500,
+              color: "var(--color-muted)",
+              background: "transparent",
+              border: "1px solid var(--color-hairline)",
+              borderRadius: "var(--radius-md)",
+              fontFamily: "var(--font-sans)",
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.background = "var(--color-surface-card)";
+              (e.currentTarget as HTMLElement).style.color = "var(--color-body)";
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.background = "transparent";
+              (e.currentTarget as HTMLElement).style.color = "var(--color-muted)";
+            }}
           >
             {t.cancel}
           </button>
           <button
             id="settings-save-btn"
             onClick={handleSave}
-            className="px-5 py-2 bg-slate-800 dark:bg-blue-600 text-white hover:bg-slate-700 dark:hover:bg-blue-500 rounded-[6px] text-sm font-semibold transition-colors shadow-sm"
+            className="px-5 py-2 transition-colors"
+            style={{
+              background: "var(--color-primary)",
+              color: "var(--color-on-primary)",
+              borderRadius: "var(--radius-md)",
+              fontSize: "14px",
+              fontWeight: 500,
+              fontFamily: "var(--font-sans)",
+              boxShadow: "0 1px 3px rgba(204,120,92,0.25)",
+            }}
+            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "var(--color-primary-active)"}
+            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "var(--color-primary)"}
           >
             {t.saveChanges}
           </button>

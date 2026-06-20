@@ -26,6 +26,7 @@ interface Props {
 export default function ChatInput({ onSend, isStreaming, placeholder = "Message Necookie AI..." }: Props) {
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [focused, setFocused] = useState(false);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -58,14 +59,28 @@ export default function ChatInput({ onSend, isStreaming, placeholder = "Message 
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-end gap-2 bg-white dark:bg-[#2f2f2f] border border-slate-200 dark:border-transparent rounded-[8px] px-3 py-2.5 focus-within:border-slate-300 dark:focus-within:border-transparent focus-within:shadow-sm transition-all"
+      className="flex items-end gap-2 px-3 py-2.5 transition-all"
       id="chat-input-form"
+      style={{
+        background: "var(--color-canvas)",
+        border: focused
+          ? "1px solid var(--color-primary)"
+          : "1px solid var(--color-hairline)",
+        borderRadius: "var(--radius-md)",
+        boxShadow: focused
+          ? "0 0 0 3px rgba(204,120,92,0.12)"
+          : "none",
+      }}
     >
       {/* Mic icon */}
       <button
         type="button"
         id="mic-btn"
-        className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-[6px] text-slate-400 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#3f3f3f] transition-colors mb-0.5"
+        className="flex-shrink-0 flex items-center justify-center w-7 h-7 transition-colors mb-0.5"
+        style={{
+          borderRadius: "var(--radius-sm)",
+          color: "var(--color-muted-soft)",
+        }}
         aria-label="Voice input"
       >
         <Mic size={15} />
@@ -78,9 +93,16 @@ export default function ChatInput({ onSend, isStreaming, placeholder = "Message 
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         placeholder={placeholder}
         rows={1}
-        className="flex-1 resize-none outline-none text-sm text-slate-950 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 leading-relaxed bg-transparent py-0.5 max-h-[200px]"
+        className="flex-1 resize-none outline-none leading-relaxed py-0.5 max-h-[200px] bg-transparent"
+        style={{
+          fontSize: "15px",
+          color: "var(--color-ink)",
+          fontFamily: "var(--font-sans)",
+        }}
         disabled={isStreaming}
         aria-label="Chat message input"
       />
@@ -89,12 +111,14 @@ export default function ChatInput({ onSend, isStreaming, placeholder = "Message 
       <button
         type={isStreaming ? "button" : "submit"}
         id="send-btn"
-        className={[
-          "flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-[6px] transition-all mb-0.5",
-          canSend || isStreaming
-            ? "bg-slate-800 dark:bg-white text-white dark:text-black shadow-sm"
-            : "bg-slate-100 dark:bg-transparent text-slate-400 dark:text-slate-600 cursor-not-allowed",
-        ].join(" ")}
+        className="flex-shrink-0 flex items-center justify-center w-8 h-8 transition-all mb-0.5"
+        style={{
+          borderRadius: "var(--radius-sm)",
+          background: canSend || isStreaming ? "var(--color-primary)" : "var(--color-primary-disabled)",
+          color: canSend || isStreaming ? "var(--color-on-primary)" : "var(--color-muted-soft)",
+          cursor: !canSend && !isStreaming ? "not-allowed" : "pointer",
+          boxShadow: canSend || isStreaming ? "0 1px 3px rgba(204,120,92,0.30)" : "none",
+        }}
         disabled={!canSend && !isStreaming}
         aria-label={isStreaming ? "Stop generation" : "Send message"}
       >

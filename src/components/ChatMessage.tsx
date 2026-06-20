@@ -29,15 +29,15 @@ interface Props {
   onEditAndResend?: (id: string, newContent: string) => void;
 }
 
-// ─── Typing indicator ────────────────────────────────────────────────────────
+// ─── Typing indicator — coral dots ────────────────────────────────────────────
 
 const TypingIndicator = () => (
   <span className="inline-flex items-center gap-1 ml-1">
     {[0, 1, 2].map((i) => (
       <span
         key={i}
-        className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-bounce"
-        style={{ animationDelay: `${i * 0.15}s` }}
+        className="w-1.5 h-1.5 rounded-full animate-bounce"
+        style={{ background: "var(--color-primary)", animationDelay: `${i * 0.15}s` }}
       />
     ))}
   </span>
@@ -60,7 +60,7 @@ const LANG_EXT: Record<string, string> = {
   yaml: "yaml", markdown: "md", c: "c", cpp: "cpp",
 };
 
-// ─── Code block ──────────────────────────────────────────────────────────────
+// ─── Code block — DESIGN.md code-window-card (surface-dark) ──────────────────
 
 function CodeBlock({
   language,
@@ -74,7 +74,6 @@ function CodeBlock({
   [key: string]: any;
 }) {
   const [copied, setCopied] = useState(false);
-
   const rawCode = String(children).replace(/\n$/, "");
   const label = (LANG_DISPLAY[language.toLowerCase()] ?? language) || "Code";
 
@@ -98,21 +97,25 @@ function CodeBlock({
 
   return (
     <div
-      className="relative my-5 rounded-[10px] overflow-hidden shadow-xl"
-      style={{ background: "#18181b" }}
+      className="relative my-5 overflow-hidden"
+      style={{
+        background: "var(--color-surface-dark)",
+        borderRadius: "var(--radius-lg)",
+        boxShadow: "0 2px 8px rgba(20,20,19,0.14)",
+      }}
     >
       {/* ── Top bar ── */}
       <div
         className="flex items-center justify-between px-5 py-3"
         style={{
-          background: "#18181b",
-          borderBottom: "1px solid rgba(255,255,255,0.07)",
+          background: "var(--color-surface-dark)",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
       >
         {/* Language label */}
         <span
-          className="text-sm font-bold select-none tracking-tight"
-          style={{ color: "#e4e4e7" }}
+          className="text-sm font-medium select-none"
+          style={{ color: "var(--color-on-dark-soft)", fontFamily: "var(--font-mono)", fontSize: "13px" }}
         >
           {label}
         </span>
@@ -120,43 +123,26 @@ function CodeBlock({
         {/* Action icons */}
         <div className="flex items-center gap-1.5">
           {/* Download */}
-          <ActionButton onClick={handleDownload} title="Download file">
-            <svg
-              width="18" height="18" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor"
-              strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"
-            >
+          <CodeActionButton onClick={handleDownload} title="Download file">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="9" />
               <polyline points="8 12 12 16 16 12" />
               <line x1="12" y1="8" x2="12" y2="16" />
             </svg>
-          </ActionButton>
-
+          </CodeActionButton>
           {/* Copy */}
-          <ActionButton
-            onClick={handleCopy}
-            title={copied ? "Copied!" : "Copy code"}
-            active={copied}
-          >
+          <CodeActionButton onClick={handleCopy} title={copied ? "Copied!" : "Copy code"} active={copied}>
             {copied ? (
-              <svg
-                width="16" height="16" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor"
-                strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"
-              >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             ) : (
-              <svg
-                width="16" height="16" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor"
-                strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"
-              >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
               </svg>
             )}
-          </ActionButton>
+          </CodeActionButton>
         </div>
       </div>
 
@@ -173,9 +159,7 @@ function CodeBlock({
             lineHeight: "1.6",
           }}
           codeTagProps={{
-            style: {
-              fontFamily: '"JetBrains Mono", "Fira Code", monospace',
-            }
+            style: { fontFamily: '"JetBrains Mono", "Fira Code", monospace' }
           }}
         >
           {rawCode}
@@ -185,18 +169,12 @@ function CodeBlock({
   );
 }
 
-// ─── Icon button helper ───────────────────────────────────────────────────────
+// ─── Code action button helper ───────────────────────────────────────────────
 
-function ActionButton({
-  onClick,
-  title,
-  active,
-  children,
+function CodeActionButton({
+  onClick, title, active, children,
 }: {
-  onClick: () => void;
-  title: string;
-  active?: boolean;
-  children: React.ReactNode;
+  onClick: () => void; title: string; active?: boolean; children: React.ReactNode;
 }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -205,11 +183,37 @@ function ActionButton({
       title={title}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-150"
+      className="flex items-center justify-center w-7 h-7 rounded-full transition-colors duration-150"
       style={{
-        color: active ? "#2dd4bf" : hovered ? "#ffffff" : "#71717a",
+        color: active ? "var(--color-accent-teal)" : hovered ? "var(--color-on-dark)" : "var(--color-on-dark-soft)",
         background: hovered ? "rgba(255,255,255,0.06)" : "transparent",
       }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ─── Inline action button ─────────────────────────────────────────────────────
+
+function MsgActionButton({
+  onClick, title, children, active, activeStyle,
+}: {
+  onClick: () => void; title: string; children: React.ReactNode; active?: boolean; activeStyle?: React.CSSProperties;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex items-center justify-center w-7 h-7 transition-colors"
+      style={{
+        borderRadius: "var(--radius-sm)",
+        color: active ? undefined : "var(--color-muted-soft)",
+        background: "transparent",
+        ...(active ? activeStyle : {}),
+      }}
+      title={title}
+      onMouseEnter={e => { if (!active) { (e.currentTarget as HTMLElement).style.background = "var(--color-surface-card)"; (e.currentTarget as HTMLElement).style.color = "var(--color-body)"; } }}
+      onMouseLeave={e => { if (!active) { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--color-muted-soft)"; } }}
     >
       {children}
     </button>
@@ -247,7 +251,6 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
     const interval = setInterval(() => {
       const targetLen = message.content.length;
       const currentLen = smoothedLengthRef.current;
-      
       if (currentLen < targetLen) {
         const remaining = targetLen - currentLen;
         const advance = remaining > 15 ? Math.ceil(remaining / 3) : 1;
@@ -256,7 +259,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
       } else {
         clearInterval(interval);
       }
-    }, 30); // ~33fps update rate for smooth typewriter effect
+    }, 30);
 
     return () => clearInterval(interval);
   }, [message.content, message.streaming, isUser]);
@@ -288,9 +291,23 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
     if (isEditing) {
       return (
         <div className={`flex flex-col items-end w-full max-w-3xl ml-auto ${compactMode ? "mb-4" : "mb-8"}`}>
-          <div className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-[12px] p-3 shadow-sm">
+          <div
+            className="w-full p-3"
+            style={{
+              background: "var(--color-canvas)",
+              border: "1px solid var(--color-hairline)",
+              borderRadius: "var(--radius-lg)",
+              boxShadow: "0 1px 3px rgba(20,20,19,0.06)",
+            }}
+          >
             <textarea
-              className="w-full bg-transparent text-[#0b1c30] dark:text-slate-100 text-[15px] outline-none resize-none min-h-[100px] mb-2"
+              className="w-full bg-transparent outline-none resize-none min-h-[100px] mb-2"
+              style={{
+                fontSize: "15px",
+                color: "var(--color-ink)",
+                fontFamily: "var(--font-sans)",
+                lineHeight: 1.6,
+              }}
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -298,20 +315,31 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
             />
             <div className="flex justify-end gap-2">
               <button
-                onClick={() => {
-                  setIsEditing(false);
-                  setEditValue(message.content);
+                onClick={() => { setIsEditing(false); setEditValue(message.content); }}
+                className="px-4 py-2 text-sm font-medium transition-colors"
+                style={{
+                  borderRadius: "var(--radius-md)",
+                  color: "var(--color-body)",
+                  background: "transparent",
+                  border: "1px solid var(--color-hairline)",
+                  fontFamily: "var(--font-sans)",
                 }}
-                className="px-4 py-2 text-sm font-medium text-slate-950 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-[8px] transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleEditSubmit}
                 disabled={!editValue.trim()}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-[8px] transition-colors"
+                className="px-4 py-2 text-sm font-medium transition-colors"
+                style={{
+                  borderRadius: "var(--radius-md)",
+                  background: "var(--color-primary)",
+                  color: "var(--color-on-primary)",
+                  fontFamily: "var(--font-sans)",
+                  opacity: editValue.trim() ? 1 : 0.4,
+                }}
               >
-                Save & Submit
+                Save &amp; Submit
               </button>
             </div>
           </div>
@@ -321,25 +349,42 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
 
     return (
       <div className={`flex flex-col items-end group w-full ${compactMode ? "mb-4" : "mb-8"}`}>
-        <span className={`text-[11px] font-medium tracking-widest text-slate-400 uppercase font-mono mr-2 ${compactMode ? "mb-1" : "mb-2"}`}>
-          User
+        <span
+          className={`mr-2 ${compactMode ? "mb-1" : "mb-2"}`}
+          style={{
+            fontSize: "11px",
+            fontWeight: 500,
+            letterSpacing: "1.2px",
+            textTransform: "uppercase",
+            color: "var(--color-muted-soft)",
+            fontFamily: "var(--font-mono)",
+          }}
+        >
+          You
         </span>
         <div className="flex items-end gap-3 max-w-[85%]">
           {onEditAndResend && (
             <button
-              onClick={() => {
-                setEditValue(message.content);
-                setIsEditing(true);
-              }}
-              className="flex items-center justify-center w-8 h-8 rounded-full text-slate-400 hover:text-slate-950 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors mb-2"
+              onClick={() => { setEditValue(message.content); setIsEditing(true); }}
+              className="flex items-center justify-center w-8 h-8 rounded-full transition-colors mb-2"
+              style={{ color: "var(--color-muted-soft)" }}
               title="Edit and resend"
             >
               <Pencil size={15} />
             </button>
           )}
           <div
-            className={`${compactMode ? "px-4 py-2" : "px-5 py-3"} rounded-[12px] bg-[#eff4ff] dark:bg-[#2f2f2f] text-[#0b1c30] dark:text-slate-100 text-[15px] leading-relaxed border border-[#e5eeff] dark:border-transparent`}
-            style={{ wordBreak: "break-word" }}
+            className={`${compactMode ? "px-4 py-2" : "px-5 py-3"}`}
+            style={{
+              borderRadius: "var(--radius-lg)",
+              background: "var(--color-surface-card)",
+              color: "var(--color-body-strong)",
+              fontSize: "15px",
+              lineHeight: 1.6,
+              border: "1px solid var(--color-hairline-soft)",
+              wordBreak: "break-word",
+              fontFamily: "var(--font-sans)",
+            }}
           >
             {message.content}
           </div>
@@ -352,24 +397,48 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
     <div className={`flex flex-col items-start group ${compactMode ? "mb-4" : "mb-8"}`}>
       {/* Label */}
       <div className={`flex items-center gap-2 ${compactMode ? "mb-1.5" : "mb-3"}`}>
-        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-sm">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"
-              fill="white"
-            />
+        {/* Anthropic-style spike mark as brand glyph */}
+        <div
+          className="flex-shrink-0 w-5 h-5 flex items-center justify-center"
+          style={{
+            borderRadius: "50%",
+            background: "var(--color-primary)",
+          }}
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M5 1L5 9M1 5L9 5M2.05 2.05L7.95 7.95M7.95 2.05L2.05 7.95" stroke="white" strokeWidth="1.4" strokeLinecap="round"/>
           </svg>
         </div>
-        <span className="text-[11px] font-medium tracking-widest text-blue-600 dark:text-blue-400 uppercase font-mono">
-          AI
+        <span
+          style={{
+            fontSize: "11px",
+            fontWeight: 500,
+            letterSpacing: "1.2px",
+            textTransform: "uppercase",
+            color: "var(--color-primary)",
+            fontFamily: "var(--font-mono)",
+          }}
+        >
+          Necookie AI
         </span>
       </div>
 
-      {/* Bubble */}
+      {/* Bubble — editorial open layout with coral left accent */}
       <div className="w-full flex">
-        <div className="w-[2px] bg-blue-500 rounded-full mr-4 flex-shrink-0" />
-        <div className={`flex-1 min-w-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md ${compactMode ? "p-3" : "p-4"} rounded-[12px] border border-slate-200/50 dark:border-slate-800/50 shadow-sm`}>
-          <div className="prose-chat text-slate-950 dark:text-slate-200">
+        <div
+          className="rounded-full mr-4 flex-shrink-0"
+          style={{ width: "2px", background: "var(--color-primary)", opacity: 0.4 }}
+        />
+        <div
+          className={`flex-1 min-w-0 ${compactMode ? "p-3" : "p-4"}`}
+          style={{
+            background: "var(--color-canvas)",
+            borderRadius: "var(--radius-lg)",
+            border: "1px solid var(--color-hairline-soft)",
+            boxShadow: "0 1px 3px rgba(20,20,19,0.06)",
+          }}
+        >
+          <div className="prose-chat" style={{ color: "var(--color-body)" }}>
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
@@ -381,7 +450,6 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
                   if (isInline) {
                     return <code className={className} {...props}>{children}</code>;
                   }
-
                   return (
                     <CodeBlock language={lang} className={className} {...props}>
                       {children}
@@ -394,47 +462,61 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
             </ReactMarkdown>
             {message.streaming && !smoothedContent && <TypingIndicator />}
             {message.streaming && smoothedContent && (
-              <span className="inline-block w-0.5 h-4 bg-blue-500 ml-0.5 animate-pulse align-middle" />
+              <span
+                className="inline-block w-0.5 h-4 ml-0.5 animate-pulse align-middle"
+                style={{ background: "var(--color-primary)" }}
+              />
             )}
           </div>
 
           {!message.streaming && (
-            <div className="flex items-center gap-2 mt-2 transition-opacity">
-              <button
+            <div className="flex items-center gap-1 mt-2 transition-opacity">
+              <MsgActionButton
                 onClick={handleCopy}
-                className="flex items-center justify-center w-7 h-7 rounded-[6px] text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f] transition-colors"
                 title="Copy message"
+                active={isCopied}
+                activeStyle={{ color: "var(--color-accent-teal)" }}
               >
-                {isCopied ? <Check size={14} className="text-blue-500" /> : <Copy size={14} />}
-              </button>
+                {isCopied ? <Check size={14} /> : <Copy size={14} />}
+              </MsgActionButton>
 
               {onRegenerate && (
-                <button
+                <MsgActionButton
                   onClick={() => onRegenerate(message.id)}
-                  className="flex items-center justify-center w-7 h-7 rounded-[6px] text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f] transition-colors"
                   title="Regenerate response"
                 >
                   <RefreshCw size={14} />
-                </button>
+                </MsgActionButton>
               )}
 
               {activeId && (
                 <>
-                  <div className="w-px h-3 bg-slate-200 dark:bg-slate-700 mx-1" />
-                  <button
+                  <div
+                    className="w-px h-3 mx-1"
+                    style={{ background: "var(--color-hairline)" }}
+                  />
+                  <MsgActionButton
                     onClick={() => rateMessage(activeId, message.id, message.rating === "like" ? null : "like")}
-                    className={`flex items-center justify-center w-7 h-7 rounded-[6px] transition-colors ${message.rating === "like" ? "text-teal-500 bg-teal-50 dark:bg-teal-900/30" : "text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f]"}`}
                     title="Like response"
+                    active={message.rating === "like"}
+                    activeStyle={{
+                      color: "var(--color-accent-teal)",
+                      background: "rgba(93,184,166,0.08)",
+                    }}
                   >
                     <ThumbsUp size={14} />
-                  </button>
-                  <button
+                  </MsgActionButton>
+                  <MsgActionButton
                     onClick={() => rateMessage(activeId, message.id, message.rating === "dislike" ? null : "dislike")}
-                    className={`flex items-center justify-center w-7 h-7 rounded-[6px] transition-colors ${message.rating === "dislike" ? "text-red-500 bg-red-50 dark:bg-red-900/30" : "text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2f2f2f]"}`}
                     title="Dislike response"
+                    active={message.rating === "dislike"}
+                    activeStyle={{
+                      color: "var(--color-error)",
+                      background: "rgba(198,69,69,0.08)",
+                    }}
                   >
                     <ThumbsDown size={14} />
-                  </button>
+                  </MsgActionButton>
                 </>
               )}
             </div>

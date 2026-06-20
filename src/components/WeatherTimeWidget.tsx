@@ -34,20 +34,53 @@ export default function WeatherTimeWidget() {
   }, []);
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md p-2 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-2 transition-all hover:scale-105 pointer-events-auto">
+    <div
+      className="fixed bottom-4 right-4 z-50 flex items-center gap-2.5 px-3 py-2 transition-all pointer-events-auto"
+      style={{
+        background: "var(--color-canvas)",
+        border: "1px solid var(--color-hairline)",
+        borderRadius: "var(--radius-lg)",
+        boxShadow: "0 2px 8px rgba(20,20,19,0.08)",
+        backdropFilter: "blur(8px)",
+      }}
+    >
       <div className="flex flex-col text-right">
-        <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-          {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        <span
+          style={{
+            fontSize: "13px",
+            fontWeight: 500,
+            color: "var(--color-ink)",
+            fontFamily: "var(--font-sans)",
+            lineHeight: 1.2,
+          }}
+        >
+          {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
         </span>
-        <span className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+        <span
+          style={{
+            fontSize: "10px",
+            color: "var(--color-muted-soft)",
+            fontFamily: "var(--font-sans)",
+            lineHeight: 1.3,
+            marginTop: "1px",
+          }}
+        >
           Laguna, PH
         </span>
       </div>
       {weather && (
-        <div className="flex items-center justify-center bg-blue-50 dark:bg-blue-900/30 rounded-full px-2 py-1 shadow-inner">
-          <span className="text-xs font-bold text-blue-600 dark:text-blue-300">
-            {weather.temp}°C
-          </span>
+        <div
+          className="flex items-center justify-center px-2 py-0.5"
+          style={{
+            background: "var(--color-primary)",
+            color: "var(--color-on-primary)",
+            borderRadius: "var(--radius-pill)",
+            fontSize: "12px",
+            fontWeight: 500,
+            fontFamily: "var(--font-sans)",
+          }}
+        >
+          {weather.temp}°C
         </div>
       )}
     </div>

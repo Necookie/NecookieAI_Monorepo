@@ -1,34 +1,66 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-slate-50: #f8fafc;
-  --color-slate-100: #f1f5f9;
-  --color-slate-150: #eaeff5;
-  --color-slate-200: #e2e8f0;
-  --color-slate-300: #cbd5e1;
-  --color-slate-400: #94a3b8;
-  --color-slate-500: #64748b;
-  --color-slate-600: #475569;
-  --color-slate-700: #334155;
-  --color-slate-800: #1e293b;
-  --color-slate-900: #171717;
-  --color-slate-950: #000000;
+  /* ── DESIGN.md Brand & Accent ── */
+  --color-primary:          #cc785c;
+  --color-primary-active:   #a9583e;
+  --color-primary-disabled: #e6dfd8;
+  --color-on-primary:       #ffffff;
 
-  --color-blue-400: #60a5fa;
-  --color-blue-500: #3b82f6;
-  --color-blue-600: #2563eb;
+  /* ── Text ── */
+  --color-ink:              #141413;
+  --color-body-strong:      #252523;
+  --color-body:             #3d3d3a;
+  --color-muted:            #6c6a64;
+  --color-muted-soft:       #8e8b82;
+  --color-on-dark:          #faf9f5;
+  --color-on-dark-soft:     #a09d96;
 
-  --color-accent: #3b82f6;
-  --color-accent-hover: #2563eb;
+  /* ── Surfaces ── */
+  --color-canvas:                 #faf9f5;
+  --color-surface-soft:           #f5f0e8;
+  --color-surface-card:           #efe9de;
+  --color-surface-cream-strong:   #e8e0d2;
+  --color-surface-dark:           #181715;
+  --color-surface-dark-elevated:  #252320;
+  --color-surface-dark-soft:      #1f1e1b;
 
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
+  /* ── Borders ── */
+  --color-hairline:       #e6dfd8;
+  --color-hairline-soft:  #ebe6df;
 
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-display: "Outfit", sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+  /* ── Accents ── */
+  --color-accent-teal:    #5db8a6;
+  --color-accent-amber:   #e8a55a;
+  --color-success:        #5db872;
+  --color-warning:        #d4a017;
+  --color-error:          #c64545;
+
+  /* ── Radius ── */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-pill: 9999px;
+
+  /* ── Fonts ── */
+  --font-display: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+  --font-sans:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono:    "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+
+  /* ── Spacing ── */
+  --spacing-xxs:     4px;
+  --spacing-xs:      8px;
+  --spacing-sm:      12px;
+  --spacing-md:      16px;
+  --spacing-lg:      24px;
+  --spacing-xl:      32px;
+  --spacing-xxl:     48px;
+  --spacing-section: 96px;
 }
 
 @layer base {
@@ -46,26 +78,45 @@
 
   body {
     font-family: var(--font-sans);
-    background-color: var(--color-slate-50);
-    color: var(--color-slate-950);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  
+
+  /* Dark mode — navy product surface, all CSS vars re-mapped */
+  .dark {
+    --color-canvas:               #181715;
+    --color-surface-soft:         #1f1e1b;
+    --color-surface-card:         #252320;
+    --color-surface-cream-strong: #2e2c28;
+    --color-hairline:             #2e2c28;
+    --color-hairline-soft:        #272523;
+    --color-ink:                  #faf9f5;
+    --color-body-strong:          #ede9e2;
+    --color-body:                 #c8c4bc;
+    --color-muted:                #8e8b82;
+    --color-muted-soft:           #6c6a64;
+    --color-on-dark:              #faf9f5;
+    --color-on-dark-soft:         #a09d96;
+  }
+
+  /* Dark mode — navy product surface */
   .dark body {
-    background-color: var(--color-slate-950);
-    color: var(--color-slate-200);
+    background-color: var(--color-surface-dark);
+    color: var(--color-on-dark);
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  /* Display headings — serif */
+  h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: 600;
+    font-weight: 400;
+    letter-spacing: -0.02em;
   }
 
-  /* Scrollbar styling */
+  /* ── Scrollbar ── */
   ::-webkit-scrollbar {
     width: 4px;
     height: 4px;
@@ -74,69 +125,68 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--color-slate-300);
+    background: var(--color-hairline);
     border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-slate-400);
+    background: var(--color-surface-cream-strong);
   }
-
   .dark ::-webkit-scrollbar-thumb {
-    background: var(--color-slate-600);
+    background: var(--color-surface-dark-elevated);
   }
   .dark ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-slate-500);
+    background: #333230;
   }
 
   @keyframes fallDown {
-    0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
+    0%   { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
     100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
   }
 }
 
 @layer components {
-  /* Prose styles for markdown rendering */
+  /* ── Prose styles for markdown rendering ── */
   .prose-chat {
     font-size: 1rem;
-    line-height: 1.75;
-    color: var(--color-slate-950);
+    line-height: 1.65;
+    color: var(--color-body);
     font-weight: 400;
+    font-family: var(--font-sans);
   }
   .dark .prose-chat {
-    color: var(--color-slate-100);
+    color: var(--color-on-dark);
   }
 
   .prose-chat p {
     margin: 0 0 0.75rem 0;
   }
-
   .prose-chat p:last-child {
     margin-bottom: 0;
   }
 
   .prose-chat pre {
-    /* Styles handled by custom CodeBlock component */
     background: none;
     padding: 0;
     margin: 0;
     overflow: visible;
   }
 
+  /* Inline code — warm cream + coral text */
   .prose-chat code:not(pre code) {
-    background: var(--color-slate-150);
-    color: var(--color-blue-600);
-    padding: 0.125rem 0.375rem;
-    border-radius: 3px;
+    background: var(--color-surface-card);
+    color: var(--color-primary-active);
+    padding: 0.1rem 0.35rem;
+    border-radius: var(--radius-xs);
     font-family: var(--font-mono);
     font-size: 0.85em;
-    border: 1px solid var(--color-slate-200);
+    border: 1px solid var(--color-hairline);
   }
   .dark .prose-chat code:not(pre code) {
-    background: var(--color-slate-800);
-    color: var(--color-blue-400);
-    border-color: var(--color-slate-700);
+    background: var(--color-surface-dark-elevated);
+    color: var(--color-accent-amber);
+    border-color: #333230;
   }
 
   .prose-chat pre code {
@@ -148,16 +198,19 @@
     font-size: inherit;
   }
 
+  /* Headings inside prose */
   .prose-chat h1,
   .prose-chat h2,
   .prose-chat h3,
   .prose-chat h4,
   .prose-chat h5,
   .prose-chat h6 {
-    color: var(--color-slate-950);
-    font-weight: 600;
+    font-family: var(--font-display);
+    color: var(--color-ink);
+    font-weight: 400;
     margin: 1.25rem 0 0.5rem 0;
-    line-height: 1.3;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
   .dark .prose-chat h1,
   .dark .prose-chat h2,
@@ -165,97 +218,103 @@
   .dark .prose-chat h4,
   .dark .prose-chat h5,
   .dark .prose-chat h6 {
-    color: var(--color-slate-200);
+    color: var(--color-on-dark);
   }
 
-  .prose-chat h1 { font-size: 1.25rem; }
-  .prose-chat h2 { font-size: 1.1rem; }
-  .prose-chat h3 { font-size: 1rem; }
+  .prose-chat h1 { font-size: 1.4rem; }
+  .prose-chat h2 { font-size: 1.2rem; }
+  .prose-chat h3 { font-size: 1.05rem; }
 
   .prose-chat ul,
   .prose-chat ol {
     padding-left: 1.5rem;
     margin: 0.5rem 0 0.75rem 0;
   }
-
   .prose-chat li {
     margin: 0.25rem 0;
   }
 
+  /* Tables */
   .prose-chat table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.875rem;
     margin: 0.75rem 0;
-    border: 1px solid var(--color-slate-200);
+    border: 1px solid var(--color-hairline);
     border-radius: var(--radius-md);
     overflow: hidden;
   }
-
   .prose-chat th {
-    background: var(--color-slate-100);
-    font-weight: 600;
+    background: var(--color-surface-card);
+    font-weight: 500;
     padding: 0.5rem 0.75rem;
     text-align: left;
-    color: var(--color-slate-700);
-    border-bottom: 1px solid var(--color-slate-200);
+    color: var(--color-body-strong);
+    border-bottom: 1px solid var(--color-hairline);
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
   .dark .prose-chat th {
-    background: var(--color-slate-800);
-    color: var(--color-slate-300);
-    border-color: var(--color-slate-700);
+    background: var(--color-surface-dark-elevated);
+    color: var(--color-on-dark-soft);
+    border-color: #333230;
   }
-
   .prose-chat td {
     padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid var(--color-slate-100);
-    color: var(--color-slate-600);
+    border-bottom: 1px solid var(--color-hairline-soft);
+    color: var(--color-body);
   }
   .dark .prose-chat td {
-    border-color: var(--color-slate-800);
-    color: var(--color-slate-400);
+    border-color: #272523;
+    color: var(--color-on-dark-soft);
   }
-
   .prose-chat tr:last-child td {
     border-bottom: none;
   }
 
+  /* Blockquote */
   .prose-chat blockquote {
-    border-left: 3px solid var(--color-blue-500);
+    border-left: 3px solid var(--color-primary);
     margin: 0.75rem 0;
     padding: 0.25rem 0 0.25rem 1rem;
-    color: var(--color-slate-500);
+    color: var(--color-muted);
     font-style: italic;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
   }
   .dark .prose-chat blockquote {
-    color: var(--color-slate-400);
+    color: var(--color-on-dark-soft);
   }
 
+  /* Links */
   .prose-chat a {
-    color: var(--color-blue-600);
+    color: var(--color-primary);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
   }
-
   .prose-chat a:hover {
-    color: var(--color-blue-500);
+    color: var(--color-primary-active);
   }
 
+  /* Strong */
   .prose-chat strong {
-    color: var(--color-slate-950);
+    color: var(--color-body-strong);
     font-weight: 600;
   }
   .dark .prose-chat strong {
-    color: var(--color-slate-200);
+    color: var(--color-on-dark);
   }
 
+  /* Horizontal rule */
   .prose-chat hr {
     border: none;
-    border-top: 1px solid var(--color-slate-200);
+    border-top: 1px solid var(--color-hairline);
     margin: 1rem 0;
   }
   .dark .prose-chat hr {
-    border-color: var(--color-slate-800);
+    border-color: #2a2825;
   }
 }

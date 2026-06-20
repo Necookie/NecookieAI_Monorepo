@@ -28,7 +28,7 @@ export default function Header() {
   const model = useAppStore(s => s.model);
   const setModel = useAppStore(s => s.setModel);
   const language = useAppStore(s => s.language);
-  
+
   const t = getTranslations(language).header;
   const theme = useAppStore(s => s.theme);
   const setTheme = useAppStore(s => s.setTheme);
@@ -52,40 +52,85 @@ export default function Header() {
     setModelOpen(false);
   }
 
+  const isDark = theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+
   return (
-    <header className={`flex items-center justify-between gap-3 px-5 ${compactMode ? "py-1.5 h-[42px]" : "py-3 h-[52px]"} border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 flex-shrink-0`}>
-      {/* Title — min-w-0 lets flex truncate correctly */}
+    <header
+      className={`flex items-center justify-between gap-3 px-5 ${compactMode ? "py-1.5 h-[42px]" : "py-3 h-[64px]"} flex-shrink-0`}
+      style={{
+        background: "var(--color-canvas)",
+        borderBottom: "1px solid var(--color-hairline)",
+      }}
+    >
+      {/* Title */}
       <div className="flex items-center gap-2 min-w-0 flex-1">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="md:hidden flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-[6px] text-slate-950 hover:text-slate-950 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+          className="md:hidden flex-shrink-0 flex items-center justify-center w-8 h-8 transition-colors"
+          style={{ borderRadius: "var(--radius-sm)", color: "var(--color-muted)" }}
         >
           <Menu size={18} />
         </button>
-        <h1 className="min-w-0 flex-1 text-[15px] font-semibold text-slate-950 dark:text-slate-200 tracking-tight truncate">
+        <h1
+          className={`min-w-0 flex-1 truncate`}
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: "15px",
+            fontWeight: 500,
+            color: "var(--color-ink)",
+            letterSpacing: 0,
+          }}
+        >
           {activeChat?.title ?? "Necookie AI"}
         </h1>
       </div>
 
-      {/* Right controls — flex-shrink-0 keeps buttons always visible */}
+      {/* Right controls */}
       <div className="flex items-center gap-2 flex-shrink-0">
         {/* Model selector */}
         <div className="relative" ref={dropRef}>
           <button
             id="model-selector-btn"
             onClick={() => setModelOpen(!modelOpen)}
-            className={`flex items-center gap-1.5 px-3 ${compactMode ? "py-1" : "py-1.5"} rounded-[6px] text-sm text-slate-950 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors`}
+            className={`flex items-center gap-1.5 px-3 ${compactMode ? "py-1" : "py-1.5"} transition-colors`}
+            style={{
+              borderRadius: "var(--radius-md)",
+              fontSize: "14px",
+              fontWeight: 500,
+              color: "var(--color-body)",
+              border: "1px solid var(--color-hairline)",
+              background: "var(--color-canvas)",
+              fontFamily: "var(--font-sans)",
+            }}
           >
-            <span className="font-medium">{t.model}</span>
+            <span>{t.model}</span>
             <ChevronDown
               size={13}
-              className={`text-slate-400 dark:text-slate-400 transition-transform duration-150 ${modelOpen ? "rotate-180" : ""}`}
+              style={{ color: "var(--color-muted-soft)", transition: "transform 150ms", transform: modelOpen ? "rotate(180deg)" : "none" }}
             />
           </button>
 
           {modelOpen && (
-            <div className="absolute right-0 top-full mt-1.5 w-52 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-[8px] shadow-lg shadow-slate-200/60 dark:shadow-slate-900/60 py-1 z-50">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400 px-3 py-1.5">
+            <div
+              className="absolute right-0 top-full mt-1.5 w-52 py-1 z-50"
+              style={{
+                background: "var(--color-canvas)",
+                border: "1px solid var(--color-hairline)",
+                borderRadius: "var(--radius-lg)",
+                boxShadow: "0 4px 16px rgba(20,20,19,0.10)",
+              }}
+            >
+              <p
+                className="px-3 py-1.5"
+                style={{
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  textTransform: "uppercase",
+                  letterSpacing: "1.2px",
+                  color: "var(--color-muted-soft)",
+                  fontFamily: "var(--font-sans)",
+                }}
+              >
                 {t.selectModel}
               </p>
               {AVAILABLE_MODELS.map((m) => (
@@ -94,19 +139,21 @@ export default function Header() {
                   id={`model-option-${m.id}`}
                   onClick={() => !m.disabled && selectModel(m)}
                   disabled={m.disabled}
-                  className={[
-                    "flex items-center gap-2 w-full px-3 py-2 text-sm text-left transition-colors",
-                    m.disabled ? "opacity-50 cursor-not-allowed" : "",
-                    m.id === model.id && !m.disabled
-                      ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                      : (!m.disabled ? "text-slate-950 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700" : "text-slate-950 dark:text-slate-300"),
-                  ].join(" ")}
+                  className="flex items-center gap-2 w-full px-3 py-2 text-sm text-left transition-colors"
+                  style={{
+                    opacity: m.disabled ? 0.4 : 1,
+                    cursor: m.disabled ? "not-allowed" : "pointer",
+                    color: m.id === model.id && !m.disabled ? "var(--color-primary-active)" : "var(--color-body)",
+                    background: m.id === model.id && !m.disabled ? "var(--color-surface-soft)" : "transparent",
+                    fontFamily: "var(--font-sans)",
+                    fontWeight: m.id === model.id ? 500 : 400,
+                  }}
                 >
                   <span
-                    className={[
-                      "w-1.5 h-1.5 rounded-full flex-shrink-0",
-                      m.id === model.id ? "bg-blue-500" : "bg-transparent",
-                    ].join(" ")}
+                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                    style={{
+                      background: m.id === model.id ? "var(--color-primary)" : "transparent",
+                    }}
                   />
                   {m.label}
                 </button>
@@ -118,18 +165,16 @@ export default function Header() {
         {/* Theme toggle */}
         <button
           id="theme-toggle-btn"
-          onClick={() => {
-            const isDark = theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-            setTheme(isDark ? "light" : "dark");
+          onClick={() => setTheme(isDark ? "light" : "dark")}
+          className={`flex items-center justify-center ${compactMode ? "w-7 h-7" : "w-8 h-8"} transition-colors`}
+          style={{
+            borderRadius: "var(--radius-sm)",
+            color: "var(--color-muted)",
+            background: "transparent",
           }}
-          className={`flex items-center justify-center ${compactMode ? "w-7 h-7" : "w-8 h-8"} rounded-[6px] text-slate-400 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors`}
           aria-label="Toggle theme"
         >
-          {theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches) ? (
-            <Sun size={15} />
-          ) : (
-            <Moon size={15} />
-          )}
+          {isDark ? <Sun size={15} /> : <Moon size={15} />}
         </button>
       </div>
     </header>

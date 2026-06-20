@@ -35,14 +35,40 @@ export default function WelcomeScreen() {
   const t = getTranslations(language).welcome;
 
   return (
-    <div className="flex flex-col items-center justify-center h-full min-h-[480px] px-6 select-none">
-      {/* Greeting */}
-      <h2 className="text-[22px] font-semibold text-slate-950 dark:text-slate-300 mb-6 tracking-tight">
+    <div
+      className="flex flex-col items-center justify-center h-full min-h-[480px] px-6 select-none"
+      style={{ background: "transparent" }}
+    >
+      {/* Greeting — display-md serif from DESIGN.md */}
+      <h2
+        className="mb-2"
+        style={{
+          fontFamily: "var(--font-display)",
+          fontSize: "clamp(28px, 5vw, 36px)",
+          fontWeight: 400,
+          letterSpacing: "-0.5px",
+          lineHeight: 1.15,
+          color: "var(--color-ink)",
+          textAlign: "center",
+        }}
+      >
         {t.greeting}
       </h2>
+      <p
+        className="mb-10"
+        style={{
+          fontFamily: "var(--font-sans)",
+          fontSize: "16px",
+          color: "var(--color-muted)",
+          fontWeight: 400,
+          lineHeight: 1.55,
+        }}
+      >
+        What can I help you with today?
+      </p>
 
-      {/* Suggestion cards */}
-      <div className="grid grid-cols-2 gap-3 w-full max-w-[540px]">
+      {/* Suggestion cards — feature-card spec */}
+      <div className="grid grid-cols-2 gap-3 w-full max-w-[560px]">
         {SUGGESTION_PROMPTS.map((s, i) => {
           const Icon = iconMap[s.icon as IconKey];
           return (
@@ -51,22 +77,62 @@ export default function WelcomeScreen() {
               id={`suggestion-${i}`}
               onClick={() => sendMessage(s.prompt + " ")}
               className={[
-                "group text-left p-4 rounded-[8px] border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40",
-                "hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50/40 dark:hover:bg-blue-900/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.15)] dark:hover:shadow-[0_0_15px_rgba(59,130,246,0.15)]",
-                "transition-all duration-300",
-                // Make the last card in 4-card grid span if odd
+                "group text-left transition-all duration-200",
                 i === SUGGESTION_PROMPTS.length - 1 && SUGGESTION_PROMPTS.length % 2 !== 0
                   ? "col-span-2"
                   : "",
               ].join(" ")}
+              style={{
+                padding: "var(--spacing-xl)",
+                borderRadius: "var(--radius-lg)",
+                background: "var(--color-surface-card)",
+                border: "1px solid var(--color-hairline-soft)",
+                cursor: "pointer",
+              }}
+              onMouseEnter={e => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.borderColor = "var(--color-primary)";
+                el.style.background = "var(--color-surface-soft)";
+                el.style.boxShadow = "0 2px 8px rgba(204,120,92,0.10)";
+              }}
+              onMouseLeave={e => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.borderColor = "var(--color-hairline-soft)";
+                el.style.background = "var(--color-surface-card)";
+                el.style.boxShadow = "none";
+              }}
             >
               <div className="flex items-center gap-2.5 mb-2">
-                <div className="flex items-center justify-center w-6 h-6 rounded-[4px] bg-blue-100 dark:bg-blue-900/50 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
-                  <Icon size={13} className="text-blue-600 dark:text-blue-400" />
+                <div
+                  className="flex items-center justify-center w-6 h-6"
+                  style={{
+                    borderRadius: "var(--radius-xs)",
+                    background: "var(--color-primary)",
+                  }}
+                >
+                  <Icon size={13} color="white" />
                 </div>
-                <span className="text-sm font-semibold text-slate-950 dark:text-slate-300">{s.title}</span>
+                <span
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    color: "var(--color-ink)",
+                    fontFamily: "var(--font-sans)",
+                  }}
+                >
+                  {s.title}
+                </span>
               </div>
-              <p className="text-xs text-slate-950 dark:text-slate-400 leading-snug">{s.description}</p>
+              <p
+                style={{
+                  fontSize: "13px",
+                  color: "var(--color-muted)",
+                  lineHeight: 1.5,
+                  fontFamily: "var(--font-sans)",
+                }}
+              >
+                {s.description}
+              </p>
             </button>
           );
         })}
