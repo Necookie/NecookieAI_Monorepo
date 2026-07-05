@@ -38,19 +38,16 @@ export default function SignInPage() {
       >
         {/* Brand Header */}
         <div className="text-center mb-8">
-          {/* Spike mark */}
+          {/* Website logo */}
           <div className="flex justify-center mb-4">
-            <div
-              className="flex items-center justify-center w-10 h-10"
+            <img
+              src="/favicon.png"
+              alt="Necookie AI"
+              className="w-10 h-10 object-contain rounded-lg"
               style={{
                 background: "var(--color-primary)",
-                borderRadius: "var(--radius-lg)",
               }}
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M9 2L9 16M2 9L16 9M3.7 3.7L14.3 14.3M14.3 3.7L3.7 14.3" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </div>
+            />
           </div>
 
           <h1

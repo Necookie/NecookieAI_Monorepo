@@ -424,18 +424,15 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
     <div className={`flex flex-col items-start group ${compactMode ? "mb-4" : "mb-8"}`}>
       {/* Label */}
       <div className={`flex items-center gap-2 ${compactMode ? "mb-1.5" : "mb-3"}`}>
-        {/* Anthropic-style spike mark as brand glyph */}
-        <div
-          className="flex-shrink-0 w-5 h-5 flex items-center justify-center"
+        {/* Brand glyph */}
+        <img
+          src="/favicon.png"
+          alt="Necookie AI"
+          className="flex-shrink-0 w-5 h-5 object-contain rounded-full"
           style={{
-            borderRadius: "50%",
             background: "var(--color-primary)",
           }}
-        >
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M5 1L5 9M1 5L9 5M2.05 2.05L7.95 7.95M7.95 2.05L2.05 7.95" stroke="white" strokeWidth="1.4" strokeLinecap="round"/>
-          </svg>
-        </div>
+        />
         <span
           style={{
             fontSize: "11px",
