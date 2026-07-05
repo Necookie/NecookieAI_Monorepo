@@ -19,6 +19,7 @@ import { Pencil, Code2, FileText, Lightbulb } from "lucide-react";
 import { SUGGESTION_PROMPTS } from "../lib/store";
 import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
+import { motion } from "framer-motion";
 
 const iconMap = {
   Pencil,
@@ -72,10 +73,13 @@ export default function WelcomeScreen() {
         {SUGGESTION_PROMPTS.map((s, i) => {
           const Icon = iconMap[s.icon as IconKey];
           return (
-            <button
+            <motion.button
               key={i}
               id={`suggestion-${i}`}
               onClick={() => sendMessage(s.prompt + " ")}
+              whileHover={{ scale: 1.03, y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 300, damping: 18 }}
               className={[
                 "group text-left transition-all duration-200",
                 i === SUGGESTION_PROMPTS.length - 1 && SUGGESTION_PROMPTS.length % 2 !== 0
@@ -93,7 +97,7 @@ export default function WelcomeScreen() {
                 const el = e.currentTarget as HTMLElement;
                 el.style.borderColor = "var(--color-primary)";
                 el.style.background = "var(--color-surface-soft)";
-                el.style.boxShadow = "0 2px 8px rgba(204,120,92,0.10)";
+                el.style.boxShadow = "0 4px 12px rgba(204,120,92,0.12)";
               }}
               onMouseLeave={e => {
                 const el = e.currentTarget as HTMLElement;
@@ -133,7 +137,7 @@ export default function WelcomeScreen() {
               >
                 {s.description}
               </p>
-            </button>
+            </motion.button>
           );
         })}
       </div>

@@ -24,6 +24,7 @@ import SettingsPanel from "./SettingsPanel";
 import HelpPanel from "./HelpPanel";
 import LeavesBackground from "./LeavesBackground";
 import WeatherTimeWidget from "./WeatherTimeWidget";
+import AntigravityDashboard from "./AntigravityDashboard";
 
 /**
  * Inner shell — separated so it can consume AppProvider context.
@@ -52,7 +53,13 @@ function AppShell() {
       <Sidebar />
       <div className="flex flex-col flex-1 min-w-0 relative z-10">
         <Header />
-        {currentView === "folders" ? <FoldersView /> : <ChatCanvas />}
+        {currentView === "folders" ? (
+          <FoldersView />
+        ) : currentView === "dashboard" ? (
+          <AntigravityDashboard />
+        ) : (
+          <ChatCanvas />
+        )}
       </div>
       {showSettings && <SettingsPanel />}
       {showHelp && <HelpPanel />}

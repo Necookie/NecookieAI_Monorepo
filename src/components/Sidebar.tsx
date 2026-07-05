@@ -28,6 +28,7 @@ import {
   Folder,
   Pin,
   MoreVertical,
+  Zap,
 } from "lucide-react";
 import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
@@ -39,6 +40,7 @@ export default function Sidebar() {
   const activeId = useAppStore(s => s.activeId);
   const sidebarOpen = useAppStore(s => s.sidebarOpen);
   const setSidebarOpen = useAppStore(s => s.setSidebarOpen);
+  const currentView = useAppStore(s => s.currentView);
   const setCurrentView = useAppStore(s => s.setCurrentView);
   const newChat = useAppStore(s => s.newChat);
   const selectChat = useAppStore(s => s.selectChat);
@@ -177,7 +179,7 @@ export default function Sidebar() {
             "flex items-center gap-2 w-full transition-all duration-200",
             sidebarOpen ? (compactMode ? "px-3 py-1.5" : "px-3 py-2") : "p-2 justify-center",
           ].join(" ")}
-          style={actionBtnStyle()}
+          style={actionBtnStyle(currentView === "folders")}
           onMouseEnter={e => {
             (e.currentTarget as HTMLElement).style.background = "var(--color-surface-card)";
             (e.currentTarget as HTMLElement).style.color = "var(--color-primary)";
@@ -189,6 +191,27 @@ export default function Sidebar() {
         >
           <Folder size={15} className="flex-shrink-0" />
           {sidebarOpen && <span>Folders</span>}
+        </button>
+
+        <button
+          id="antigravity-dashboard-btn"
+          onClick={() => setCurrentView("dashboard")}
+          className={[
+            "flex items-center gap-2 w-full transition-all duration-200",
+            sidebarOpen ? (compactMode ? "px-3 py-1.5" : "px-3 py-2") : "p-2 justify-center",
+          ].join(" ")}
+          style={actionBtnStyle(currentView === "dashboard")}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLElement).style.background = "var(--color-surface-card)";
+            (e.currentTarget as HTMLElement).style.color = "var(--color-primary)";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.background = "transparent";
+            (e.currentTarget as HTMLElement).style.color = "var(--color-body)";
+          }}
+        >
+          <Zap size={15} className="flex-shrink-0" />
+          {sidebarOpen && <span>Antigravity Dashboard</span>}
         </button>
       </div>
 
