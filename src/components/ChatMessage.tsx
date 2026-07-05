@@ -269,7 +269,16 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
           }
         } else {
           const remaining = targetLen - currentLen;
-          advance = remaining > 15 ? Math.ceil(remaining / 3) : 1;
+          // Dynamically adjust step size to avoid queue buildup and layout stutter
+          if (remaining > 80) {
+            advance = Math.ceil(remaining / 4);
+          } else if (remaining > 30) {
+            advance = 5;
+          } else if (remaining > 10) {
+            advance = 2;
+          } else {
+            advance = 1;
+          }
         }
 
         smoothedLengthRef.current = currentLen + advance;

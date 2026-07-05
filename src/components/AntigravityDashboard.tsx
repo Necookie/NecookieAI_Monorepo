@@ -223,29 +223,71 @@ export default function AntigravityDashboard() {
           >
             {/* Glowing magic particle animation in background */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden bg-slate-900/5 dark:bg-slate-900/40">
-              {particles.map((p) => (
-                <motion.div
-                  key={p.id}
-                  className="absolute rounded-full bg-[var(--color-accent-teal)]/30 filter blur-[1px]"
-                  style={{
-                    left: `${p.x}%`,
-                    bottom: `${p.y - 40}%`,
-                    width: p.size,
-                    height: p.size,
-                  }}
-                  animate={{
-                    y: [-20, -180],
-                    x: ["0%", `${(Math.random() - 0.5) * 10}%`],
-                    opacity: [0, 0.8, 0],
-                  }}
-                  transition={{
-                    duration: p.duration,
-                    delay: p.delay,
-                    repeat: Infinity,
-                    ease: "easeOut",
-                  }}
-                />
-              ))}
+              <style dangerouslySetInnerHTML={{__html: `
+                @keyframes floatParticle {
+                  0% {
+                    transform: translateY(0) scale(1) translateX(0);
+                    opacity: 0;
+                  }
+                  10% {
+                    opacity: 0.8;
+                  }
+                  90% {
+                    opacity: 0.8;
+                  }
+                  100% {
+                    transform: translateY(-160px) scale(0.3) translateX(var(--drift));
+                    opacity: 0;
+                  }
+                }
+                .particle-glow {
+                  will-change: transform, opacity;
+                  animation: floatParticle var(--duration) linear var(--delay) infinite;
+                }
+                @keyframes floatCard {
+                  0%, 100% { transform: translateY(0); }
+                  50% { transform: translateY(-4px); }
+                }
+                @keyframes floatCardAlt {
+                  0%, 100% { transform: translateY(0); }
+                  50% { transform: translateY(-3px); }
+                }
+                @keyframes floatBall {
+                  0%, 100% { transform: translateY(0); }
+                  50% { transform: translateY(-8px); }
+                }
+                .float-anim {
+                  animation: floatCard 4s ease-in-out infinite;
+                  will-change: transform;
+                }
+                .float-anim-alt {
+                  animation: floatCardAlt 4.5s ease-in-out infinite;
+                  will-change: transform;
+                }
+                .float-ball-anim {
+                  animation: floatBall 3.8s ease-in-out infinite;
+                  will-change: transform;
+                }
+              `}} />
+              {particles.map((p) => {
+                const drift = `${((p.id % 10) - 5) * 4}px`;
+                return (
+                  <div
+                    key={p.id}
+                    className="absolute rounded-full bg-[var(--color-accent-teal)]/35 filter blur-[1px] particle-glow"
+                    style={{
+                      left: `${p.x}%`,
+                      bottom: `10%`,
+                      width: `${p.size}px`,
+                      height: `${p.size}px`,
+                      // @ts-ignore
+                      "--duration": `${p.duration}s`,
+                      "--delay": `${p.delay}s`,
+                      "--drift": drift,
+                    }}
+                  />
+                );
+              })}
             </div>
 
             <div className="relative z-10">
@@ -259,9 +301,9 @@ export default function AntigravityDashboard() {
               {/* Status Thruster Indicators */}
               <div className="grid grid-cols-2 gap-4 mt-8">
                 <motion.div 
-                  animate={{ y: [0, -4, 0] }}
-                  transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                  className="p-4 rounded-xl border border-[var(--color-hairline)] bg-[var(--color-canvas)]/60 flex flex-col justify-between"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  transition={weightlessSpring}
+                  className="p-4 rounded-xl border border-[var(--color-hairline)] bg-[var(--color-canvas)]/60 flex flex-col justify-between float-anim"
                 >
                   <span className="text-xs text-[var(--color-muted)] font-mono">THRUSTER ALPHA</span>
                   <div className="flex items-end justify-between mt-2">
@@ -271,9 +313,9 @@ export default function AntigravityDashboard() {
                 </motion.div>
 
                 <motion.div 
-                  animate={{ y: [0, -3.5, 0] }}
-                  transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
-                  className="p-4 rounded-xl border border-[var(--color-hairline)] bg-[var(--color-canvas)]/60 flex flex-col justify-between"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  transition={weightlessSpring}
+                  className="p-4 rounded-xl border border-[var(--color-hairline)] bg-[var(--color-canvas)]/60 flex flex-col justify-between float-anim-alt"
                 >
                   <span className="text-xs text-[var(--color-muted)] font-mono">GRAVITY INDUCTOR</span>
                   <div className="flex items-end justify-between mt-2">
@@ -311,9 +353,9 @@ export default function AntigravityDashboard() {
               <div className="mt-6 flex flex-col items-center justify-center relative">
                 {/* Floating dynamic status ball */}
                 <motion.div
-                  className="h-28 w-28 rounded-full flex flex-col items-center justify-center border-2 border-[var(--color-accent-teal)]/30 bg-gradient-to-tr from-[var(--color-accent-teal)]/10 to-transparent shadow-xl relative"
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                  whileHover={{ scale: 1.05 }}
+                  transition={weightlessSpring}
+                  className="h-28 w-28 rounded-full flex flex-col items-center justify-center border-2 border-[var(--color-accent-teal)]/30 bg-gradient-to-tr from-[var(--color-accent-teal)]/10 to-transparent shadow-xl relative float-ball-anim"
                 >
                   <span className="text-xs text-[var(--color-muted)] font-mono">NET SCALE</span>
                   <span className="text-2xl font-black text-[var(--color-ink)] font-mono">0.02g</span>
