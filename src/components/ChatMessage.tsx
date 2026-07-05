@@ -252,8 +252,26 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
       const targetLen = message.content.length;
       const currentLen = smoothedLengthRef.current;
       if (currentLen < targetLen) {
-        const remaining = targetLen - currentLen;
-        const advance = remaining > 15 ? Math.ceil(remaining / 3) : 1;
+        // Detect if the current slice is inside a markdown code block (odd number of triple backticks)
+        const currentSlice = message.content.slice(0, currentLen);
+        const backtickCount = (currentSlice.match(/```/g) || []).length;
+        const isInsideCodeBlock = backtickCount % 2 !== 0;
+
+        let advance = 1;
+        if (isInsideCodeBlock) {
+          // Instantly catch up to the closing backticks or the end of the currently loaded stream chunk
+          const remainingText = message.content.slice(currentLen);
+          const closingIndex = remainingText.indexOf("```");
+          if (closingIndex !== -1) {
+            advance = closingIndex + 3;
+          } else {
+            advance = remainingText.length;
+          }
+        } else {
+          const remaining = targetLen - currentLen;
+          advance = remaining > 15 ? Math.ceil(remaining / 3) : 1;
+        }
+
         smoothedLengthRef.current = currentLen + advance;
         setSmoothedContent(message.content.slice(0, smoothedLengthRef.current));
       } else {
