@@ -185,6 +185,10 @@ pnpm build
 
 The compiled output is written to `./dist/`. Build with server secrets absent from `.env` and `.dev.vars` so they cannot enter the bundle. Set the five server-only values above as Worker secrets, then deploy with `wrangler deploy --config dist/server/wrangler.json` using Cloudflare credentials scoped to `necookie-ai-chat`.
 
+### Branded Ollama model
+
+`Modelfile.necookie` creates `necookie-ai:latest` from `qwen2.5-coder:3b`. Its system message identifies the assistant product as Necookie AI by Necookie while acknowledging Qwen as the underlying model. On the Ollama host, create or refresh it with `ollama create necookie-ai -f Modelfile.necookie`. The chat Worker uses `NECOOKIE_MODEL=necookie-ai:latest` from `wrangler.toml`.
+
 ---
 
 ## Database

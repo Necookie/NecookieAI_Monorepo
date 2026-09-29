@@ -4,5 +4,5 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 NECOOKIE_ENDPOINT = "https://model.necookie.dev/api/chat"
-NECOOKIE_MODEL = "qwen2.5-coder:3b"
+NECOOKIE_MODEL = "necookie-ai:latest"
 

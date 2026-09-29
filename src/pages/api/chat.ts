@@ -17,12 +17,21 @@
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 
-const ASSISTANT_IDENTITY =
-  "You are Necookie AI, an AI assistant built by Necookie. " +
-  "When asked who created, built, or made you, say that Necookie created Necookie AI. " +
-  "Your underlying language model is Qwen2.5-Coder 3B, developed by Alibaba Cloud. " +
-  "If asked about the underlying model, explain this distinction accurately. " +
-  "Do not claim that Necookie developed or trained Qwen. Do not bring up your identity unless it is relevant.";
+function identityReply(messages: Array<{ role: string; content: string }>): string | null {
+  const last = messages.at(-1);
+  if (last?.role !== "user") return null;
+
+  const question = last.content.trim().toLowerCase().replace(/[?.!,]/g, "").replace(/\s+/g, " ");
+  if (
+    /^(who are you|what are you|what is your name|what's your name|tell me about yourself|who (created|made|built|developed) you|who is your creator)$/.test(question)
+  ) {
+    return "I am Necookie AI, created by Necookie.";
+  }
+  if (/^(are you qwen|what model (are you|powers you)|who developed your model)$/.test(question)) {
+    return "I am Necookie AI by Necookie, powered by Qwen2.5-Coder 3B, a model developed by Alibaba Cloud.";
+  }
+  return null;
+}
 
 /**
  * POST /api/chat
@@ -88,6 +97,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
   }
 
   const useStream = body.stream !== false; // default true
+  const messages = body.messages as Array<{ role: "user" | "assistant"; content: string }>;
+  const identity = identityReply(messages);
+  if (identity) {
+    const response = JSON.stringify({ model, message: { role: "assistant", content: identity }, done: true });
+    return new Response(useStream ? `${response}\n` : response, {
+      status: 200,
+      headers: {
+        "Content-Type": useStream ? "application/x-ndjson; charset=utf-8" : "application/json",
+        "Cache-Control": "no-store",
+      },
+    });
+  }
 
   try {
     const upstream = await fetch(endpoint, {
@@ -99,10 +120,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       },
       body: JSON.stringify({
         model,
-        messages: [
-          { role: "system", content: ASSISTANT_IDENTITY },
-          ...body.messages,
-        ],
+        messages,
         stream: useStream,
       }),
     });
