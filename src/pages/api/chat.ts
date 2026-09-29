@@ -17,6 +17,13 @@
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 
+const ASSISTANT_IDENTITY =
+  "You are Necookie AI, an AI assistant built by Necookie. " +
+  "When asked who created, built, or made you, say that Necookie created Necookie AI. " +
+  "Your underlying language model is Qwen2.5-Coder 3B, developed by Alibaba Cloud. " +
+  "If asked about the underlying model, explain this distinction accurately. " +
+  "Do not claim that Necookie developed or trained Qwen. Do not bring up your identity unless it is relevant.";
+
 /**
  * POST /api/chat
  *
@@ -69,7 +76,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       (message) =>
         message &&
         typeof message === "object" &&
-        ["user", "assistant", "system"].includes(message.role) &&
+        ["user", "assistant"].includes(message.role) &&
         typeof message.content === "string" &&
         message.content.length <= 20000
     )
@@ -92,7 +99,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
       },
       body: JSON.stringify({
         model,
-        messages: body.messages,
+        messages: [
+          { role: "system", content: ASSISTANT_IDENTITY },
+          ...body.messages,
+        ],
         stream: useStream,
       }),
     });
