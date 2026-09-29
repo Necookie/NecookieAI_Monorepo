@@ -15,6 +15,7 @@
  */
 
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 
 /**
  * POST /api/chat
@@ -26,27 +27,54 @@ import type { APIRoute } from "astro";
  *   { messages: Array<{role, content}>, stream?: boolean }
  *
  * Response:
- *   - If stream=true  → text/event-stream (SSE), one JSON chunk per line
+ *   - If stream=true  → application/x-ndjson, one JSON chunk per line
  *   - If stream=false → application/json, Ollama-compatible response
  */
-export const POST: APIRoute = async ({ request }) => {
-  const endpoint = import.meta.env.NECOOKIE_ENDPOINT;
-  const clientId = import.meta.env.NECOOKIE_CLIENT_ID;
-  const clientSecret = import.meta.env.NECOOKIE_CLIENT_SECRET;
-  const model = import.meta.env.NECOOKIE_MODEL ?? "necookie-ai";
+export const POST: APIRoute = async ({ request, locals }) => {
+  const { userId } = locals.auth();
+  if (!userId) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
-  if (!endpoint || !clientId || !clientSecret) {
+  const endpoint = env.NECOOKIE_ENDPOINT;
+  const clientId = env.MODEL_ACCESS_CLIENT_ID;
+  const clientSecret = env.MODEL_ACCESS_CLIENT_SECRET;
+  const model = env.NECOOKIE_MODEL;
+
+  if (!endpoint || !clientId || !clientSecret || !model) {
     return new Response(
       JSON.stringify({ error: "Server misconfigured: missing env vars." }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 
-  let body: { messages: unknown[]; stream?: boolean };
+  let body: { messages?: unknown; stream?: unknown };
   try {
     body = await request.json();
   } catch {
     return new Response(JSON.stringify({ error: "Invalid JSON body." }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  if (
+    !Array.isArray(body.messages) ||
+    body.messages.length === 0 ||
+    body.messages.length > 100 ||
+    !body.messages.every(
+      (message) =>
+        message &&
+        typeof message === "object" &&
+        ["user", "assistant", "system"].includes(message.role) &&
+        typeof message.content === "string" &&
+        message.content.length <= 20000
+    )
+  ) {
+    return new Response(JSON.stringify({ error: "Invalid messages." }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
@@ -70,10 +98,9 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     if (!upstream.ok) {
-      const errText = await upstream.text();
       return new Response(
-        JSON.stringify({ error: `Upstream error ${upstream.status}: ${errText}` }),
-        { status: upstream.status, headers: { "Content-Type": "application/json" } }
+        JSON.stringify({ error: `Model request failed (${upstream.status}).` }),
+        { status: 502, headers: { "Content-Type": "application/json" } }
       );
     }
 
@@ -82,7 +109,7 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response(upstream.body, {
         status: 200,
         headers: {
-          "Content-Type": "text/event-stream; charset=utf-8",
+          "Content-Type": "application/x-ndjson; charset=utf-8",
           "Cache-Control": "no-cache",
           "X-Accel-Buffering": "no",
         },
@@ -96,8 +123,8 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return new Response(JSON.stringify({ error: message }), {
+    console.error("Model request failed", err);
+    return new Response(JSON.stringify({ error: "Model request failed." }), {
       status: 502,
       headers: { "Content-Type": "application/json" },
     });

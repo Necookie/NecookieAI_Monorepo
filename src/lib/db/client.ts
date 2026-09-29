@@ -15,11 +15,12 @@
  */
 
 import { createClient } from "@libsql/client/web";
+import { env } from "cloudflare:workers";
 import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
 
-const url = import.meta.env.TURSO_DATABASE_URL || (typeof process !== 'undefined' && process.env ? process.env.TURSO_DATABASE_URL : undefined);
-const authToken = import.meta.env.TURSO_AUTH_TOKEN || (typeof process !== 'undefined' && process.env ? process.env.TURSO_AUTH_TOKEN : undefined);
+const url = env.TURSO_DATABASE_URL;
+const authToken = env.TURSO_AUTH_TOKEN;
 
 if (!url || !authToken) {
   throw new Error("Missing Turso database credentials (TURSO_DATABASE_URL / TURSO_AUTH_TOKEN) in environment variables.");

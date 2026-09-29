@@ -2,3 +2,7 @@ name = "necookie-ai-chat"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
+[vars]
+NECOOKIE_ENDPOINT = "https://model.necookie.dev/api/chat"
+NECOOKIE_MODEL = "qwen2.5-coder:3b"
+

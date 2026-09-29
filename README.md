@@ -49,7 +49,7 @@ Database
   |-- messages    Messages per chat (id, chatId, role, content, timestamp)
 ```
 
-The upstream model endpoint is called server-side only. Credentials (`NECOOKIE_CLIENT_ID`, `NECOOKIE_CLIENT_SECRET`) are never exposed to the browser.
+The upstream model endpoint is called server-side only. Cloudflare Access credentials stay in Worker secrets and are never exposed to the browser.
 
 ---
 
@@ -150,20 +150,20 @@ pnpm install
 
 ### 3. Configure environment variables
 
-Copy the provided example file and populate it with your credentials:
+Create `.env` with the public Clerk publishable key for the client build. Put the server-only values from `.env.example` in `.dev.vars` for local development. The model URL and name are configured in `wrangler.toml`.
 
 ```bash
-cp .env.example .env
+echo 'PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key' > .env
 ```
 
-Open `.env` and set the following values:
+Configure these values:
 
 | Variable | Description |
 |---|---|
 | `NECOOKIE_ENDPOINT` | Full URL to your Ollama-compatible chat endpoint |
 | `NECOOKIE_MODEL` | Default model name served by that endpoint |
-| `NECOOKIE_CLIENT_ID` | Cloudflare Access service token Client ID |
-| `NECOOKIE_CLIENT_SECRET` | Cloudflare Access service token Client Secret |
+| `MODEL_ACCESS_CLIENT_ID` | Cloudflare Access service token Client ID; Worker secret |
+| `MODEL_ACCESS_CLIENT_SECRET` | Cloudflare Access service token Client Secret; Worker secret |
 | `TURSO_DATABASE_URL` | libSQL connection URL from your Turso dashboard |
 | `TURSO_AUTH_TOKEN` | Auth token from your Turso dashboard |
 | `PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key (prefixed `PUBLIC_` for client exposure) |
@@ -183,7 +183,7 @@ The application will be available at `http://localhost:4321`.
 pnpm build
 ```
 
-The compiled output is written to `./dist/`. Deploy by running `wrangler deploy` with appropriate Cloudflare credentials.
+The compiled output is written to `./dist/`. Build with server secrets absent from `.env` and `.dev.vars` so they cannot enter the bundle. Set the five server-only values above as Worker secrets, then deploy with `wrangler deploy --config dist/server/wrangler.json` using Cloudflare credentials scoped to `necookie-ai-chat`.
 
 ---
 
@@ -225,7 +225,7 @@ All endpoints are server-side only. Requests from the browser are authenticated 
 
 ## Privacy
 
-The upstream model endpoint is called exclusively from the Astro server-side handler. The browser never contacts the LLM directly. API credentials (`NECOOKIE_CLIENT_ID`, `NECOOKIE_CLIENT_SECRET`, `CLERK_SECRET_KEY`, `TURSO_AUTH_TOKEN`) exist only in the server environment and are absent from any client-side bundle. Chat content is processed within the hosting infrastructure and is not forwarded to any external analytics service.
+The upstream model endpoint is called exclusively from the Astro server-side handler after Clerk authentication. The browser never contacts the LLM directly. API credentials (`MODEL_ACCESS_CLIENT_ID`, `MODEL_ACCESS_CLIENT_SECRET`, `CLERK_SECRET_KEY`, `TURSO_AUTH_TOKEN`) exist only in Worker secrets and are absent from the build and client bundle. Chat content is processed within the hosting infrastructure and is not forwarded to any external analytics service.
 
 ---
 
