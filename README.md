@@ -92,7 +92,6 @@ The upstream model endpoint is called server-side only. Cloudflare Access creden
 │   │   ├── HelpPanel.tsx          In-app documentation panel
 │   │   ├── SignInPage.tsx         Clerk sign-in page wrapper
 │   │   ├── WeatherTimeWidget.tsx  Ambient clock and weather display
-│   │   ├── LeavesBackground.tsx   Decorative animated background
 │   │   ├── AntigravityDashboard.tsx  Internal admin/debug panel
 │   │   └── ui/                    Shared primitive UI components
 │   ├── lib/

@@ -22,7 +22,6 @@ import ChatCanvas from "./ChatCanvas";
 import FoldersView from "./FoldersView";
 import SettingsPanel from "./SettingsPanel";
 import HelpPanel from "./HelpPanel";
-import LeavesBackground from "./LeavesBackground";
 import WeatherTimeWidget from "./WeatherTimeWidget";
 import AntigravityDashboard from "./AntigravityDashboard";
 
@@ -44,7 +43,6 @@ function AppShell() {
 
   return (
     <div className="flex h-screen overflow-hidden font-sans relative" style={{ background: "var(--color-canvas)" }} data-app-root>
-      <LeavesBackground />
       {/* Mobile overlay */}
       <div 
         className={`md:hidden fixed inset-0 bg-slate-900/50 z-30 transition-opacity ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} 

@@ -121,22 +121,6 @@ export default function SignInPage() {
             </button>
           </SignUpButton>
         </div>
-
-        {/* Footer */}
-        <div className="mt-8 text-center">
-          <span
-            style={{
-              fontSize: "11px",
-              letterSpacing: "1px",
-              fontWeight: 500,
-              color: "var(--color-muted-soft)",
-              fontFamily: "var(--font-sans)",
-              textTransform: "uppercase",
-            }}
-          >
-            Secured by Clerk
-          </span>
-        </div>
       </div>
 
       <style>{`

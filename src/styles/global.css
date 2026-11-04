@@ -139,16 +139,15 @@
   .dark ::-webkit-scrollbar-thumb:hover {
     background: #333230;
   }
-
-  @keyframes fallDown {
-    0%   { transform: translateY(-100px) rotate(0deg); opacity: 0; }
-    10%  { opacity: 1; }
-    90%  { opacity: 1; }
-    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
-  }
 }
 
 @layer components {
+  /* Hide Clerk's branding links while preserving authentication actions. */
+  .cl-rootBox a[href^="https://clerk.com"],
+  .cl-userButtonPopoverFooter a[href^="https://clerk.com"] {
+    display: none !important;
+  }
+
   /* ── Prose styles for markdown rendering ── */
   .prose-chat {
     font-size: 1rem;
