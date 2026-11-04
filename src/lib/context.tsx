@@ -40,6 +40,11 @@ export const useAppStore = create<AppStore>((set, get, api) => ({
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const fetchInitialData = useAppStore((s) => s._fetchInitialData);
   const theme = useAppStore((s) => s.theme);
+  const messageMarker = useAppStore((s) => s.messageMarker);
+
+  useEffect(() => {
+    document.documentElement.style.setProperty("--message-marker", messageMarker);
+  }, [messageMarker]);
 
   useEffect(() => {
     fetchInitialData();

@@ -66,6 +66,7 @@ export default function Header() {
       <div className="flex items-center gap-2 min-w-0 flex-1">
         <button
           onClick={() => setSidebarOpen(true)}
+          aria-label="Open sidebar"
           className="md:hidden flex-shrink-0 flex items-center justify-center w-8 h-8 transition-colors"
           style={{ borderRadius: "var(--radius-sm)", color: "var(--color-muted)" }}
         >
@@ -117,7 +118,7 @@ export default function Header() {
                 background: "var(--color-canvas)",
                 border: "1px solid var(--color-hairline)",
                 borderRadius: "var(--radius-lg)",
-                boxShadow: "0 4px 16px rgba(20,20,19,0.10)",
+                boxShadow: "0 4px 16px rgba(0,0,0,0.10)",
               }}
             >
               <p

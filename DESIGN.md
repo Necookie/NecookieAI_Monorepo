@@ -1,213 +1,70 @@
-# Design Reference — Necookie AI
+# Necookie AI — Interface design
 
-This document describes the visual design system, component patterns, and UI principles that govern the Necookie AI interface. It serves as the authoritative reference for any contributor working on the front-end.
+A quiet black-and-white workspace for writing, coding, and research. Follow [BRAND.md](BRAND.md) and the implemented tokens in `src/styles/global.css`.
 
----
+## Palette
 
-## Design Philosophy
+Default interface colors are neutral grays. Establish hierarchy with contrast, spacing, weight, and borders.
 
-The interface is built around a modern minimalist, developer-centric aesthetic. The goal is to reduce cognitive friction during extended work sessions, not to make a visual statement. Decoration is used sparingly and only when it improves information hierarchy or orientation.
+| Role / token | Light | Dark |
+| --- | --- | --- |
+| `--color-canvas` | `#ffffff` | `#111111` |
+| `--color-surface-soft` | `#fafafa` | `#171717` |
+| `--color-surface-card` | `#f5f5f5` | `#1f1f1f` |
+| `--color-ink` | `#171717` | `#fafafa` |
+| `--color-body` | `#404040` | `#d4d4d4` |
+| `--color-muted` | `#666666` | `#b3b3b3` |
+| `--color-muted-soft` | `#737373` | `#a3a3a3` |
+| `--color-hairline` | `#dedede` | `#363636` |
+| `--color-primary` | `#171717` | `#fafafa` |
+| `--color-on-primary` | `#ffffff` | `#111111` |
 
-The layout avoids chat bubble patterns entirely. Assistant responses are presented as clean text blocks anchored by a vertical teal accent line, keeping the reading experience similar to a terminal or code editor rather than a messaging app.
+Primary actions invert in dark mode. `--color-on-dark` stays light for code windows; use `--color-on-primary` on primary buttons and `--color-inverse` on ink backgrounds. Success, warning, and error states pair neutral colors with distinctive icons and explicit text.
 
----
-
-## Color System
-
-The palette separates into three roles: background surfaces, text, and accents.
-
-### Background and Surface
-
-| Role | Token | Value |
-|---|---|---|
-| Page background | `--bg-base` | `#f8f9ff` |
-| Sidebar background | `--bg-sidebar` | `#f0f2fb` |
-| Card / panel surface | `--bg-surface` | `#ffffff` |
-| Input background | `--bg-input` | `#eef0fa` |
-| Dark surface (modals, overlays) | `--bg-dark` | `#0b1c30` |
-
-The page background is a soft slate-tinted off-white rather than pure white. This reduces glare on high-brightness displays and gives the interface a paper-like quality without veering into warm cream territory.
-
-### Text
-
-| Role | Token | Value |
-|---|---|---|
-| Primary text | `--text-primary` | `#0b1c30` |
-| Secondary text | `--text-secondary` | `#0F172A` |
-| Muted / metadata | `--text-muted` | `#64748b` |
-| Inverse text (on dark) | `--text-inverse` | `#f8f9ff` |
-
-### Accent
-
-The accent color is a sharp teal/cyan. It is reserved strictly for focus states, active indicators, the assistant response line marker, and primary action highlights. It does not appear on decorative elements.
-
-| Role | Token | Value |
-|---|---|---|
-| Primary accent | `--accent` | `#0D9488` |
-| Accent light | `--accent-light` | `#2dd4bf` |
-| Accent dark | `--accent-dark` | `#006a61` |
-
-### Semantic
-
-| Role | Token | Value |
-|---|---|---|
-| Destructive / error | `--color-error` | `#dc2626` |
-| Warning | `--color-warning` | `#d97706` |
-| Success | `--color-success` | `#16a34a` |
-
----
+Legacy `accent-teal`, `accent-amber`, and `surface-cream-strong` names remain neutral compatibility aliases. New components use semantic shadcn tokens such as `bg-background`, `text-foreground`, and `border-border`, mapped to the application palette.
 
 ## Typography
 
-Three font families are in use. Each has a distinct role that does not overlap.
+Inter handles headings, navigation, labels, and messages. JetBrains Mono handles code, color values, and technical metadata. Fall back to system sans-serif and monospace respectively.
 
-| Family | Role | Fallback |
-|---|---|---|
-| Geist | Display headings, brand wordmark | `system-ui`, `sans-serif` |
-| Inter | Body text, UI labels, message content | `system-ui`, `sans-serif` |
-| JetBrains Mono | Code blocks, inline code, system metadata | `ui-monospace`, `monospace` |
+| Role | Size | Weight | Line height |
+| --- | --- | --- | --- |
+| Welcome heading | 28–36px responsive | 600 | 1.15 |
+| Panel heading | 22–24px | 600 | 1.2 |
+| Body / messages | 15–16px | 400 | 1.55–1.65 |
+| Controls | 13–14px | 500 | 1.5 |
+| Metadata | 11–12px | 400–500 | 1.4 |
 
-### Type Scale
+Use concise headings and sentence case. Keep long message text at regular weight.
 
-| Label | Size | Weight | Line Height | Usage |
-|---|---|---|---|---|
-| Display large | 32px | 600 | 1.1 | Welcome screen heading |
-| Display medium | 24px | 600 | 1.2 | Section headings |
-| Title | 18px | 600 | 1.3 | Panel titles, sidebar section labels |
-| Body | 16px | 400 | 1.55 | Message content, settings descriptions |
-| Body small | 14px | 400 | 1.5 | Timestamps, metadata, breadcrumbs |
-| Caption | 12px | 500 | 1.4 | Badges, status labels |
-| Code | 14px | 400 | 1.6 | Inline and block code |
+## Layout and surfaces
 
-Body weight stays at 400 for message text to reduce reading fatigue over long conversations. Weight 500 and 600 are reserved for labels, headings, and navigation items where scanning speed matters more than reading comfort.
+- Desktop sidebar: 240px wide, collapsing to a 52px icon rail. Below 768px it opens as an overlay drawer.
+- Chat content and composer: centered, 760px maximum width. Scroll code horizontally without widening the viewport.
+- Welcome suggestions: two columns from 400px, one column below. Use thin borders, 12px radii, 24px padding, and neutral hover surfaces.
+- Settings and Help: centered overlay panels with dimmed backdrops, scrollable bodies, and visible close actions. Settings is at most 672px wide and 90vh high.
+- Spacing: a 4px grid with common gaps of 8, 12, 16, 24, and 32px. Controls use 6–8px radii; panels use 12–16px.
+- Compact mode reduces spacing while preserving readable text.
 
----
+## Components and beUI
 
-## Spacing
+The app uses React 19, Tailwind CSS 4, and [beUI](https://beui.dev/). `components.json` configures the registry and `@/` alias. Add components with `pnpm dlx shadcn add @beui/<name>` and review their dependencies and semantic tokens.
 
-The spacing system uses a 4px base unit.
+The installed `src/components/motion/color-picker.tsx` and its supporting utilities come from beUI. `MessageMarkerPicker` composes the trigger, saturation area, hue slider, hex input, swatch, and presets inside Appearance settings. Its panel expands within the scrollable body so controls stay reachable on smaller screens.
 
-| Token | Value | Common Use |
-|---|---|---|
-| `space-1` | 4px | Icon gaps, tight label padding |
-| `space-2` | 8px | Component internal padding (small) |
-| `space-3` | 12px | Button padding, input padding |
-| `space-4` | 16px | Default component gap |
-| `space-6` | 24px | Section internal spacing |
-| `space-8` | 32px | Panel padding |
-| `space-12` | 48px | Section separation |
+The default assistant-message marker is `#737373`. Users can select a neutral preset or custom color. This preference persists immediately on the current device as `necookie-message-marker` and applies through `--message-marker`. Reset restores the default. It does not recolor navigation, body text, or primary actions.
 
-Compact Mode, when enabled by the user, applies a global multiplier that reduces padding and margins across the layout by approximately 25% without altering font sizes.
+Assistant messages use an open reading layout with a slim marker. Code blocks have a neutral dark frame; syntax colors distinguish code tokens. User-provided images retain their content colors.
 
----
+## Motion and accessibility
 
-## Layout
+- Use restrained springs, small press feedback, and short fades. Welcome cards lift by 2px.
+- Respect `prefers-reduced-motion` in Motion components and CSS. Avoid decorative looping animation.
+- Provide a visible 2px focus outline with a 3px offset. Label icon actions and retain keyboard input, Escape dismissal, and focus restoration.
+- Color selection supports hex entry and keyboard controls as well as pointer dragging.
+- Keep body text at AA contrast. Status, selection, and errors require text or shape cues beyond color.
+- Theme and marker changes apply immediately. Language and compact mode retain their existing Save/Cancel behavior.
 
-The application uses a three-column layout at desktop widths.
+## Review
 
-```
-+------------------+----------------------------------+
-|                  |                                  |
-|  Sidebar         |  Chat Canvas                     |
-|  (260px fixed)   |  (flex-grow, centered content)   |
-|                  |                                  |
-|  - Chat list     |  - Welcome screen or messages    |
-|  - Folders       |  - Chat input (pinned bottom)    |
-|  - Settings btn  |                                  |
-|                  |                                  |
-+------------------+----------------------------------+
-```
-
-**Sidebar** is fixed-width at 260px. On narrower viewports it collapses off-screen and can be toggled via the header control.
-
-**Chat Canvas** takes the remaining width. Message content is constrained to a max-width of 800px and centered within the canvas to keep line lengths comfortable on wide displays.
-
-**Chat Input** is fixed to the bottom of the canvas. It grows vertically with content up to a maximum height before switching to internal scroll.
-
-There are no modals with backdrop overlays except for the folder rename/create dialog. Settings and Help open as slide-in panels anchored to the right edge.
-
----
-
-## Components
-
-### Message Layout
-
-User messages are right-aligned, displayed in a plain block with no decorative border. Assistant messages are left-aligned with a 3px vertical teal accent line (`--accent`) on the left edge, serving as the visual separator between the two roles.
-
-Streaming messages display a blinking cursor at the insertion point. When streaming completes, the cursor disappears and the copy, rating, and regeneration controls fade in.
-
-### Code Blocks
-
-Code blocks use the JetBrains Mono font at 14px on a slightly darker surface color (`--bg-input`). A language label and a copy button appear in the top-right corner. Horizontal scrolling is preferred over line wrapping inside code blocks.
-
-Inline code uses the same font family at 13px with a subtle background tint and 2px horizontal padding, without a border.
-
-### Sidebar Chat Items
-
-Each chat item in the sidebar displays the derived title on a single line, truncated with an ellipsis if it overflows. A timestamp is shown as relative time (e.g., "3 hours ago"). On hover, action controls for rename, move-to-folder, pin, and delete appear.
-
-Pinned chats appear at the top of the list under a "Pinned" label. Below that, chats are grouped by date: Today, Yesterday, the past 7 days by weekday name, and then by month for older entries.
-
-### Input Composer
-
-The chat input is a resizable `textarea` styled to look like a flat text field. It has no visible border in the resting state; a bottom border in `--accent` appears on focus. A send button sits to the right and activates only when the field has non-empty, non-whitespace content. The Enter key submits; Shift+Enter inserts a newline.
-
-### Settings Panel
-
-The settings panel slides in from the right over the canvas. It is not a modal — the sidebar remains accessible behind it. Settings are grouped into: account, appearance (language, compact mode), model selection, and danger zone (clear history). Changes are persisted immediately via the `/api/settings` endpoint without a save button, except for destructive actions which require a confirmation step.
-
----
-
-## Motion and Animation
-
-Animations are functional rather than decorative. They communicate state transitions and preserve spatial orientation.
-
-| Interaction | Animation |
-|---|---|
-| Sidebar open/close | Slide and fade, 200ms ease-out |
-| Settings/Help panel open | Slide in from right, 250ms ease-out |
-| New message appear | Fade in, 150ms ease |
-| Streaming cursor | Blink at 1s interval |
-| Button hover | Background tint transition, 100ms |
-| Modal dialog | Scale from 95% to 100%, fade in, 200ms |
-
-No animation exceeds 300ms. Nothing loops unless it is communicating an ongoing process (streaming cursor, loading spinner).
-
-Framer Motion is used for layout animations and panel transitions. CSS transitions handle hover states and simple opacity changes.
-
----
-
-## Responsive Behavior
-
-| Breakpoint | Width | Changes |
-|---|---|---|
-| Mobile | < 768px | Sidebar hidden by default, header toggle reveals it as a full-height drawer |
-| Tablet | 768px - 1024px | Sidebar visible but narrower (220px); message max-width reduces to 680px |
-| Desktop | > 1024px | Full three-column layout; message max-width 800px |
-
-At mobile widths the sidebar overlays the canvas rather than pushing it. A tap outside the sidebar closes it.
-
----
-
-## Accessibility
-
-Focus states use the `--accent` color as a 2px outline with a 2px offset. No focus state is suppressed.
-
-Color contrast ratios meet WCAG AA at minimum for all text/background combinations. The muted text (`--text-muted`) on the sidebar background is the most constrained pair and targets a 4.5:1 ratio.
-
-Interactive elements have a minimum touch target size of 40x40px. Icon-only buttons carry `aria-label` attributes.
-
-Streaming responses update a live region so screen readers announce new content without the user navigating to it.
-
----
-
-## Compact Mode
-
-Compact Mode is a user-controlled density setting toggled from the settings panel. When active, it adds a `data-compact="true"` attribute to the root element. Global CSS rules scoped to this attribute reduce:
-
-- Sidebar item padding from 12px to 8px
-- Message vertical spacing from 24px to 14px
-- Header height from 56px to 44px
-- Input area padding from 16px to 10px
-
-Font sizes do not change in Compact Mode.
+Inspect light and dark modes at desktop and mobile widths. Check the sidebar, cards, composer, dialogs, and error states for consistent neutral tokens. Open the picker, change a value, reload, reset, and test Escape. Run the production build and inspect for overflow and runtime errors before shipping.

@@ -1,44 +1,72 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 @import "tailwindcss";
+@source "../";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Shared shadcn / beUI tokens follow the application's neutral palette. */
+@theme inline {
+  --color-background: var(--color-canvas);
+  --color-foreground: var(--color-ink);
+  --color-card: var(--color-surface-card);
+  --color-card-foreground: var(--color-ink);
+  --color-popover: var(--color-canvas);
+  --color-popover-foreground: var(--color-ink);
+  --color-primary-foreground: var(--color-on-primary);
+  --color-secondary: var(--color-surface-card);
+  --color-secondary-foreground: var(--color-ink);
+  --color-muted-foreground: var(--color-muted);
+  --color-border: var(--color-hairline);
+  --color-border-strong: var(--color-hairline);
+  --color-input: var(--color-hairline);
+  --color-ring: var(--color-ink);
+  --color-accent: var(--color-surface-card);
+  --color-accent-foreground: var(--color-ink);
+  --color-destructive: var(--color-error);
+}
+
+:root {
+  color-scheme: light;
+  --message-marker: #737373;
+}
+
 @theme {
   /* ── DESIGN.md Brand & Accent ── */
-  --color-primary:          #cc785c;
-  --color-primary-active:   #a9583e;
-  --color-primary-disabled: #e6dfd8;
+  --color-primary:          #171717;
+  --color-primary-active:   #404040;
+  --color-primary-disabled: #e5e5e5;
   --color-on-primary:       #ffffff;
 
   /* ── Text ── */
-  --color-ink:              #141413;
-  --color-body-strong:      #252523;
-  --color-body:             #3d3d3a;
-  --color-muted:            #6c6a64;
-  --color-muted-soft:       #8e8b82;
-  --color-on-dark:          #faf9f5;
-  --color-on-dark-soft:     #a09d96;
+  --color-ink:              #171717;
+  --color-body-strong:      #262626;
+  --color-body:             #404040;
+  --color-muted:            #666666;
+  --color-muted-soft:       #737373;
+  --color-on-dark:          #fafafa;
+  --color-on-dark-soft:     #b3b3b3;
+  --color-inverse:          #ffffff;
 
   /* ── Surfaces ── */
-  --color-canvas:                 #faf9f5;
-  --color-surface-soft:           #f5f0e8;
-  --color-surface-card:           #efe9de;
-  --color-surface-cream-strong:   #e8e0d2;
-  --color-surface-dark:           #181715;
-  --color-surface-dark-elevated:  #252320;
-  --color-surface-dark-soft:      #1f1e1b;
-  --color-backdrop:               rgba(250, 249, 245, 0.85);
+  --color-canvas:                 #ffffff;
+  --color-surface-soft:           #fafafa;
+  --color-surface-card:           #f5f5f5;
+  --color-surface-cream-strong:   #e5e5e5;
+  --color-surface-dark:           #111111;
+  --color-surface-dark-elevated:  #262626;
+  --color-surface-dark-soft:      #1c1c1c;
+  --color-backdrop:               rgba(255, 255, 255, 0.88);
 
   /* ── Borders ── */
-  --color-hairline:       #e6dfd8;
-  --color-hairline-soft:  #ebe6df;
+  --color-hairline:       #dedede;
+  --color-hairline-soft:  #ebebeb;
 
   /* ── Accents ── */
-  --color-accent-teal:    #5db8a6;
-  --color-accent-amber:   #e8a55a;
-  --color-success:        #5db872;
-  --color-warning:        #d4a017;
-  --color-error:          #c64545;
+  --color-accent-teal:    #737373;
+  --color-accent-amber:   #b3b3b3;
+  --color-success:        #525252;
+  --color-warning:        #525252;
+  --color-error:          #404040;
 
   /* ── Radius ── */
   --radius-xs:   4px;
@@ -49,7 +77,7 @@
   --radius-pill: 9999px;
 
   /* ── Fonts ── */
-  --font-display: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-sans:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono:    "JetBrains Mono", "Fira Code", ui-monospace, monospace;
 
@@ -87,34 +115,50 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Dark mode — navy product surface, all CSS vars re-mapped */
-  .dark {
-    --color-canvas:               #181715;
-    --color-surface-soft:         #1f1e1b;
-    --color-surface-card:         #252320;
-    --color-surface-cream-strong: #2e2c28;
-    --color-hairline:             #2e2c28;
-    --color-hairline-soft:        #272523;
-    --color-ink:                  #faf9f5;
-    --color-body-strong:          #ede9e2;
-    --color-body:                 #c8c4bc;
-    --color-muted:                #8e8b82;
-    --color-muted-soft:           #6c6a64;
-    --color-on-dark:              #faf9f5;
-    --color-on-dark-soft:         #a09d96;
-    --color-backdrop:             rgba(24, 23, 21, 0.85);
+  :where(button, a, input, textarea, select, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
   }
 
-  /* Dark mode — navy product surface */
+  button:not(:disabled), [role="button"] { cursor: pointer; }
+
+  /* Dark mode — neutral product surface, all CSS vars re-mapped */
+  .dark {
+    color-scheme: dark;
+    --color-primary:              #fafafa;
+    --color-primary-active:       #d4d4d4;
+    --color-primary-disabled:     #333333;
+    --color-on-primary:           #111111;
+    --color-inverse:              #111111;
+    --color-canvas:               #111111;
+    --color-surface-soft:         #171717;
+    --color-surface-card:         #1f1f1f;
+    --color-surface-cream-strong: #333333;
+    --color-hairline:             #363636;
+    --color-hairline-soft:        #292929;
+    --color-ink:                  #fafafa;
+    --color-body-strong:          #e5e5e5;
+    --color-body:                 #d4d4d4;
+    --color-muted:                #b3b3b3;
+    --color-muted-soft:           #a3a3a3;
+    --color-success:              #d4d4d4;
+    --color-warning:              #d4d4d4;
+    --color-error:                #e5e5e5;
+    --color-on-dark:              #fafafa;
+    --color-on-dark-soft:         #b3b3b3;
+    --color-backdrop:             rgba(17, 17, 17, 0.88);
+  }
+
+  /* Dark mode — neutral product surface */
   .dark body {
     background-color: var(--color-surface-dark);
     color: var(--color-on-dark);
   }
 
-  /* Display headings — serif */
+  /* Display headings — sans serif */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: 600;
     letter-spacing: -0.02em;
   }
 
@@ -137,7 +181,16 @@
     background: var(--color-surface-dark-elevated);
   }
   .dark ::-webkit-scrollbar-thumb:hover {
-    background: #333230;
+    background: #333333;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -174,7 +227,7 @@
     overflow: visible;
   }
 
-  /* Inline code — warm cream + coral text */
+  /* Inline code — neutral surface + strong text */
   .prose-chat code:not(pre code) {
     background: var(--color-surface-card);
     color: var(--color-primary-active);
@@ -187,7 +240,7 @@
   .dark .prose-chat code:not(pre code) {
     background: var(--color-surface-dark-elevated);
     color: var(--color-accent-amber);
-    border-color: #333230;
+    border-color: #333333;
   }
 
   .prose-chat pre code {
@@ -260,7 +313,7 @@
   .dark .prose-chat th {
     background: var(--color-surface-dark-elevated);
     color: var(--color-on-dark-soft);
-    border-color: #333230;
+    border-color: #333333;
   }
   .prose-chat td {
     padding: 0.5rem 0.75rem;
@@ -268,7 +321,7 @@
     color: var(--color-body);
   }
   .dark .prose-chat td {
-    border-color: #272523;
+    border-color: #292929;
     color: var(--color-on-dark-soft);
   }
   .prose-chat tr:last-child td {
@@ -316,6 +369,6 @@
     margin: 1rem 0;
   }
   .dark .prose-chat hr {
-    border-color: #2a2825;
+    border-color: #2a2a2a;
   }
 }

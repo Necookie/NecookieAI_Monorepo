@@ -40,7 +40,7 @@ export default function WeatherTimeWidget() {
         background: "var(--color-canvas)",
         border: "1px solid var(--color-hairline)",
         borderRadius: "var(--radius-lg)",
-        boxShadow: "0 2px 8px rgba(20,20,19,0.08)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
         backdropFilter: "blur(8px)",
       }}
     >

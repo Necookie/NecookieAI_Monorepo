@@ -37,6 +37,7 @@ import { Section } from "./ui/Section";
 import { SettingRow } from "./ui/SettingRow";
 import { Toggle } from "./ui/Toggle";
 import { SelectField } from "./ui/SelectField";
+import MessageMarkerPicker from "./MessageMarkerPicker";
 
 // ─── Main SettingsPanel ─────────────────────────────────────────────────────
 
@@ -84,7 +85,7 @@ export default function SettingsPanel() {
       id="settings-backdrop"
       className="fixed inset-0 z-40 flex items-center justify-center p-4"
       style={{
-        background: "rgba(20,20,19,0.25)",
+        background: "rgba(0,0,0,0.25)",
         backdropFilter: "blur(3px)",
       }}
       onClick={(e) => { if (e.target === e.currentTarget) handleCancel(); }}
@@ -98,7 +99,7 @@ export default function SettingsPanel() {
           background: "var(--color-canvas)",
           border: "1px solid var(--color-hairline)",
           borderRadius: "var(--radius-lg)",
-          boxShadow: "0 8px 32px rgba(20,20,19,0.12)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
           animation: "settingsFadeIn 0.18s ease-out",
         }}
       >
@@ -206,6 +207,12 @@ export default function SettingsPanel() {
 
             <hr style={{ border: "none", borderTop: "1px solid var(--color-hairline)" }} />
 
+            <SettingRow label="Message marker" description="Choose a neutral shade or a custom color. Saved on this device.">
+              <MessageMarkerPicker />
+            </SettingRow>
+
+            <hr style={{ border: "none", borderTop: "1px solid var(--color-hairline)" }} />
+
             <SettingRow label={t.compactMode} description={t.compactModeDesc}>
               <Toggle
                 id="settings-compact-mode"
@@ -279,7 +286,7 @@ export default function SettingsPanel() {
                   className="px-4 py-2 flex-shrink-0 transition-colors"
                   style={{
                     background: "var(--color-ink)",
-                    color: "var(--color-on-dark)",
+                    color: "var(--color-inverse)",
                     borderRadius: "var(--radius-sm)",
                     fontSize: "13px",
                     fontWeight: 500,
@@ -321,7 +328,7 @@ export default function SettingsPanel() {
                 onClick={() => { signOut(); setShowSettings(false); }}
                 className="px-4 py-2 transition-colors cursor-pointer"
                 style={{
-                  border: "1px solid rgba(198,69,69,0.30)",
+                  border: "1px solid rgba(128,128,128,0.30)",
                   color: "var(--color-error)",
                   background: "transparent",
                   borderRadius: "var(--radius-sm)",
@@ -329,7 +336,7 @@ export default function SettingsPanel() {
                   fontWeight: 500,
                   fontFamily: "var(--font-sans)",
                 }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "rgba(198,69,69,0.06)"}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "rgba(128,128,128,0.06)"}
                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
               >
                 Log Out
@@ -381,7 +388,7 @@ export default function SettingsPanel() {
               fontSize: "14px",
               fontWeight: 500,
               fontFamily: "var(--font-sans)",
-              boxShadow: "0 1px 3px rgba(204,120,92,0.25)",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.25)",
             }}
             onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "var(--color-primary-active)"}
             onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "var(--color-primary)"}

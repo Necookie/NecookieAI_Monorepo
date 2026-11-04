@@ -313,7 +313,7 @@ export default function Sidebar() {
                             background: "var(--color-canvas)",
                             border: "1px solid var(--color-hairline)",
                             borderRadius: "var(--radius-lg)",
-                            boxShadow: "0 4px 16px rgba(20,20,19,0.10)",
+                            boxShadow: "0 4px 16px rgba(0,0,0,0.10)",
                           }}
                           onClick={(e) => e.stopPropagation()}
                         >
@@ -341,7 +341,7 @@ export default function Sidebar() {
                             onClick={() => { deleteChat(chat.id); setOpenMenuId(null); }}
                             className="flex items-center gap-3 w-full px-4 py-2 text-sm text-left transition-colors"
                             style={{ color: "var(--color-error)", fontFamily: "var(--font-sans)" }}
-                            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "#fdf2f2"}
+                            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "var(--color-surface-card)"}
                             onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
                           >
                             <Trash2 size={14} />

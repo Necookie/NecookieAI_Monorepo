@@ -29,7 +29,7 @@ interface Props {
   onEditAndResend?: (id: string, newContent: string) => void;
 }
 
-// ─── Typing indicator — coral dots ────────────────────────────────────────────
+// ─── Typing indicator — neutral dots ────────────────────────────────────────────
 
 const TypingIndicator = () => (
   <span className="inline-flex items-center gap-1 ml-1">
@@ -101,7 +101,7 @@ function CodeBlock({
       style={{
         background: "var(--color-surface-dark)",
         borderRadius: "var(--radius-lg)",
-        boxShadow: "0 2px 8px rgba(20,20,19,0.14)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.14)",
       }}
     >
       {/* ── Top bar ── */}
@@ -324,7 +324,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
               background: "var(--color-canvas)",
               border: "1px solid var(--color-hairline)",
               borderRadius: "var(--radius-lg)",
-              boxShadow: "0 1px 3px rgba(20,20,19,0.06)",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             }}
           >
             <textarea
@@ -426,7 +426,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
       <div className={`flex items-center gap-2 ${compactMode ? "mb-1.5" : "mb-3"}`}>
         {/* Brand glyph */}
         <img
-          src="/favicon.png"
+          src="/favicon.svg"
           alt="Necookie AI"
           className="flex-shrink-0 w-5 h-5 object-contain rounded-full"
           style={{
@@ -447,11 +447,11 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
         </span>
       </div>
 
-      {/* Bubble — editorial open layout with coral left accent */}
+      {/* Bubble — editorial open layout with neutral left accent */}
       <div className="w-full flex">
         <div
           className="rounded-full mr-4 flex-shrink-0"
-          style={{ width: "2px", background: "var(--color-primary)", opacity: 0.4 }}
+          style={{ width: "2px", background: "var(--message-marker)" }}
         />
         <div
           className={`flex-1 min-w-0 ${compactMode ? "p-3" : "p-4"}`}
@@ -459,7 +459,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
             background: "var(--color-canvas)",
             borderRadius: "var(--radius-lg)",
             border: "1px solid var(--color-hairline-soft)",
-            boxShadow: "0 1px 3px rgba(20,20,19,0.06)",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
           }}
         >
           <div className="prose-chat" style={{ color: "var(--color-body)" }}>
@@ -525,7 +525,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
                     active={message.rating === "like"}
                     activeStyle={{
                       color: "var(--color-accent-teal)",
-                      background: "rgba(93,184,166,0.08)",
+                      background: "rgba(128,128,128,0.08)",
                     }}
                   >
                     <ThumbsUp size={14} />
@@ -536,7 +536,7 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
                     active={message.rating === "dislike"}
                     activeStyle={{
                       color: "var(--color-error)",
-                      background: "rgba(198,69,69,0.08)",
+                      background: "rgba(128,128,128,0.08)",
                     }}
                   >
                     <ThumbsDown size={14} />

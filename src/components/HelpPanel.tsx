@@ -68,7 +68,7 @@ function DocCard({
       onClick={(e) => e.preventDefault()}
       onMouseEnter={e => {
         (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)";
-        (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 8px rgba(204,120,92,0.10)";
+        (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 8px rgba(0,0,0,0.10)";
       }}
       onMouseLeave={e => {
         (e.currentTarget as HTMLElement).style.borderColor = "var(--color-hairline)";
@@ -159,7 +159,7 @@ export default function HelpPanel() {
       id="help-backdrop"
       className="fixed inset-0 z-40 flex items-center justify-center p-4"
       style={{
-        background: "rgba(20,20,19,0.25)",
+        background: "rgba(0,0,0,0.25)",
         backdropFilter: "blur(3px)",
       }}
       onClick={(e) => { if (e.target === e.currentTarget) setShowHelp(false); }}
@@ -173,7 +173,7 @@ export default function HelpPanel() {
           background: "var(--color-canvas)",
           border: "1px solid var(--color-hairline)",
           borderRadius: "var(--radius-lg)",
-          boxShadow: "0 8px 32px rgba(20,20,19,0.12)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
           animation: "helpFadeIn 0.18s ease-out",
         }}
       >

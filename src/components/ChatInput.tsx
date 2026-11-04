@@ -68,7 +68,7 @@ export default function ChatInput({ onSend, isStreaming, placeholder = "Message 
           : "1px solid var(--color-hairline)",
         borderRadius: "var(--radius-md)",
         boxShadow: focused
-          ? "0 0 0 3px rgba(204,120,92,0.12)"
+          ? "0 0 0 3px rgba(0,0,0,0.12)"
           : "none",
       }}
     >
@@ -117,7 +117,7 @@ export default function ChatInput({ onSend, isStreaming, placeholder = "Message 
           background: canSend || isStreaming ? "var(--color-primary)" : "var(--color-primary-disabled)",
           color: canSend || isStreaming ? "var(--color-on-primary)" : "var(--color-muted-soft)",
           cursor: !canSend && !isStreaming ? "not-allowed" : "pointer",
-          boxShadow: canSend || isStreaming ? "0 1px 3px rgba(204,120,92,0.30)" : "none",
+          boxShadow: canSend || isStreaming ? "0 1px 3px rgba(0,0,0,0.30)" : "none",
         }}
         disabled={!canSend && !isStreaming}
         aria-label={isStreaming ? "Stop generation" : "Send message"}

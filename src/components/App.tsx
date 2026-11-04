@@ -20,9 +20,10 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import ChatCanvas from "./ChatCanvas";
 import FoldersView from "./FoldersView";
-import SettingsPanel from "./SettingsPanel";
 import HelpPanel from "./HelpPanel";
 import WeatherTimeWidget from "./WeatherTimeWidget";
+
+const SettingsPanel = React.lazy(() => import("./SettingsPanel"));
 
 /**
  * Inner shell — separated so it can consume AppProvider context.
@@ -43,9 +44,9 @@ function AppShell() {
   return (
     <div className="flex h-screen overflow-hidden font-sans relative" style={{ background: "var(--color-canvas)" }} data-app-root>
       {/* Mobile overlay */}
-      <div 
-        className={`md:hidden fixed inset-0 bg-slate-900/50 z-30 transition-opacity ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} 
-        onClick={() => setSidebarOpen(false)} 
+      <div
+        className={`md:hidden fixed inset-0 bg-neutral-900/50 z-30 transition-opacity ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        onClick={() => setSidebarOpen(false)}
       />
       <Sidebar />
       <div className="flex flex-col flex-1 min-w-0 relative z-10">
@@ -56,9 +57,9 @@ function AppShell() {
           <ChatCanvas />
         )}
       </div>
-      {showSettings && <SettingsPanel />}
+      {showSettings && <React.Suspense fallback={null}><SettingsPanel /></React.Suspense>}
       {showHelp && <HelpPanel />}
-      <WeatherTimeWidget />
+      {!showSettings && !showHelp && <WeatherTimeWidget />}
     </div>
   );
 }
@@ -74,7 +75,17 @@ const publishableKey = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
  */
 export default function App() {
   return (
-    <ClerkProvider publishableKey={publishableKey}>
+    <ClerkProvider publishableKey={publishableKey} appearance={{ variables: {
+      colorPrimary: "var(--color-primary)",
+      colorPrimaryForeground: "var(--color-on-primary)",
+      colorBackground: "var(--color-canvas)",
+      colorForeground: "var(--color-ink)",
+      colorMutedForeground: "var(--color-muted)",
+      colorInputBackground: "var(--color-surface-card)",
+      colorInputForeground: "var(--color-ink)",
+      fontFamily: "var(--font-sans)",
+      borderRadius: "0.75rem",
+    } }}>
       <AppProvider>
         <AppShell />
         <SignedOut>

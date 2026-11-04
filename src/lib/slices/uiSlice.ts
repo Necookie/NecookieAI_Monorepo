@@ -9,6 +9,7 @@ export interface UISlice {
   showHelp: boolean;
   currentView: "chat" | "folders";
   compactMode: boolean;
+  messageMarker: string;
 
   setTheme: (t: ThemeMode) => void;
   setSidebarOpen: (v: boolean) => void;
@@ -16,6 +17,7 @@ export interface UISlice {
   setShowHelp: (v: boolean) => void;
   setCurrentView: (view: "chat" | "folders") => void;
   setCompactMode: (v: boolean) => void;
+  setMessageMarker: (color: string) => void;
 }
 
 export const getInitialTheme = (): ThemeMode => {
@@ -54,6 +56,19 @@ export const createUISlice: StateCreator<AppStore, [], [], UISlice> = (set) => (
   showHelp: false,
   currentView: "chat",
   compactMode: getInitialCompactMode(),
+  messageMarker: (() => {
+    if (typeof window === "undefined") return "#737373";
+    const saved = localStorage.getItem("necookie-message-marker");
+    return saved && /^#[0-9a-f]{6}$/i.test(saved) ? saved : "#737373";
+  })(),
+
+  setMessageMarker: (color) => {
+    if (!/^#[0-9a-f]{6}$/i.test(color)) return;
+    set({ messageMarker: color });
+    if (typeof window !== "undefined") {
+      localStorage.setItem("necookie-message-marker", color);
+    }
+  },
 
   setTheme: (t) => {
     set({ theme: t });

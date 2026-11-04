@@ -19,7 +19,7 @@ import { Pencil, Code2, FileText, Lightbulb } from "lucide-react";
 import { SUGGESTION_PROMPTS } from "../lib/store";
 import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 
 const iconMap = {
   Pencil,
@@ -34,19 +34,21 @@ export default function WelcomeScreen() {
   const sendMessage = useAppStore(s => s.sendMessage);
   const language = useAppStore(s => s.language);
   const t = getTranslations(language).welcome;
+  const reduceMotion = useReducedMotion();
 
   return (
     <div
-      className="flex flex-col items-center justify-center h-full min-h-[480px] px-6 select-none"
+      className="flex flex-col items-center justify-center h-full min-h-[400px] px-5 py-10 select-none"
       style={{ background: "transparent" }}
     >
-      {/* Greeting — display-md serif from DESIGN.md */}
+      <span className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-card text-lg font-semibold text-foreground" aria-hidden="true">N</span>
+      {/* Greeting */}
       <h2
         className="mb-2"
         style={{
           fontFamily: "var(--font-display)",
           fontSize: "clamp(28px, 5vw, 36px)",
-          fontWeight: 400,
+          fontWeight: 600,
           letterSpacing: "-0.5px",
           lineHeight: 1.15,
           color: "var(--color-ink)",
@@ -69,17 +71,17 @@ export default function WelcomeScreen() {
       </p>
 
       {/* Suggestion cards — feature-card spec */}
-      <div className="grid grid-cols-2 gap-3 w-full max-w-[560px]">
+      <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3 w-full max-w-[560px]">
         {SUGGESTION_PROMPTS.map((s, i) => {
           const Icon = iconMap[s.icon as IconKey];
           return (
             <motion.button
-              key={i}
+              key={s.title}
               id={`suggestion-${i}`}
               onClick={() => sendMessage(s.prompt + " ")}
-              whileHover={{ scale: 1.03, y: -4 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 300, damping: 18 }}
+              whileHover={reduceMotion ? undefined : { y: -2 }}
+              whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
               className={[
                 "group text-left transition-all duration-200",
                 i === SUGGESTION_PROMPTS.length - 1 && SUGGESTION_PROMPTS.length % 2 !== 0
@@ -87,9 +89,9 @@ export default function WelcomeScreen() {
                   : "",
               ].join(" ")}
               style={{
-                padding: "var(--space-xl)",
+                padding: "var(--space-lg)",
                 borderRadius: "var(--radius-lg)",
-                background: "var(--color-surface-card)",
+                background: "var(--color-canvas)",
                 border: "1px solid var(--color-hairline-soft)",
                 cursor: "pointer",
               }}
@@ -97,12 +99,12 @@ export default function WelcomeScreen() {
                 const el = e.currentTarget as HTMLElement;
                 el.style.borderColor = "var(--color-primary)";
                 el.style.background = "var(--color-surface-soft)";
-                el.style.boxShadow = "0 4px 12px rgba(204,120,92,0.12)";
+                el.style.boxShadow = "0 4px 12px rgba(0,0,0,0.12)";
               }}
               onMouseLeave={e => {
                 const el = e.currentTarget as HTMLElement;
                 el.style.borderColor = "var(--color-hairline-soft)";
-                el.style.background = "var(--color-surface-card)";
+                el.style.background = "var(--color-canvas)";
                 el.style.boxShadow = "none";
               }}
             >
@@ -114,7 +116,7 @@ export default function WelcomeScreen() {
                     background: "var(--color-primary)",
                   }}
                 >
-                  <Icon size={13} color="white" />
+                  <Icon size={13} style={{ color: "var(--color-on-primary)" }} />
                 </div>
                 <span
                   style={{

@@ -33,7 +33,7 @@ export default function SignInPage() {
           background: "var(--color-canvas)",
           border: "1px solid var(--color-hairline)",
           borderRadius: "var(--radius-lg)",
-          boxShadow: "0 8px 32px rgba(20,20,19,0.08)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
         }}
       >
         {/* Brand Header */}
@@ -41,7 +41,7 @@ export default function SignInPage() {
           {/* Website logo */}
           <div className="flex justify-center mb-4">
             <img
-              src="/favicon.png"
+              src="/favicon.svg"
               alt="Necookie AI"
               className="w-10 h-10 object-contain rounded-lg"
               style={{
@@ -54,7 +54,7 @@ export default function SignInPage() {
             style={{
               fontFamily: "var(--font-display)",
               fontSize: "28px",
-              fontWeight: 400,
+              fontWeight: 600,
               letterSpacing: "-0.3px",
               lineHeight: 1.2,
               color: "var(--color-ink)",

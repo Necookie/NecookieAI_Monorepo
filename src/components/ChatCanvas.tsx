@@ -94,8 +94,8 @@ export default function ChatCanvas() {
             className="flex items-start gap-2 px-3 py-2.5 text-sm"
             style={{
               borderRadius: "var(--radius-sm)",
-              background: "#fdf2f2",
-              border: "1px solid #f5c6c6",
+              background: "var(--color-surface-card)",
+              border: "1px solid var(--color-hairline)",
               color: "var(--color-error)",
             }}
           >

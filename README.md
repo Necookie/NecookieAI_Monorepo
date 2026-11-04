@@ -8,6 +8,10 @@ The project targets developers and researchers who want a private, fully control
 
 ## Features
 
+**Monochrome interface.** Black-and-white light and dark themes, with shared design rules in [DESIGN.md](DESIGN.md) and [BRAND.md](BRAND.md).
+
+**Personal message marker.** Appearance settings include the [beUI color picker](https://beui.dev/components/motion/color-picker), neutral presets, hex entry, and a reset action. The choice is saved on the current device. Installed beUI source is covered by [LICENSE.beui](LICENSE.beui).
+
 **Model selection.** Switch between configured upstream models (e.g., `neco-ai-1.0`) directly from the application header. Additional models such as Gemini are planned.
 
 **Authentication.** Session handling is provided by [Clerk](https://clerk.com/). All routes are protected server-side via Astro middleware before any request reaches the API or the client.
