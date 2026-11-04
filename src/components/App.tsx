@@ -23,7 +23,6 @@ import FoldersView from "./FoldersView";
 import SettingsPanel from "./SettingsPanel";
 import HelpPanel from "./HelpPanel";
 import WeatherTimeWidget from "./WeatherTimeWidget";
-import AntigravityDashboard from "./AntigravityDashboard";
 
 /**
  * Inner shell — separated so it can consume AppProvider context.
@@ -53,8 +52,6 @@ function AppShell() {
         <Header />
         {currentView === "folders" ? (
           <FoldersView />
-        ) : currentView === "dashboard" ? (
-          <AntigravityDashboard />
         ) : (
           <ChatCanvas />
         )}

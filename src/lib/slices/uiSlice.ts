@@ -7,14 +7,14 @@ export interface UISlice {
   sidebarOpen: boolean;
   showSettings: boolean;
   showHelp: boolean;
-  currentView: "chat" | "folders" | "dashboard";
+  currentView: "chat" | "folders";
   compactMode: boolean;
 
   setTheme: (t: ThemeMode) => void;
   setSidebarOpen: (v: boolean) => void;
   setShowSettings: (v: boolean) => void;
   setShowHelp: (v: boolean) => void;
-  setCurrentView: (view: "chat" | "folders" | "dashboard") => void;
+  setCurrentView: (view: "chat" | "folders") => void;
   setCompactMode: (v: boolean) => void;
 }
 
