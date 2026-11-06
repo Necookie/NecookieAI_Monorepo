@@ -17,17 +17,27 @@ android {
         applicationId = "dev.necookie.ai"
         minSdk = 23
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = providers.gradleProperty("androidVersionCode").orElse("1").get().toInt()
+        versionName = providers.gradleProperty("androidVersionName").orElse("0.1.0").get()
         manifestPlaceholders["appHost"] = appHost
         manifestPlaceholders["launchUrl"] = "https://$appHost/"
         val assetStatements = """[{"relation":["delegate_permission/common.handle_all_urls"],"target":{"namespace":"web","site":"https://$appHost"}}]"""
         resValue("string", "asset_statements", assetStatements.replace("\"", "\\\""))
     }
 
+    val releaseStore = providers.environmentVariable("ANDROID_KEYSTORE_PATH").orNull
+    if (releaseStore != null) {
+        signingConfigs.create("release") {
+            storeFile = file(releaseStore)
+            storePassword = providers.environmentVariable("ANDROID_STORE_PASSWORD").get()
+            keyAlias = providers.environmentVariable("ANDROID_KEY_ALIAS").orElse("necookie").get()
+            keyPassword = providers.environmentVariable("ANDROID_KEY_PASSWORD").get()
+        }
+    }
+
     buildTypes {
         release {
-            // Signing is intentionally supplied by the release owner, outside source control.
+            signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = false
         }
     }

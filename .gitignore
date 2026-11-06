@@ -32,3 +32,4 @@ token-receiver.cjs
 *.db-info
 .data/
 .wrangler/
+.android-release/

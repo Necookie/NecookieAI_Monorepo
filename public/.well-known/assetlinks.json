@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "dev.necookie.ai",
+      "sha256_cert_fingerprints": [
+        "56:D2:E4:01:68:1E:2F:C3:F4:4A:48:BA:6E:E3:4F:FB:92:C2:64:13:74:78:0F:EC:0F:E6:B2:7F:B1:1F:78:F1"
+      ]
+    }
+  }
+]
