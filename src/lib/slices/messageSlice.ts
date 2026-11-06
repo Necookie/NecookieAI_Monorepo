@@ -2,6 +2,7 @@ import type { StateCreator } from "zustand";
 import type { Message, Chat } from "../store";
 import { uid, deriveTitle } from "../store";
 import type { AppStore } from "../context";
+import { readChatStream } from "../model-protocol";
 
 export interface MessageSlice {
   isStreaming: boolean;
@@ -39,36 +40,10 @@ async function streamNecookieAI(
     throw new Error(errMsg);
   }
 
-  const reader = res.body?.getReader();
-  if (!reader) throw new Error("No response body from server.");
+  if (!res.body) throw new Error("No response body from server.");
 
-  const decoder = new TextDecoder();
-  let buffer = "";
-
-  while (true) {
-    if (signal.aborted) break;
-
-    const { done, value } = await reader.read();
-    if (done) break;
-
-    buffer += decoder.decode(value, { stream: true });
-
-    const lines = buffer.split("\n");
-    buffer = lines.pop() ?? "";
-
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
-      try {
-        const chunk = JSON.parse(trimmed);
-        const delta: string = chunk?.message?.content ?? "";
-        if (delta) onChunk(delta);
-        if (chunk?.done) return;
-      } catch {
-        // malformed line — skip
-      }
-    }
-  }
+  // Throws IncompleteResponseError if the stream ends without `done: true`.
+  await readChatStream(res.body, onChunk, signal);
 }
 
 export const createMessageSlice: StateCreator<AppStore, [], [], MessageSlice> = (set, get) => ({
@@ -304,15 +279,30 @@ export const createMessageSlice: StateCreator<AppStore, [], [], MessageSlice> = 
         }
       } else {
         const message = err instanceof Error ? err.message : "Unknown error from AI.";
+        const partial = accumulatedText.trim().length > 0;
         set(state => ({
           error: message,
-          chats: state.chats.map((c) =>
+          chats: partial ? state.chats : state.chats.map((c) =>
             c.id === targetId ? {
               ...c,
               messages: (c.messages || []).filter((m) => m.id !== assistantId),
             } : c
           )
         }));
+        if (partial) {
+          // Keep the cut-off text so the user can read it and regenerate.
+          fetch("/api/messages", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: assistantId,
+              chatId: targetId,
+              role: "assistant",
+              content: accumulatedText,
+              timestamp: assistantMsgTimestamp,
+            }),
+          }).catch(console.error);
+        }
       }
     } finally {
       set(state => ({
@@ -439,15 +429,30 @@ export const createMessageSlice: StateCreator<AppStore, [], [], MessageSlice> = 
         }
       } else {
         const message = err instanceof Error ? err.message : "Unknown error from AI.";
+        const partial = accumulatedText.trim().length > 0;
         set(state => ({
           error: message,
-          chats: state.chats.map((c) =>
+          chats: partial ? state.chats : state.chats.map((c) =>
             c.id === activeId ? {
               ...c,
               messages: (c.messages || []).filter((m) => m.id !== assistantId),
             } : c
           )
         }));
+        if (partial) {
+          // Keep the cut-off text so the user can read it and regenerate.
+          fetch("/api/messages", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: assistantId,
+              chatId: activeId,
+              role: "assistant",
+              content: accumulatedText,
+              timestamp: assistantMsgTimestamp,
+            }),
+          }).catch(console.error);
+        }
       }
     } finally {
       set(state => ({

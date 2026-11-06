@@ -16,6 +16,7 @@
 
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
+import { fitHistory, GENERATION_OPTIONS, upstreamErrorMessage } from "../../lib/model-protocol";
 
 function identityReply(messages: Array<{ role: string; content: string }>): string | null {
   const last = messages.at(-1);
@@ -120,14 +121,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
       },
       body: JSON.stringify({
         model,
-        messages,
+        // The model gateway accepts at most 32 messages and 64 KB per request.
+        messages: fitHistory(messages),
         stream: useStream,
+        options: GENERATION_OPTIONS,
       }),
     });
 
     if (!upstream.ok) {
+      upstream.body?.cancel().catch(() => {});
+      console.error("Model request rejected", upstream.status);
       return new Response(
-        JSON.stringify({ error: `Model request failed (${upstream.status}).` }),
+        JSON.stringify({ error: upstreamErrorMessage(upstream.status) }),
         { status: 502, headers: { "Content-Type": "application/json" } }
       );
     }
