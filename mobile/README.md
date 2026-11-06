@@ -17,8 +17,8 @@ Install Android Studio, JDK 17 or 21, Android SDK Platform 36, and Build Tools 3
 Open `mobile/android` as the Android Studio project. Set `sdk.dir` in its untracked
 `local.properties`, or set `ANDROID_HOME` to your SDK installation.
 
-The deployment hostname is deliberately required. Add this to your user-level
-`~/.gradle/gradle.properties` so Android Studio sync can use it:
+The deployment hostname defaults to `chat.necookie.dev`. To test another
+deployment, add this to your user-level `~/.gradle/gradle.properties`:
 
 ```properties
 appHost=chat.your-domain.com
@@ -69,11 +69,10 @@ and production authentication configuration do not change.
 
 ## Validation and CI
 
-`.github/workflows/android.yml` builds and lints debug APKs on mobile changes. Set
-the repository variable `ANDROID_APP_HOST` to the real deployed hostname to make
-CI artifacts useful for device testing. Without it CI uses `example.com` solely
-to validate compilation; those APKs do not point at Necookie AI. CI artifacts use
-temporary debug signing and are not release packages.
+`.github/workflows/android.yml` builds and lints debug APKs on mobile changes,
+targeting `chat.necookie.dev`. Override the repository variable `ANDROID_APP_HOST`
+to test a different deployment. CI artifacts use temporary debug signing and are
+not release packages or a stable public update channel.
 
 On a device, verify cold launch, Clerk sign-in/sign-out (including any configured
 OAuth providers), chat streaming, history, keyboard resizing, back navigation,

@@ -36,7 +36,7 @@ export const GET: APIRoute = async (context) => {
 
     return new Response(JSON.stringify(allChats), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Cache-Control": "private, no-store" },
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -67,7 +67,7 @@ export const POST: APIRoute = async (context) => {
       });
     }
 
-    await db
+    const saved = await db
       .insert(chats)
       .values({
         id,
@@ -78,7 +78,16 @@ export const POST: APIRoute = async (context) => {
       .onConflictDoUpdate({
         target: chats.id,
         set: { title },
+        setWhere: eq(chats.userId, userId),
+      })
+      .returning({ id: chats.id });
+
+    if (saved.length === 0) {
+      return new Response(JSON.stringify({ error: "Chat not found or unauthorized" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json" },
       });
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 201,

@@ -16,8 +16,8 @@
 
 import type { APIRoute } from "astro";
 import { db } from "../../../../lib/db/client";
-import { messages } from "../../../../lib/db/schema";
-import { asc, eq } from "drizzle-orm";
+import { chats, messages } from "../../../../lib/db/schema";
+import { and, asc, eq } from "drizzle-orm";
 
 export const GET: APIRoute = async (context) => {
   try {
@@ -37,6 +37,17 @@ export const GET: APIRoute = async (context) => {
       });
     }
 
+    const ownedChat = await db.query.chats.findFirst({
+      where: and(eq(chats.id, id), eq(chats.userId, userId)),
+      columns: { id: true },
+    });
+    if (!ownedChat) {
+      return new Response(JSON.stringify({ error: "Chat not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json", "Cache-Control": "private, no-store" },
+      });
+    }
+
     const chatMessages = await db.query.messages.findMany({
       where: eq(messages.chatId, id),
       orderBy: [asc(messages.timestamp)],
@@ -44,7 +55,7 @@ export const GET: APIRoute = async (context) => {
 
     return new Response(JSON.stringify(chatMessages), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Cache-Control": "private, no-store" },
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

@@ -36,7 +36,7 @@ export const GET: APIRoute = async (context) => {
     // Return properties or empty object if not configured
     return new Response(JSON.stringify(userSettings || {}), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Cache-Control": "private, no-store" },
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

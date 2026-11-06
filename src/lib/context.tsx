@@ -15,7 +15,9 @@
  */
 
 import React, { useEffect } from "react";
+import { useAuth } from "@clerk/clerk-react";
 import { create } from "zustand";
+import { AVAILABLE_MODELS } from "./store";
 
 import type { UISlice } from "./slices/uiSlice";
 import type { SettingsSlice } from "./slices/settingsSlice";
@@ -38,6 +40,7 @@ export const useAppStore = create<AppStore>((set, get, api) => ({
 
 /* ─── Provider Component ─── */
 export function AppProvider({ children }: { children: React.ReactNode }) {
+  const { isLoaded, userId } = useAuth();
   const fetchInitialData = useAppStore((s) => s._fetchInitialData);
   const theme = useAppStore((s) => s.theme);
   const messageMarker = useAppStore((s) => s.messageMarker);
@@ -47,8 +50,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [messageMarker]);
 
   useEffect(() => {
-    fetchInitialData();
-  }, [fetchInitialData]);
+    if (!isLoaded) return;
+    const request = new AbortController();
+    useAppStore.getState().abortController?.abort();
+    // Never retain another account's history while Clerk changes sessions.
+    useAppStore.setState({
+      chats: [], activeId: null, isStreaming: false, abortController: null,
+      error: null, language: "en", model: AVAILABLE_MODELS[0],
+    });
+    if (userId) void fetchInitialData(request.signal);
+    return () => request.abort();
+  }, [fetchInitialData, isLoaded, userId]);
 
   useEffect(() => {
     applyThemeClass(theme);

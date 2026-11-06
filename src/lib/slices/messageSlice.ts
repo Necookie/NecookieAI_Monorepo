@@ -1,6 +1,6 @@
 import type { StateCreator } from "zustand";
 import type { Message, Chat } from "../store";
-import { uid, deriveTitle } from "../store";
+import { uid, deriveTitle, AVAILABLE_MODELS } from "../store";
 import type { AppStore } from "../context";
 import { readChatStream } from "../model-protocol";
 
@@ -14,8 +14,8 @@ export interface MessageSlice {
   regenerateMessage: (messageId: string) => Promise<void>;
   editAndResend: (messageId: string, newContent: string) => Promise<void>;
   rateMessage: (chatId: string, messageId: string, rating: "like" | "dislike" | null) => void;
-  _fetchInitialData: () => Promise<void>;
-  _fetchMessages: (chatId: string) => Promise<void>;
+  _fetchInitialData: (signal?: AbortSignal) => Promise<void>;
+  _fetchMessages: (chatId: string, signal?: AbortSignal) => Promise<void>;
 }
 
 /* ─── Ollama NDJSON streaming helper ─── */
@@ -53,20 +53,23 @@ export const createMessageSlice: StateCreator<AppStore, [], [], MessageSlice> = 
 
   clearError: () => set({ error: null }),
 
-  _fetchInitialData: async () => {
+  _fetchInitialData: async (signal) => {
     try {
       const [chatsRes, settingsRes] = await Promise.all([
-        fetch("/api/chats"),
-        fetch("/api/settings")
+        fetch("/api/chats", { signal, cache: "no-store" }),
+        fetch("/api/settings", { signal, cache: "no-store" })
       ]);
+      if (signal?.aborted) return;
 
       if (chatsRes.ok) {
         const data = await chatsRes.json();
+        if (signal?.aborted) return;
         if (Array.isArray(data)) {
           const chatsWithEmptyMsgs = data.map(c => ({ ...c, messages: c.messages || [] }));
           set({ chats: chatsWithEmptyMsgs });
           if (data.length > 0) {
-            get().selectChat(data[0].id);
+            set({ activeId: data[0].id, currentView: "chat" });
+            await get()._fetchMessages(data[0].id, signal);
           }
         }
       } else if (chatsRes.status !== 401) {
@@ -75,34 +78,37 @@ export const createMessageSlice: StateCreator<AppStore, [], [], MessageSlice> = 
 
       if (settingsRes.ok) {
         const data = await settingsRes.json();
+        if (signal?.aborted) return;
         if (data.language) set({ language: data.language });
         if (data.model) {
-          const found = get().model; // We can't access AVAILABLE_MODELS easily without importing, so just let settingsSlice do it or import it.
-          // We will update settings in context.tsx or import it here
+          const found = AVAILABLE_MODELS.find(model => model.id === data.model && !model.disabled);
+          if (found) set({ model: found });
         }
       } else if (settingsRes.status !== 401) {
          // silently ignore 401 for settings as well
       }
     } catch (err) {
+      if (signal?.aborted) return;
       console.error("Error fetching initial data:", err);
       set({ error: "Failed to load initial data." });
     }
   },
 
-  _fetchMessages: async (chatId: string) => {
-    const { chats } = get();
-    const chat = chats.find(c => c.id === chatId);
-    if (chat && chat.messages && chat.messages.length > 0) return;
+  _fetchMessages: async (chatId: string, signal?: AbortSignal) => {
+    // Refetch on selection: another device may have changed an already loaded chat.
+    if (get().isStreaming) return;
 
     try {
-      const res = await fetch(`/api/chats/${chatId}/messages`);
+      const res = await fetch(`/api/chats/${encodeURIComponent(chatId)}/messages`, { signal, cache: "no-store" });
       if (res.ok) {
         const messages = await res.json();
+        if (signal?.aborted || get().isStreaming) return;
         set(state => ({
           chats: state.chats.map(c => c.id === chatId ? { ...c, messages } : c)
         }));
       }
     } catch (err) {
+      if (signal?.aborted) return;
       console.error("Error fetching messages for chat", chatId, err);
     }
   },
