@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
-import { UserButton, useUser } from "@clerk/clerk-react";
+import AccountMenu from "./AccountMenu";
 import FolderModal from "./FolderModal";
 
 export default function Sidebar() {
@@ -52,7 +52,6 @@ export default function Sidebar() {
   const togglePinChat = useAppStore(s => s.togglePinChat);
 
   const t = getTranslations(language).sidebar;
-  const { user } = useUser();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
   const [folderModalChatId, setFolderModalChatId] = React.useState<string | null>(null);
@@ -96,7 +95,7 @@ export default function Sidebar() {
   return (
     <aside
       className={[
-        "flex flex-col h-full border-r transition-all duration-300 ease-in-out flex-shrink-0 absolute z-40 md:relative md:z-10",
+        "flex flex-col h-full border-r transition-all duration-300 ease-in-out flex-shrink-0 absolute z-40 md:relative md:z-20",
         sidebarOpen
           ? "w-[240px] translate-x-0"
           : "w-[240px] -translate-x-full md:translate-x-0 md:w-[52px]",
@@ -390,91 +389,7 @@ export default function Sidebar() {
           </button>
         ))}
 
-        {user && (
-          <div
-            className={[
-              "mt-3 transition-all duration-300 ease-in-out overflow-hidden",
-              sidebarOpen ? "p-3" : "p-1.5 flex justify-center",
-            ].join(" ")}
-            style={{
-              border: "1px solid var(--color-hairline)",
-              background: "var(--color-canvas)",
-              borderRadius: "var(--radius-lg)",
-            }}
-          >
-            {sidebarOpen ? (
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <span
-                    style={{
-                      fontSize: "10px",
-                      fontWeight: 500,
-                      textTransform: "uppercase",
-                      letterSpacing: "1px",
-                      color: "var(--color-muted-soft)",
-                      fontFamily: "var(--font-sans)",
-                    }}
-                  >
-                    Session Status
-                  </span>
-                  <span
-                    className="w-1.5 h-1.5 rounded-full"
-                    style={{ background: "var(--color-success)" }}
-                    title="Connected"
-                  />
-                </div>
-                <div className="flex items-center gap-2.5 min-w-0 mt-1">
-                  <div
-                    className="flex-shrink-0 rounded-full p-0.5"
-                    style={{
-                      border: "1px solid var(--color-hairline)",
-                      background: "var(--color-canvas)",
-                    }}
-                  >
-                    <UserButton afterSignOutUrl="/" appearance={{
-                      elements: { userButtonAvatarBox: "w-6 h-6" }
-                    }} />
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span
-                      className="truncate leading-tight"
-                      style={{
-                        fontSize: "11px",
-                        fontWeight: 500,
-                        color: "var(--color-ink)",
-                        fontFamily: "var(--font-sans)",
-                      }}
-                    >
-                      {user.fullName || user.username || "User"}
-                    </span>
-                    <span
-                      className="truncate leading-none mt-1"
-                      style={{
-                        fontSize: "9px",
-                        color: "var(--color-muted)",
-                        fontFamily: "var(--font-sans)",
-                      }}
-                    >
-                      {user.primaryEmailAddress?.emailAddress}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div
-                className="flex items-center justify-center p-0.5 rounded-full"
-                style={{
-                  background: "var(--color-canvas)",
-                  border: "1px solid var(--color-hairline)",
-                }}
-              >
-                <UserButton afterSignOutUrl="/" appearance={{
-                  elements: { userButtonAvatarBox: "w-6 h-6" }
-                }} />
-              </div>
-            )}
-          </div>
-        )}
+        <AccountMenu expanded={sidebarOpen} onSettings={() => setShowSettings(true)} />
       </div>
 
       {folderModalChatId && (
