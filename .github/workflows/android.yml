@@ -1,0 +1,37 @@
+name: Android scaffold
+
+on:
+  push:
+    branches: [main]
+    paths: ['mobile/**', '.github/workflows/android.yml']
+  pull_request:
+    paths: ['mobile/**', '.github/workflows/android.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install Android SDK
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - name: Assemble and lint
+        working-directory: mobile/android
+        env:
+          # Set ANDROID_APP_HOST in repository variables for an installable preview.
+          # example.com allows scaffold checks before the deployment is configured.
+          APP_HOST: ${{ vars.ANDROID_APP_HOST || 'example.com' }}
+        run: ./gradlew --no-daemon :app:assembleDebug :app:lintDebug -PappHost="$APP_HOST"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: necookie-android-debug
+          path: mobile/android/app/build/outputs/apk/debug/*.apk

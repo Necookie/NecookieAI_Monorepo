@@ -193,6 +193,13 @@ The compiled output is written to `./dist/`. Build with server secrets absent fr
 
 ---
 
+## Android scaffold
+
+The Android project is in [`mobile/android`](mobile/android). It launches the hosted
+application through a Trusted Web Activity, reusing the existing interface and
+authentication. See [`mobile/README.md`](mobile/README.md) for SDK setup, debug
+builds, deployment hostname configuration, domain verification, and release handoff.
+
 ## Database
 
 Necookie AI uses Drizzle ORM against a Turso (libSQL) database. The schema defines three tables:
