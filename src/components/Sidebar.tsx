@@ -28,6 +28,7 @@ import {
   Folder,
   Pin,
   MoreVertical,
+  Download,
 } from "lucide-react";
 import { useAppStore } from "../lib/context";
 import { getTranslations } from "../lib/i18n";
@@ -362,6 +363,16 @@ export default function Sidebar() {
         className="px-2 py-2 space-y-0.5"
         style={{ borderTop: "1px solid var(--color-hairline)" }}
       >
+        <a
+          id="android-download-link"
+          href="/download/android"
+          title="Get Android app"
+          className={`flex items-center gap-2 w-full transition-colors ${sidebarOpen ? "px-3 py-2" : "p-2 justify-center"}`}
+          style={actionBtnStyle()}
+        >
+          <Download size={14} aria-hidden="true" />
+          {sidebarOpen && <span>Get Android app</span>}
+        </a>
         {[
           { icon: <Settings size={14} />, label: t.settings, id: "settings-btn", onClick: () => setShowSettings(true) },
           { icon: <HelpCircle size={14} />, label: t.help, id: "help-btn", onClick: () => setShowHelp(true) },

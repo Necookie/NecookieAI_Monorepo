@@ -1,7 +1,7 @@
 # Mobile reliability, testing, and distribution
 
-Status: audited November 7, 2026. This document describes proposed work; it does
-not claim that background jobs, live synchronization, or a download page exist.
+Status: audited November 7, 2026. Background jobs and live synchronization remain
+proposed work. The QR download page and signed direct APK release are implemented.
 
 ## Findings verified in this checkout
 
@@ -18,7 +18,9 @@ not claim that background jobs, live synchronization, or a download page exist.
   redirects, production database credentials, or authentication on a physical phone.
 - Live unauthenticated HTTP checks of `https://chat.necookie.dev` returned 200 for
   the app shell, 401 for `/api/chats` and `/api/settings`, and 404 for
-  `/.well-known/assetlinks.json`. These checks do not establish authenticated access.
+  `/.well-known/assetlinks.json` before release signing was configured. A real
+  release certificate association is now published. These checks do not establish
+  authenticated access.
 - There is no subscription or polling mechanism for cross-device changes. Chat
   selection now refetches saved messages, but two open clients still do not update
   one another automatically. Shared storage alone does not provide live synchronization.
@@ -61,13 +63,13 @@ Required work includes database migrations, queue/consumer infrastructure,
 idempotency and cancellation logic, authenticated event delivery, and changes to
 send, regenerate, edit, and stop-generation flows on the shared web client.
 
-## QR download proposal (direct APK selected)
+## QR download (direct APK)
 
-Place a small **Get Android app** action in the website's account menu/help area.
-It opens a dialog with a QR code encoding a permanent HTTPS landing page such as
-`https://chat.necookie.dev/download/android`, plus a clickable link for users
-already on their phones. Direct APK download is the user's selected channel;
-Google Play is only a future option.
+The sidebar has a **Get Android app** link to the public landing page at
+`https://chat.necookie.dev/download/android`. The page displays a QR encoding this
+same permanent address and a working download button. The APK is published as a
+signed GitHub release. Direct download is the selected channel; Google Play is
+only a future option.
 Do not encode session tokens, account IDs, or expiring build-artifact URLs.
 
 The landing page should stay public and display the app name, release version,

@@ -64,8 +64,8 @@ it also requires updating the namespace and `mobile/scripts/assetlinks.mjs`.
 4. Install the matching signed app and check that the toolbar disappears on the
    verified origin. OAuth redirects to unverified origins retain browser UI.
 
-No placeholder association is deployed by this scaffold. Existing browser users
-and production authentication configuration do not change.
+The production association now contains the release certificate for the signed
+APK. Keep it aligned with the signing key used by the release workflow.
 
 ## Validation and CI
 
@@ -81,11 +81,27 @@ Repeat domain verification with the release certificate before distributing.
 
 ## Release handoff
 
-Use Android Studio's **Generate Signed Bundle / APK** to create a signed Android
-App Bundle. Keep keystores and passwords outside Git. Increment `versionCode` for
-each upload, configure the real hostname, publish its certificate association,
-and complete device testing, store listing, privacy disclosures, and applicable
-Play requirements before submission. Release signing is deliberately unconfigured.
+The public download page is `https://chat.necookie.dev/download/android`. The
+sidebar's **Get Android app** link opens that page. Its QR encodes this permanent
+address, and the download button redirects to the versioned signed GitHub release.
+
+Run the **Android release** GitHub workflow with a new semantic version and a
+higher version code to build, lint, verify, and publish the next signed APK.
+The three `ANDROID_*` signing secrets are stored in GitHub Actions. The signing
+key and its password backup live in the git-ignored `.android-release` directory;
+back up that directory securely. Never commit it or generate a replacement key
+for an update. `mobile/scripts/setup-signing.mjs --upload` restores those secrets
+from the existing local key if needed.
+
+After publishing, update `src/data/android-release.json` with the new immutable
+download URL, version, version code, APK size, and verified SHA-256 checksum, then
+deploy the website. Keep the same application ID and signing key so Android can
+update the existing installation. First-time direct installs require Android's
+unknown-app-source opt-in; package updates still use Android's confirmation.
+
+Earlier debug APKs have a different signing key and may need to be uninstalled
+once before installing the first public release. This does not remove chats
+stored in the account's database. Future public releases update in place.
 
 The current project pins AGP 8.13.2, Gradle 8.13, Browser Helper 2.7.3, and Android
 API 36. Future native code and resources belong under `android/app/src/main`.

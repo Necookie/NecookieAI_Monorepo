@@ -1,8 +1,8 @@
 {
-  "available": false,
+  "available": true,
   "version": "0.1.0",
-  "versionCode": 0,
+  "versionCode": 1,
   "url": "https://github.com/Necookie/NecookieAI_Monorepo/releases/download/android-v0.1.0/necookie-ai-android.apk",
-  "sha256": "",
-  "sizeBytes": 0
+  "sha256": "fa9aa0eeb6f191214202b7e9e93e27682380cbc8c91e53b7ff76e27f3a081f23",
+  "sizeBytes": 3798247
 }

@@ -6,11 +6,11 @@ on:
       version:
         description: Release version (for example 0.1.0)
         required: true
-        default: '0.1.0'
+        default: '0.1.1'
       version_code:
         description: Android version code (increase for every release)
         required: true
-        default: '1'
+        default: '2'
 
 concurrency:
   group: android-release

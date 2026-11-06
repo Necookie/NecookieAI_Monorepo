@@ -1,0 +1,128 @@
+---
+import release from "../../data/android-release.json";
+const size = release.sizeBytes ? `${(release.sizeBytes / 1024 / 1024).toFixed(1)} MB` : "APK";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Download Necookie AI for Android. Sign in to the same account to access your chats on your phone." />
+    <title>Download for Android · Necookie AI</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href="https://chat.necookie.dev/download/android" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/"><img src="/favicon.svg" width="32" height="32" alt="" /> Necookie AI</a>
+      <a class="back" href="/">Back to chat <span aria-hidden="true">↗</span></a>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="title">
+        <div class="intro">
+          <span class="eyebrow">NECOOKIE AI FOR ANDROID</span>
+          <h1 id="title">Your workspace.<br />On Android.</h1>
+          <p class="lead">Take the conversation with you. Sign in to your Necookie AI account to access the same saved chats on your phone.</p>
+          <div class="download-action">
+            {release.available ? (
+              <a class="download" href="/download/android/apk">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v4h14v-4" /></svg>
+                Download Android app
+              </a>
+            ) : <span class="pending" role="status">Preparing the Android download</span>}
+            <span class="release">Version {release.version} <span aria-hidden="true">·</span> {size} <span aria-hidden="true">·</span> Android 6.0+</span>
+          </div>
+          <p class="fine">Direct APK download. Requires an internet connection and a compatible browser such as Chrome.</p>
+        </div>
+        <aside class="scan" aria-label="Download on your phone">
+          <div class="qr"><img src="/android-download-qr.svg" width="222" height="222" alt="QR code linking to chat.necookie.dev/download/android" /></div>
+          <h2>Scan with your phone</h2>
+          <p>Open your camera, scan the code,<br />and tap the link to download.</p>
+          <span class="address">chat.necookie.dev/download/android</span>
+        </aside>
+      </section>
+      <section class="install" aria-labelledby="install-title">
+        <h2 id="install-title">Up and running in a moment.</h2>
+        <ol>
+          <li><span class="number">01</span><h3>Download the app</h3><p>On your Android phone, tap the download button and open the APK when it finishes.</p></li>
+          <li><span class="number">02</span><h3>Confirm installation</h3><p>If Android asks, allow your browser to install this app, then tap Install.</p></li>
+          <li><span class="number">03</span><h3>Pick up your chats</h3><p>Open Necookie AI and sign in with the same account you use on your computer.</p></li>
+        </ol>
+      </section>
+      <section class="updates" aria-labelledby="updates-title">
+        <div><h2 id="updates-title">Already have the app?</h2><p>Install a newer version over the existing app—there’s no need to uninstall. Most interface improvements arrive when you reopen or reload the app.</p></div>
+        <span class="update-label">Your conversations stay with your account.</span>
+      </section>
+      {release.available && release.sha256 && <details><summary>Release details</summary><p>Version {release.version} · Build {release.versionCode}</p><p>APK SHA-256</p><code>{release.sha256}</code><p><a href={release.url}>Download from the GitHub release</a></p></details>}
+    </main>
+    <footer><span>Necookie AI by Necookie</span><a href="/">Open the web app <span aria-hidden="true">↗</span></a></footer>
+  </body>
+</html>
+
+<style>
+  :global(*) { box-sizing: border-box; }
+  :global(body) { margin: 0; background: #fafafa; color: #171717; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  :global(a) { color: inherit; text-decoration: none; }
+  :global(a:focus-visible), summary:focus-visible { outline: 2px solid currentColor; outline-offset: 5px; border-radius: 3px; }
+  header, main, footer { max-width: 1080px; margin: auto; padding-left: 32px; padding-right: 32px; }
+  header { display: flex; justify-content: space-between; align-items: center; padding-top: 28px; padding-bottom: 28px; }
+  .brand { display: flex; gap: 10px; align-items: center; font-size: 16px; font-weight: 600; letter-spacing: -.4px; }
+  .back, footer { font-size: 12px; color: #666; }
+  .back:hover, footer a:hover { color: #171717; }
+  .hero { display: grid; grid-template-columns: 1fr 310px; align-items: center; gap: 80px; padding: 76px 0 78px; }
+  .eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 1.6px; color: #666; }
+  h1 { font-size: clamp(38px, 5.6vw, 60px); line-height: 1.08; font-weight: 600; letter-spacing: -2.6px; margin: 22px 0; }
+  .lead { max-width: 460px; font-size: 15px; line-height: 1.8; color: #666; }
+  .download-action { display: flex; flex-direction: column; align-items: flex-start; gap: 13px; margin-top: 30px; }
+  .download, .pending { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #171717; color: #fff; min-height: 48px; padding: 13px 22px; border-radius: 9px; font-size: 13px; font-weight: 500; }
+  .download:hover { background: #333; }
+  .release { font-size: 11px; color: #666; }
+  .release span { padding: 0 5px; }
+  .fine { font-size: 11px; line-height: 1.7; color: #777; max-width: 340px; margin: 18px 0 0; }
+  .scan { border: 1px solid #e5e5e5; border-radius: 18px; background: #fff; text-align: center; padding: 24px 16px; }
+  .qr { display: grid; place-items: center; background: #fff; border-radius: 10px; }
+  .qr img { width: 222px; height: 222px; }
+  .scan h2 { margin: 16px 0 8px; font-size: 14px; font-weight: 600; }
+  .scan p { font-size: 12px; color: #777; line-height: 1.7; margin: 0; }
+  .address { display: block; margin-top: 18px; font-size: 10px; color: #777; }
+  .install { padding: 34px 0 36px; border-top: 1px solid #e5e5e5; }
+  .install > h2 { font-size: 19px; font-weight: 500; letter-spacing: -.5px; margin: 0 0 32px; }
+  ol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 42px; list-style: none; padding: 0; margin: 0; }
+  .number { font-size: 10px; color: #888; }
+  h3 { font-size: 13px; font-weight: 500; margin: 13px 0 8px; }
+  li p { font-size: 12px; line-height: 1.8; color: #777; margin: 0; }
+  .updates { display: flex; align-items: center; gap: 40px; padding: 24px; margin: 14px 0 32px; border: 1px solid #e5e5e5; border-radius: 12px; background: #fff; }
+  .updates h2 { font-size: 13px; font-weight: 500; margin: 0 0 8px; }
+  .updates p { font-size: 12px; line-height: 1.8; color: #777; margin: 0; max-width: 570px; }
+  .update-label { flex: 0 0 180px; font-size: 11px; line-height: 1.8; color: #777; }
+  details { font-size: 11px; color: #777; margin-bottom: 28px; }
+  summary { cursor: pointer; width: fit-content; }
+  code { display: block; overflow-wrap: anywhere; font-size: 10px; }
+  details a { text-decoration: underline; text-underline-offset: 3px; }
+  footer { display: flex; justify-content: space-between; padding-top: 24px; padding-bottom: 26px; border-top: 1px solid #e5e5e5; font-size: 10px; }
+  @media (max-width: 760px) {
+    header, main, footer { padding-left: 24px; padding-right: 24px; }
+    .hero { grid-template-columns: 1fr; gap: 38px; padding: 45px 0; }
+    h1 { font-size: 46px; letter-spacing: -2px; }
+    .scan { max-width: 340px; width: 100%; justify-self: center; }
+    ol { grid-template-columns: 1fr; gap: 25px; }
+    .install > h2 { margin-bottom: 25px; }
+    .updates { display: block; padding: 20px; }
+    .update-label { display: block; margin-top: 14px; }
+    .download-action, .download { width: 100%; }
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(body) { background: #111; color: #eee; }
+    .scan, .updates { background: #171717; border-color: #333; }
+    .qr { background: #fff; }
+    .download, .pending { background: #eee; color: #111; }
+    .download:hover { background: #ccc; }
+    .lead, .fine, .scan p, li p, .updates p, .update-label, .address, .release, .eyebrow, .back, footer, details { color: #a3a3a3; }
+    .install, footer { border-color: #333; }
+    .back:hover, footer a:hover { color: #fff; }
+  }
+</style>
