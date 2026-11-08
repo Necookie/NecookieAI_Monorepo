@@ -32,7 +32,7 @@ jobs:
         env:
           # Override only when testing another deployment.
           APP_HOST: ${{ vars.ANDROID_APP_HOST || 'chat.necookie.dev' }}
-        run: ./gradlew --no-daemon :app:assembleDebug :app:lintDebug -PappHost="$APP_HOST"
+        run: ./gradlew --no-daemon :app:testDebugUnitTest :app:assembleDebug :app:lintDebug -PappHost="$APP_HOST"
       - uses: actions/upload-artifact@v4
         with:
           name: necookie-android-debug

@@ -60,7 +60,7 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           ANDROID_KEY_ALIAS: necookie
         run: >-
-          ./gradlew --no-daemon :app:assembleRelease :app:lintRelease
+          ./gradlew --no-daemon :app:testReleaseUnitTest :app:assembleRelease :app:lintRelease
           -PappHost=chat.necookie.dev
           -PandroidVersionName="$VERSION" -PandroidVersionCode="$VERSION_CODE"
       - name: Verify and package APK

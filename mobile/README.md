@@ -69,6 +69,12 @@ APK. Keep it aligned with the signing key used by the release workflow.
 
 ## Validation and CI
 
+`./gradlew :app:testDebugUnitTest` runs JVM startup regression checks for Android
+9 and 14 without an emulator. The site-settings activity must stay declared in
+the manifest: Browser Helper 2.7.3 enables or disables this component on every
+cold launch, and Android rejects an undeclared component with an exception.
+Both debug CI and signed releases run these checks before packaging.
+
 `.github/workflows/android.yml` builds and lints debug APKs on mobile changes,
 targeting `chat.necookie.dev`. Override the repository variable `ANDROID_APP_HOST`
 to test a different deployment. CI artifacts use temporary debug signing and are
