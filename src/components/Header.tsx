@@ -56,7 +56,7 @@ export default function Header() {
 
   return (
     <header
-      className={`flex items-center justify-between gap-3 px-5 ${compactMode ? "py-1.5 h-[42px]" : "py-3 h-[64px]"} flex-shrink-0`}
+      className={`flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-5 ${compactMode ? "py-1.5 h-[42px]" : "py-3 h-[64px] short:py-2 short:h-[52px]"} flex-shrink-0`}
       style={{
         background: "var(--color-canvas)",
         borderBottom: "1px solid var(--color-hairline)",

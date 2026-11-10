@@ -65,13 +65,9 @@ const LANG_EXT: Record<string, string> = {
 function CodeBlock({
   language,
   children,
-  className,
-  ...props
 }: {
   language: string;
   children: React.ReactNode;
-  className?: string;
-  [key: string]: any;
 }) {
   const [copied, setCopied] = useState(false);
   const rawCode = String(children).replace(/\n$/, "");
@@ -466,18 +462,26 @@ const ChatMessage = memo(function ChatMessage({ message, onRegenerate, onEditAnd
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                code({ node, inline, className, children, ...props }: any) {
-                  const match = /language-(\w+)/.exec(className || "");
-                  const isInline = !!inline;
-                  const lang = match ? match[1] : "text";
-
-                  if (isInline) {
-                    return <code className={className} {...props}>{children}</code>;
-                  }
+                // react-markdown v9+ no longer passes `inline`; fenced code is the only
+                // code wrapped in <pre>, so render the code window from `pre` and leave
+                // `code` inline.
+                pre({ children }: any) {
+                  const child = React.Children.toArray(children)[0] as React.ReactElement<any> | undefined;
+                  const match = /language-(\w+)/.exec(child?.props?.className || "");
                   return (
-                    <CodeBlock language={lang} className={className} {...props}>
-                      {children}
+                    <CodeBlock language={match ? match[1] : "text"}>
+                      {child?.props?.children}
                     </CodeBlock>
+                  );
+                },
+                code({ node, className, children, ...props }: any) {
+                  return <code className={className} {...props}>{children}</code>;
+                },
+                table({ node, ...props }: any) {
+                  return (
+                    <div className="table-scroll">
+                      <table {...props} />
+                    </div>
                   );
                 },
               }}

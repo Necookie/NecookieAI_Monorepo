@@ -42,7 +42,7 @@ function AppShell() {
   }, [setSidebarOpen]);
 
   return (
-    <div className="flex h-screen overflow-hidden font-sans relative" style={{ background: "var(--color-canvas)" }} data-app-root>
+    <div className="flex h-screen h-dvh overflow-hidden font-sans relative" style={{ background: "var(--color-canvas)" }} data-app-root>
       {/* Mobile overlay */}
       <div
         className={`md:hidden fixed inset-0 bg-neutral-900/50 z-30 transition-opacity ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}

@@ -21,7 +21,7 @@ export default function MessageMarkerPicker() {
     <div className="flex flex-wrap items-start gap-3">
       <ColorPicker value={color} onValueChange={setColor} alpha={false}>
         <ColorPickerTrigger aria-label="Choose message marker color" />
-        <ColorPickerContent align="end" aria-label="Message marker color" className="relative top-auto right-auto mt-3 w-[min(280px,calc(100vw-6rem))]">
+        <ColorPickerContent align="end" aria-label="Message marker color" className="relative top-auto right-auto mt-3 w-[min(280px,calc(100vw-7.5rem))]">
           <ColorPickerArea />
           <ColorPickerHue />
           <div className="flex gap-2"><ColorPickerHexInput /><ColorPickerSwatch /></div>

@@ -19,17 +19,17 @@ export default function FoldersView() {
 
   return (
     <div
-      className="flex-1 flex flex-col items-center justify-start p-6 sm:p-12 overflow-y-auto"
+      className="flex-1 flex flex-col items-center justify-start p-4 sm:p-12 overflow-y-auto"
       style={{ background: "var(--color-canvas)" }}
     >
-      <div className="w-full max-w-4xl flex flex-col gap-8">
+      <div className="w-full max-w-4xl flex flex-col gap-6 sm:gap-8">
 
-        {/* Header Row */}
-        <div className="flex items-center justify-between">
+        {/* Header Row — wraps so the search and New button drop below the title on phones */}
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
           <h1
+            className="text-[28px] sm:text-[36px]"
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "36px",
               fontWeight: 400,
               letterSpacing: "-0.5px",
               lineHeight: 1.15,
@@ -38,22 +38,22 @@ export default function FoldersView() {
           >
             Folders
           </h1>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             <div
-              className="flex items-center gap-2 px-3 py-1.5"
+              className="flex flex-1 sm:flex-initial min-w-0 items-center gap-2 px-3 py-1.5"
               style={{
                 background: "var(--color-surface-soft)",
                 borderRadius: "var(--radius-pill)",
                 border: "1px solid var(--color-hairline)",
               }}
             >
-              <Search size={14} style={{ color: "var(--color-muted-soft)" }} />
+              <Search size={14} style={{ color: "var(--color-muted-soft)", flexShrink: 0 }} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search folders"
-                className="bg-transparent outline-none w-40"
+                className="bg-transparent outline-none min-w-0 flex-1 sm:flex-none sm:w-40"
                 style={{
                   fontSize: "14px",
                   color: "var(--color-ink)",
@@ -62,7 +62,7 @@ export default function FoldersView() {
               />
             </div>
             <button
-              className="px-4 py-1.5 transition-all"
+              className="px-4 py-1.5 flex-shrink-0 transition-all"
               style={{
                 background: "var(--color-primary)",
                 color: "var(--color-on-primary)",
@@ -81,12 +81,12 @@ export default function FoldersView() {
         </div>
 
         {/* Category Tabs — DESIGN.md category-tab spec */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 overflow-x-auto -mx-1 px-1">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className="px-3.5 py-1.5 transition-colors"
+              className="px-3.5 py-1.5 flex-shrink-0 whitespace-nowrap transition-colors"
               style={{
                 borderRadius: "var(--radius-md)",
                 fontSize: "14px",
@@ -105,7 +105,7 @@ export default function FoldersView() {
 
         {/* Table Header */}
         <div
-          className="grid grid-cols-[1fr_200px_50px] gap-4 px-4 py-2 mt-0"
+          className="grid grid-cols-[minmax(0,1fr)_40px] sm:grid-cols-[minmax(0,1fr)_200px_50px] gap-4 px-2 sm:px-4 py-2 mt-0"
           style={{
             borderBottom: "1px solid var(--color-hairline)",
             fontSize: "12px",
@@ -117,7 +117,7 @@ export default function FoldersView() {
           }}
         >
           <div>Name</div>
-          <div>Modified</div>
+          <div className="hidden sm:block">Modified</div>
           <div></div>
         </div>
 
@@ -143,14 +143,14 @@ export default function FoldersView() {
               >
                 <div
                   onClick={() => setExpandedFolder(expandedFolder === folder ? null : folder)}
-                  className="grid grid-cols-[1fr_200px_50px] items-center gap-4 px-4 py-3 transition-colors cursor-pointer group"
+                  className="grid grid-cols-[minmax(0,1fr)_40px] sm:grid-cols-[minmax(0,1fr)_200px_50px] items-center gap-4 px-2 sm:px-4 py-3 transition-colors cursor-pointer group"
                   style={{ borderRadius: "var(--radius-md)" }}
                   onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "var(--color-surface-soft)"}
                   onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
                     <div
-                      className="flex items-center justify-center w-8 h-8"
+                      className="flex flex-shrink-0 items-center justify-center w-8 h-8"
                       style={{
                         borderRadius: "var(--radius-md)",
                         background: "var(--color-surface-card)",
@@ -163,6 +163,7 @@ export default function FoldersView() {
                       }
                     </div>
                     <span
+                      className="min-w-0 truncate"
                       style={{
                         fontSize: "15px",
                         fontWeight: 500,
@@ -174,6 +175,7 @@ export default function FoldersView() {
                     </span>
                   </div>
                   <div
+                    className="hidden sm:block"
                     style={{
                       fontSize: "14px",
                       color: "var(--color-muted)",
@@ -182,7 +184,7 @@ export default function FoldersView() {
                   >
                     Today
                   </div>
-                  <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex justify-end opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity">
                     <button
                       className="p-1.5 transition-colors"
                       style={{ color: "var(--color-muted-soft)" }}
@@ -194,7 +196,7 @@ export default function FoldersView() {
                   </div>
                 </div>
                 {expandedFolder === folder && (
-                  <div className="flex flex-col gap-1 pl-14 pr-4 py-2 mb-2">
+                  <div className="flex flex-col gap-1 pl-10 sm:pl-14 pr-2 sm:pr-4 py-2 mb-2">
                     {chats.filter(c => c.folder === folder).map(chat => (
                       <div
                         key={chat.id}
@@ -209,8 +211,8 @@ export default function FoldersView() {
                         onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "var(--color-surface-card)"}
                         onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
                       >
-                        <MessageSquare size={14} style={{ color: "var(--color-muted-soft)" }} />
-                        <span>{chat.title}</span>
+                        <MessageSquare size={14} style={{ color: "var(--color-muted-soft)", flexShrink: 0 }} />
+                        <span className="min-w-0 truncate">{chat.title}</span>
                       </div>
                     ))}
                   </div>

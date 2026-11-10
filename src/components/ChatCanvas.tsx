@@ -71,7 +71,7 @@ export default function ChatCanvas() {
         id="chat-scroll-area"
       >
         {hasMessages ? (
-          <div className={`max-w-[760px] mx-auto ${compactMode ? "px-4 py-3" : "px-6 py-8"}`}>
+          <div className={`max-w-[760px] mx-auto ${compactMode ? "px-4 py-3" : "px-4 sm:px-6 py-6 sm:py-8"}`}>
             {activeChat!.messages.map((msg) => (
               <ChatMessage
                 key={msg.id}
@@ -89,7 +89,7 @@ export default function ChatCanvas() {
 
       {/* Error banner */}
       {error && (
-        <div className="flex-shrink-0 mx-auto w-full max-w-[760px] px-6 py-2">
+        <div className="flex-shrink-0 mx-auto w-full max-w-[760px] px-4 sm:px-6 py-2">
           <div
             className="flex items-start gap-2 px-3 py-2.5 text-sm"
             style={{
@@ -119,10 +119,10 @@ export default function ChatCanvas() {
         className="flex-shrink-0"
         style={{ borderTop: "1px solid var(--color-hairline)", background: "var(--color-canvas)" }}
       >
-        <div className={`max-w-[760px] mx-auto ${compactMode ? "px-4 py-1.5" : "px-6 py-3"}`}>
+        <div className={`max-w-[760px] mx-auto ${compactMode ? "px-4 py-1.5" : "px-4 sm:px-6 py-3 short:py-2"}`}>
           <ChatInput onSend={sendMessage} isStreaming={isStreaming} placeholder={t.chat.placeholder} />
           <p
-            className="text-center mt-1.5"
+            className="text-center mt-1.5 short:hidden"
             style={{ fontSize: "11px", color: "var(--color-muted-soft)", fontFamily: "var(--font-sans)" }}
           >
             Necookie AI can make mistakes. Verify important info.

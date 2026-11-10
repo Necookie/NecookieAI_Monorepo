@@ -157,7 +157,7 @@ export default function HelpPanel() {
     /* Backdrop */
     <div
       id="help-backdrop"
-      className="fixed inset-0 z-40 flex items-center justify-center p-4"
+      className="fixed inset-0 z-40 flex items-center justify-center p-3 sm:p-4"
       style={{
         background: "rgba(0,0,0,0.25)",
         backdropFilter: "blur(3px)",
@@ -169,7 +169,7 @@ export default function HelpPanel() {
         id="help-panel"
         className="relative w-full max-w-2xl flex flex-col overflow-hidden"
         style={{
-          maxHeight: "90vh",
+          maxHeight: "90dvh",
           background: "var(--color-canvas)",
           border: "1px solid var(--color-hairline)",
           borderRadius: "var(--radius-lg)",
@@ -179,7 +179,7 @@ export default function HelpPanel() {
       >
         {/* ── Header ── */}
         <div
-          className="flex items-center justify-between px-6 py-4 flex-shrink-0"
+          className="flex items-center justify-between px-4 sm:px-6 py-4 short:py-2.5 flex-shrink-0"
           style={{ borderBottom: "1px solid var(--color-hairline)" }}
         >
           <div>
@@ -195,7 +195,7 @@ export default function HelpPanel() {
               {t.title}
             </h2>
             <p
-              className="mt-0.5"
+              className="mt-0.5 short:hidden"
               style={{ fontSize: "13px", color: "var(--color-muted)", fontFamily: "var(--font-sans)" }}
             >
               {t.subtitle}
@@ -224,7 +224,7 @@ export default function HelpPanel() {
         </div>
 
         {/* ── Scrollable body ── */}
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-8">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 short:py-3 space-y-8">
 
           {/* ── Documentation ── */}
           <section
@@ -325,7 +325,7 @@ export default function HelpPanel() {
 
         {/* ── Footer ── */}
         <div
-          className="flex justify-end px-6 py-3 flex-shrink-0"
+          className="flex justify-end px-4 sm:px-6 py-3 short:py-2 flex-shrink-0"
           style={{
             borderTop: "1px solid var(--color-hairline)",
             background: "var(--color-canvas)",

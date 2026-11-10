@@ -36,12 +36,14 @@ export default function WelcomeScreen() {
   const t = getTranslations(language).welcome;
   const reduceMotion = useReducedMotion();
 
+  // min-h-full (not h-full): when the content is taller than the space, as on phones,
+  // the column grows and scrolls instead of centring and clipping its top.
   return (
     <div
-      className="flex flex-col items-center justify-center h-full min-h-[400px] px-5 py-10 select-none"
+      className="flex flex-col items-center justify-center min-h-full px-5 py-10 short:py-6 select-none"
       style={{ background: "transparent" }}
     >
-      <span className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-card text-lg font-semibold text-foreground" aria-hidden="true">N</span>
+      <span className="mb-6 short:mb-4 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-border bg-card text-lg font-semibold text-foreground" aria-hidden="true">N</span>
       {/* Greeting */}
       <h2
         className="mb-2"
@@ -58,7 +60,7 @@ export default function WelcomeScreen() {
         {t.greeting}
       </h2>
       <p
-        className="mb-10"
+        className="mb-10 short:mb-6 text-center"
         style={{
           fontFamily: "var(--font-sans)",
           fontSize: "16px",
@@ -85,7 +87,7 @@ export default function WelcomeScreen() {
               className={[
                 "group text-left transition-all duration-200",
                 i === SUGGESTION_PROMPTS.length - 1 && SUGGESTION_PROMPTS.length % 2 !== 0
-                  ? "col-span-2"
+                  ? "min-[400px]:col-span-2"
                   : "",
               ].join(" ")}
               style={{

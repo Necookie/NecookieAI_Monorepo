@@ -3,6 +3,8 @@
 @source "../";
 
 @custom-variant dark (&:where(.dark, .dark *));
+/* Short viewports: phones in landscape. Used to tighten vertical chrome. */
+@custom-variant short (@media (max-height: 500px));
 
 /* Custom account disclosure; authentication remains managed by Clerk. */
 .account-control { position: relative; margin-top: 12px; font-family: var(--font-sans); }
@@ -235,6 +237,8 @@
     color: var(--color-body);
     font-weight: 400;
     font-family: var(--font-sans);
+    /* Long URLs and identifiers wrap instead of pushing past the bubble. */
+    overflow-wrap: break-word;
   }
   .dark .prose-chat {
     color: var(--color-on-dark);
@@ -315,15 +319,23 @@
     margin: 0.25rem 0;
   }
 
-  /* Tables */
+  /* Tables — wide tables scroll inside their frame instead of overflowing the bubble */
+  .prose-chat .table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 0.75rem 0;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+  }
   .prose-chat table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.875rem;
-    margin: 0.75rem 0;
-    border: 1px solid var(--color-hairline);
-    border-radius: var(--radius-md);
-    overflow: hidden;
+    margin: 0;
+  }
+  .prose-chat th,
+  .prose-chat td {
+    overflow-wrap: normal;
   }
   .prose-chat th {
     background: var(--color-surface-card);

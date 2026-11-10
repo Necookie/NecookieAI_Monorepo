@@ -35,6 +35,19 @@ import { getTranslations } from "../lib/i18n";
 import AccountMenu from "./AccountMenu";
 import FolderModal from "./FolderModal";
 
+/** True inside the Android app (a Trusted Web Activity), whose launch sets an android-app:// referrer. */
+function isInAndroidApp(): boolean {
+  if (typeof window === "undefined") return false;
+  const launchedByApp = document.referrer.startsWith("android-app://");
+  try {
+    // The referrer is lost on reload, so remember it for this tab.
+    if (launchedByApp) sessionStorage.setItem("necookie-twa", "1");
+    return launchedByApp || sessionStorage.getItem("necookie-twa") === "1";
+  } catch {
+    return launchedByApp;
+  }
+}
+
 export default function Sidebar() {
   const chats = useAppStore(s => s.chats);
   const activeId = useAppStore(s => s.activeId);
@@ -57,6 +70,14 @@ export default function Sidebar() {
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
   const [folderModalChatId, setFolderModalChatId] = React.useState<string | null>(null);
   const [openMenuId, setOpenMenuId] = React.useState<string | null>(null);
+  const inAndroidApp = React.useMemo(isInAndroidApp, []);
+  // Touch screens have no hover, so the per-chat options button must always be shown there.
+  const canHover = React.useMemo(() => typeof window === "undefined" || window.matchMedia("(hover: hover)").matches, []);
+
+  // On phones the sidebar is a drawer over the chat; close it once the user has picked something.
+  const closeOnMobile = () => {
+    if (window.matchMedia("(max-width: 767px)").matches) setSidebarOpen(false);
+  };
 
   React.useEffect(() => {
     const handleOutsideClick = () => setOpenMenuId(null);
@@ -107,7 +128,7 @@ export default function Sidebar() {
       }}
     >
       {/* ─── Header ─── */}
-      <div className="flex items-center justify-between px-3 pt-3 pb-2">
+      <div className="flex flex-shrink-0 items-center justify-between px-3 pt-3 pb-2">
         {sidebarOpen && (
           <div className="min-w-0">
             <p
@@ -148,11 +169,14 @@ export default function Sidebar() {
         </button>
       </div>
 
+      {/* Everything between the header and the account card. When the screen is too short
+          for it all (phones in landscape), this scrolls instead of pushing the footer off-screen. */}
+      <div className="flex flex-1 min-h-0 flex-col overflow-y-auto overflow-x-hidden">
       {/* ─── Actions ─── */}
-      <div className="px-2 py-1 flex flex-col gap-1">
+      <div className="px-2 py-1 flex flex-shrink-0 flex-col gap-1">
         <button
           id="new-chat-btn"
-          onClick={newChat}
+          onClick={() => { newChat(); closeOnMobile(); }}
           className={[
             "flex items-center gap-2 w-full transition-all duration-200",
             sidebarOpen ? (compactMode ? "px-3 py-1.5" : "px-3 py-2") : "p-2 justify-center",
@@ -173,7 +197,7 @@ export default function Sidebar() {
 
         <button
           id="manage-folders-btn"
-          onClick={() => setCurrentView("folders")}
+          onClick={() => { setCurrentView("folders"); closeOnMobile(); }}
           className={[
             "flex items-center gap-2 w-full transition-all duration-200",
             sidebarOpen ? (compactMode ? "px-3 py-1.5" : "px-3 py-2") : "p-2 justify-center",
@@ -195,7 +219,7 @@ export default function Sidebar() {
 
       {/* ─── Search ─── */}
       {sidebarOpen && (
-        <div className="px-2 py-1">
+        <div className="px-2 py-1 flex-shrink-0">
           <div
             className="flex items-center gap-2 px-3 py-1.5"
             style={{
@@ -223,7 +247,7 @@ export default function Sidebar() {
       )}
 
       {/* ─── Chat List ─── */}
-      <nav className="flex-1 overflow-y-auto py-1 px-2 mt-1">
+      <nav className="flex-1 min-h-[7.5rem] overflow-y-auto py-1 px-2 mt-1">
         {sidebarOpen && recentChats.length > 0 && (
           <div
             className="flex items-center gap-1.5 w-full px-3 py-1 mb-1"
@@ -252,7 +276,7 @@ export default function Sidebar() {
                 >
                   <button
                     id={`chat-item-${chat.id}`}
-                    onClick={() => selectChat(chat.id)}
+                    onClick={() => { selectChat(chat.id); closeOnMobile(); }}
                     className={[
                       "flex items-center gap-2 w-full text-sm transition-colors",
                       sidebarOpen ? (compactMode ? "px-3 py-1" : "px-3 py-2") : "p-2 justify-center",
@@ -282,7 +306,7 @@ export default function Sidebar() {
                     )}
                   </button>
 
-                  {sidebarOpen && (isHovered || openMenuId === chat.id) && (
+                  {sidebarOpen && (isHovered || openMenuId === chat.id || !canHover) && (
                     <div
                       className={`absolute right-2 flex items-center z-10 pr-1 pl-4 h-full`}
                       style={{
@@ -358,24 +382,26 @@ export default function Sidebar() {
         </ul>
       </nav>
 
-      {/* ─── Footer ─── */}
+      {/* ─── Footer links ─── */}
       <div
-        className="px-2 py-2 space-y-0.5"
+        className="px-2 pt-2 space-y-0.5 flex-shrink-0"
         style={{ borderTop: "1px solid var(--color-hairline)" }}
       >
-        <a
-          id="android-download-link"
-          href="/download/android"
-          title="Get Android app"
-          className={`flex items-center gap-2 w-full transition-colors ${sidebarOpen ? "px-3 py-2" : "p-2 justify-center"}`}
-          style={actionBtnStyle()}
-        >
-          <Download size={14} aria-hidden="true" />
-          {sidebarOpen && <span>Get Android app</span>}
-        </a>
+        {!inAndroidApp && (
+          <a
+            id="android-download-link"
+            href="/download/android"
+            title="Get Android app"
+            className={`flex items-center gap-2 w-full transition-colors ${sidebarOpen ? "px-3 py-2" : "p-2 justify-center"}`}
+            style={actionBtnStyle()}
+          >
+            <Download size={14} aria-hidden="true" />
+            {sidebarOpen && <span>Get Android app</span>}
+          </a>
+        )}
         {[
-          { icon: <Settings size={14} />, label: t.settings, id: "settings-btn", onClick: () => setShowSettings(true) },
-          { icon: <HelpCircle size={14} />, label: t.help, id: "help-btn", onClick: () => setShowHelp(true) },
+          { icon: <Settings size={14} />, label: t.settings, id: "settings-btn", onClick: () => { setShowSettings(true); closeOnMobile(); } },
+          { icon: <HelpCircle size={14} />, label: t.help, id: "help-btn", onClick: () => { setShowHelp(true); closeOnMobile(); } },
         ].map(({ icon, label, id, onClick }) => (
           <button
             key={id}
@@ -399,8 +425,12 @@ export default function Sidebar() {
             {sidebarOpen && <span>{label}</span>}
           </button>
         ))}
+      </div>
+      </div>
 
-        <AccountMenu expanded={sidebarOpen} onSettings={() => setShowSettings(true)} />
+      {/* ─── Account (kept outside the scroll area so its popup is never clipped) ─── */}
+      <div className="px-2 pb-2 flex-shrink-0">
+        <AccountMenu expanded={sidebarOpen} onSettings={() => { setShowSettings(true); closeOnMobile(); }} />
       </div>
 
       {folderModalChatId && (
