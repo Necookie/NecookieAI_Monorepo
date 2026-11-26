@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
 }
 
-// Defaults to chat.necookie.dev in gradle.properties. Override for staging.
+// Defaults to chat.dheynorlanda.me in gradle.properties. Override for staging.
 val appHost = providers.gradleProperty("appHost").orNull
     ?: throw GradleException("Set appHost to your deployed HTTPS hostname (for example -PappHost=chat.your-domain.com).")
 require(appHost.length <= 253 && appHost.matches(Regex("(?=.{1,253}$)(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?"))) {

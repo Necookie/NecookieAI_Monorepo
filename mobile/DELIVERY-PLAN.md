@@ -16,7 +16,7 @@ proposed work. The QR download page and signed direct APK release are implemente
   append to, truncate, pin, or delete a conversation.
 - These tests supply authenticated user IDs. They do not test real Clerk tokens,
   redirects, production database credentials, or authentication on a physical phone.
-- Live unauthenticated HTTP checks of `https://chat.necookie.dev` returned 200 for
+- Live unauthenticated HTTP checks of `https://chat.dheynorlanda.me` returned 200 for
   the app shell, 401 for `/api/chats` and `/api/settings`, and 404 for
   `/.well-known/assetlinks.json` before release signing was configured. A real
   release certificate association is now published. These checks do not establish
@@ -66,7 +66,7 @@ send, regenerate, edit, and stop-generation flows on the shared web client.
 ## QR download (direct APK)
 
 The sidebar has a **Get Android app** link to the public landing page at
-`https://chat.necookie.dev/download/android`. The page displays a QR encoding this
+`https://chat.dheynorlanda.me/download/android`. The page displays a QR encoding this
 same permanent address and a working download button. The APK is published as a
 signed GitHub release. Direct download is the selected channel; Google Play is
 only a future option.
