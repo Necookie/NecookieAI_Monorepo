@@ -17,7 +17,7 @@ Install Android Studio, JDK 17 or 21, Android SDK Platform 36, and Build Tools 3
 Open `mobile/android` as the Android Studio project. Set `sdk.dir` in its untracked
 `local.properties`, or set `ANDROID_HOME` to your SDK installation.
 
-The deployment hostname defaults to `chat.necookie.dev`. To test another
+The deployment hostname defaults to `chat.dheynorlanda.me`. To test another
 deployment, add this to your user-level `~/.gradle/gradle.properties`:
 
 ```properties
@@ -76,7 +76,7 @@ cold launch, and Android rejects an undeclared component with an exception.
 Both debug CI and signed releases run these checks before packaging.
 
 `.github/workflows/android.yml` builds and lints debug APKs on mobile changes,
-targeting `chat.necookie.dev`. Override the repository variable `ANDROID_APP_HOST`
+targeting `chat.dheynorlanda.me`. Override the repository variable `ANDROID_APP_HOST`
 to test a different deployment. CI artifacts use temporary debug signing and are
 not release packages or a stable public update channel.
 
@@ -87,7 +87,7 @@ Repeat domain verification with the release certificate before distributing.
 
 ## Release handoff
 
-The public download page is `https://chat.necookie.dev/download/android`. The
+The public download page is `https://chat.dheynorlanda.me/download/android`. The
 sidebar's **Get Android app** link opens that page. Its QR encodes this permanent
 address, and the download button redirects to the versioned signed GitHub release.
 

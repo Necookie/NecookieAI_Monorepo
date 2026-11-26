@@ -3,6 +3,6 @@ compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-NECOOKIE_ENDPOINT = "https://model.necookie.dev/api/chat"
+NECOOKIE_ENDPOINT = "https://model.dheynorlanda.me/api/chat"
 NECOOKIE_MODEL = "necookie-ai:latest"
 

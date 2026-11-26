@@ -61,7 +61,7 @@ jobs:
           ANDROID_KEY_ALIAS: necookie
         run: >-
           ./gradlew --no-daemon :app:testReleaseUnitTest :app:assembleRelease :app:lintRelease
-          -PappHost=chat.necookie.dev
+          -PappHost=chat.dheynorlanda.me
           -PandroidVersionName="$VERSION" -PandroidVersionCode="$VERSION_CODE"
       - name: Verify and package APK
         run: |
@@ -74,7 +74,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          printf 'Necookie AI for Android %s\n\nRequires Android 6.0 or later and an internet connection. Opens https://chat.necookie.dev using your browser.\n\nDownload the APK, then confirm installation in Android. Future releases use the same signing key so you can update without uninstalling.\n' "$VERSION" > release/notes.md
+          printf 'Necookie AI for Android %s\n\nRequires Android 6.0 or later and an internet connection. Opens https://chat.dheynorlanda.me using your browser.\n\nDownload the APK, then confirm installation in Android. Future releases use the same signing key so you can update without uninstalling.\n' "$VERSION" > release/notes.md
           gh release create "android-v$VERSION" release/necookie-ai-android.apk release/necookie-ai-android.apk.sha256 --title "Necookie AI for Android $VERSION" --notes-file release/notes.md --target "$GITHUB_SHA" --latest
       - name: Remove runner keystore
         if: always()
